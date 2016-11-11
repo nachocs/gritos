@@ -1,0 +1,36 @@
+<div class="mdl-layout mdl-js-layout ">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout-icon"></div>
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title"><%= obj.Titulo %></span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <div class="mdl-navigation__link login-view">Log in.</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title"><%= obj.Titulo %></span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+  	<div class="content">
+	  	<div class="foro-description mdl-card mdl-shadow--4dp">
+	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.INTRODUCCION %></div>
+	  	</div>
+  		<div class="msg-list">
+  		</div>
+      <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg">
+        <i class="material-icons">add</i>
+      </button>
+  	</div>
+  </main>
+</div>
