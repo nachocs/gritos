@@ -1,6 +1,6 @@
 define(function (require) {
     'use strict';
-    var msgCollectionView = require('./baseCollectionView'),
+    import msgCollectionView from './baseCollectionView';
         MsgView = require('./msgView');
     return msgCollectionView.extend({
         className: 'msg-list',

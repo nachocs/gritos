@@ -1,6 +1,6 @@
 define(function (require) {
     'use strict';
-    var Backbone = require('backbone'),
+    import Backbone from 'backbone';
         $ = require('jquery');
     return Backbone.Router.extend({
         routes: {

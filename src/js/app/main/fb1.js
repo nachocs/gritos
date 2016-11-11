@@ -1,8 +1,8 @@
 define(function (require) {
     'use strict';
-    var FB = require('facebook'),
-        $ = require('jquery'),
-        userModel = require('../models/userModel'),
+    import FB from 'facebook';
+        import $ from 'jquery';
+        import userModel from '../models/userModel';
 
         dlogin = function (data) {
             var email = data.email;

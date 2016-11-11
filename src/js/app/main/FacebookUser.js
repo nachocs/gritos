@@ -1,8 +1,8 @@
 // https://github.com/fabrik42/facebook-user.js
 define(function (require) {
-    var Backbone = require('backbone'),
-        _ = require('underscore'),
-        FB = require('facebook'),
+    import Backbone from 'backbone';
+        import _ from 'underscore';
+        import FB from 'facebook';
         scope = this,
 
         FacebookUser = Backbone.Model.extend({

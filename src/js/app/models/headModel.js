@@ -1,7 +1,7 @@
 define(function (require) {
     'use strict';
-    var Backbone = require('backbone'),
-        _ = require('underscore'),
+    import Backbone from 'backbone';
+        import _ from 'underscore';
         $ = require('jquery');
     return Backbone.Model.extend({
         // url: function () {

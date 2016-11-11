@@ -1,7 +1,7 @@
 define(function (require) {
     'use strict';
-    var Backbone = require('backbone'),
-        template = require('text!./molaView-t.html'),
+    import Backbone from 'backbone';
+        import template from 'text!./molaView-t.html';
         _ = require('underscore');
     return Backbone.View.extend({
         template: _.template(template),

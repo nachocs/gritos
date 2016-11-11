@@ -1,10 +1,10 @@
 define(function (require) {
     'use strict';
-    var Backbone = require('backbone'),
-        _ = require('underscore'),
-        $ = require('jquery'),
-        template = require('text!./mainView-t.html'),
-        LoginView = require('./loginView'),
+    import Backbone from 'backbone';
+        import _ from 'underscore';
+        import $ from 'jquery';
+        import template from 'text!./mainView-t.html';
+        import LoginView from './loginView';
         MsgCollectionView = require('./msgCollectionView');
     return Backbone.View.extend({
         initialize: function (options) {

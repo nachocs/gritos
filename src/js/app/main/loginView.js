@@ -1,9 +1,9 @@
 define(function (require) {
     'use strict';
-    var Backbone = require('backbone'),
-        _ = require('underscore'),
-        $ = require('jquery'),
-        MenuLoginView = require('./menuLoginView'),
+    import Backbone from 'backbone';
+        import _ from 'underscore';
+        import $ from 'jquery';
+        import MenuLoginView from './menuLoginView';
         template = require('text!./loginView-t.html');
 
     return Backbone.View.extend({

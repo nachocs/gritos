@@ -1,7 +1,7 @@
 define(function (require) {
     'use strict';
-    var BaseMsgView = require('./baseMsgView'),
-        MsgCollection = require('../models/msgCollection'),
+    import BaseMsgView from './baseMsgView';
+        import MsgCollection from '../models/msgCollection';
         MsgCollectionView = require('./miniMsgCollectionView');
     return BaseMsgView.extend({
         MiniMsgCollection: MsgCollection,

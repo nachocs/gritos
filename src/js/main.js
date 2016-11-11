@@ -41,7 +41,7 @@
 
     // Start the main app logic.
     define(function (require) {
-        var $ = require('jquery'),
+        var import $ from 'jquery';
             App = require('app/app');
 
         $(function () {
