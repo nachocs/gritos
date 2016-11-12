@@ -27,7 +27,7 @@ const config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-0'],
+        loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
       },
       {
         test: /\.less$/,

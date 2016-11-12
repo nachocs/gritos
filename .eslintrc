@@ -99,13 +99,11 @@
     "templateStrings": true,
     "binaryLiterals": true,
     "forOf": true,
-    "modules": true,
     "octalLiterals": true,
     "regexUFlag": true,
     "regexYFlag": true,
     "restParams": true,
     "superInFunctions": true,
-    "templateStrings": true,
     "unicodeCodePointEscapes": true
   },
   "plugins": [

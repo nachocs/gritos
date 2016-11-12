@@ -1,11 +1,9 @@
-import FB from 'facebook';
+import FB from 'fb';
 import _ from 'underscore';
 import $ from 'jquery';
 import Backbone from 'backbone';
 import FacebookUser from './FacebookUser';
 const userModel = require('../models/userModel');
-
-
 
 export default Backbone.View.extend({
   initialize() {

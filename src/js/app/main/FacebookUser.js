@@ -1,124 +1,120 @@
 // https://github.com/fabrik42/facebook-user.js
-define(function (require) {
-    import Backbone from 'backbone';
-        import _ from 'underscore';
-        import FB from 'facebook';
-        scope = this,
+import Backbone from 'backbone';
+import _ from 'underscore';
+import FB from 'fb';
 
-        FacebookUser = Backbone.Model.extend({
+const FacebookUser = Backbone.Model.extend({
 
-            initialize: function (attributes, options) {
-                options || (options = {});
-                this.options = _.defaults(options, this.defaultOptions);
+  initialize(attributes, options) {
+    options || (options = {});
+    this.options = _.defaults(options, this.defaultOptions);
 
-                _.bindAll(this, 'onLoginStatusChange');
+    _.bindAll(this, 'onLoginStatusChange');
 
-                FB.Event.subscribe('auth.authResponseChange', this.onLoginStatusChange);
-            },
+    FB.Event.subscribe('auth.authResponseChange', this.onLoginStatusChange);
+  },
 
-            options: null,
+  options: null,
 
-            defaultOptions: {
-                // see https://developers.facebook.com/docs/authentication/permissions/
-                scope: [], // fb permissions
-                autoFetch: true, // auto fetch profile after login
-                protocol: location.protocol
-            },
+  defaultOptions: {
+    // see https://developers.facebook.com/docs/authentication/permissions/
+    scope: [], // fb permissions
+    autoFetch: true, // auto fetch profile after login
+    protocol: location.protocol,
+  },
 
-            _loginStatus: null,
+  _loginStatus: null,
 
-            isConnected: function () {
-                return this._loginStatus === 'connected';
-            },
+  isConnected() {
+    return this._loginStatus === 'connected';
+  },
 
-            login: function (callback) {
-                if (typeof callback === 'undefined') {
-                    callback = function () {};
-                }
-                FB.login(callback, {
-                    scope: this.options.scope.join(',')
-                });
-            },
+  login(callback) {
+    if (typeof callback === 'undefined') {
+      callback = () => {};
+    }
+    FB.login(callback, {
+      scope: this.options.scope.join(','),
+    });
+  },
 
-            logout: function () {
-                FB.logout();
-            },
+  logout() {
+    FB.logout();
+  },
 
-            updateLoginStatus: function () {
-                FB.getLoginStatus(this.onLoginStatusChange);
-            },
+  updateLoginStatus() {
+    FB.getLoginStatus(this.onLoginStatusChange);
+  },
 
-            onLoginStatusChange: function (response) {
-                if (this._loginStatus === response.status) {
-                    return false;
-                }
+  onLoginStatusChange(response) {
+    if (this._loginStatus === response.status) {
+      return false;
+    }
 
-                var event;
+    let event;
 
-                if (response.status === 'not_authorized') {
-                    event = 'facebook:unauthorized';
-                } else if (response.status === 'connected') {
-                    event = 'facebook:connected';
-                    if (this.options.autoFetch === true) {
-                        this.fetch();
-                    }
-                } else {
-                    event = 'facebook:disconnected';
-                }
+    if (response.status === 'not_authorized') {
+      event = 'facebook:unauthorized';
+    } else if (response.status === 'connected') {
+      event = 'facebook:connected';
+      if (this.options.autoFetch === true) {
+        this.fetch();
+      }
+    } else {
+      event = 'facebook:disconnected';
+    }
 
-                this._loginStatus = response.status;
-                this.trigger(event, this, response);
-            },
+    this._loginStatus = response.status;
+    this.trigger(event, this, response);
+  },
 
-            parse: function (response) {
-                var attributes = _.extend(response, {
-                    pictures: this.profilePictureUrls(response.id)
-                });
+  parse(response) {
+    const attributes = _.extend(response, {
+      pictures: this.profilePictureUrls(response.id),
+    });
 
-                return attributes;
-            },
+    return attributes;
+  },
 
-            sync: function (method, model, options) {
-                if (method !== 'read') {
-                    throw new Error('FacebookUser is a readonly model, cannot perform ' + method);
-                }
+  sync(method, model, options) {
+    if (method !== 'read') {
+      throw new Error('FacebookUser is a readonly model, cannot perform ' + method);
+    }
 
-                var callback = function (response) {
-                        if (response.error) {
-                            options.error(response);
-                        } else {
-                            options.success(response);
-                        }
-                        return true;
-                    },
+    const callback = response => {
+        if (response.error) {
+          options.error(response);
+        } else {
+          options.success(response);
+        }
+        return true;
+      },
+      request = FB.api('/me', callback);
+    model.trigger('request', model, request, options);
+    return request;
+  },
 
-                    request = FB.api('/me', callback);
-                model.trigger('request', model, request, options);
-                return request;
-            },
+  profilePictureUrls(id) {
+    id || (id = this.id);
+    const urls = {};
+    _(['square', 'small', 'normal', 'large']).each(function (size) {
+      urls[size] = this.profilePictureUrl(id, size);
+    }, this);
 
-            profilePictureUrls: function (id) {
-                id || (id = this.id);
-                var urls = {};
-                _(['square', 'small', 'normal', 'large']).each(function (size) {
-                    urls[size] = this.profilePictureUrl(id, size);
-                }, this);
+    return urls;
+  },
 
-                return urls;
-            },
+  profilePictureUrl(id, size) {
+    return [
+      this.options.protocol,
+      '//graph.facebook.com/',
+      id,
+      '/picture?type=',
+      size,
+      this.options.protocol.indexOf('https') > -1 ? '&return_ssl_resources=1' : '',
+    ].join('');
+  },
 
-            profilePictureUrl: function (id, size) {
-                return [
-                    this.options.protocol,
-                    '//graph.facebook.com/',
-                    id,
-                    '/picture?type=',
-                    size,
-                    this.options.protocol.indexOf('https') > -1 ? '&return_ssl_resources=1' : ''
-                ].join('');
-            }
-
-        });
-
-    return FacebookUser;
 });
+
+export default FacebookUser;

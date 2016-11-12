@@ -1,24 +1,20 @@
-define(function (require) {
-    'use strict';
-    import Backbone from 'backbone';
-        $ = require('jquery');
-    return Backbone.Router.extend({
-        routes: {
-            ":foro": "foro",
-            ":foro/:id": "mensaje"
-        },
-        initialize: function (options) {
-            this.model = options.model;
-            // options.collection.fetch();
-        },
-        foro: function (foro) {
-            this.model.set({
-                Name: foro
-            });
-            this.model.fetch();
-        },
-        mensaje: function (foro, mensajeId) {
-            debugger;
-        }
+import Backbone from 'backbone';
+export default Backbone.Router.extend({
+  routes: {
+    ':foro': 'foro',
+    ':foro/:id': 'mensaje'
+  },
+  initialize(options) {
+    this.model = options.model;
+    // options.collection.fetch();
+  },
+  foro(foro) {
+    this.model.set({
+      Name: foro
     });
+    this.model.fetch();
+  },
+  mensaje(foro, mensajeId) {
+    debugger;
+  }
 });

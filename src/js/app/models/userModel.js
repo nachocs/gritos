@@ -1,8 +1,5 @@
-define(function (require) {
-    'use strict';
-    import Backbone from 'backbone';
-        UserModel = Backbone.Model.extend({
-            idAttribute: 'ID'
-        });
-    return new UserModel(); // unique
+import Backbone from 'backbone';
+const UserModel = Backbone.Model.extend({
+  idAttribute: 'ID',
 });
+export default new UserModel(); // unique

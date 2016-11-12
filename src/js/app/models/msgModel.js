@@ -1,7 +1,4 @@
-define(function (require) {
-    'use strict';
-    var Backbone = require('backbone');
-    return Backbone.Model.extend({
-		idAttribute: 'ID'
-    });
+import Backbone from 'backbone';
+export default Backbone.Model.extend({
+  idAttribute: 'ID',
 });

@@ -1,44 +1,39 @@
-define(function (require) {
-    'use strict';
-    import Backbone from 'backbone';
-        import _ from 'underscore';
-        import $ from 'jquery';
-        model = require('./msgModel');
-    return Backbone.Collection.extend({
-        model: model,
-        initialize: function (models, options) {
-            if (options && options.id) {
-                this.id = options.id;
-            }
-            this.lastEntry = 0;
-            this.listenTo(this, 'sync', _.bind(function () {
-                this.loading = false;
-            }, this));
-            this.listenTo(this, 'error', _.bind(function () {
-                this.loading = false;
-            }, this));
-            this.listenTo(this, 'request', _.bind(function () {
-                this.loading = true;
-            }, this));
+import Backbone from 'backbone';
+import _ from 'underscore';
+const model = require('./msgModel');
+export default Backbone.Collection.extend({
+  model,
+  initialize(models, options) {
+    if (options && options.id) {
+      this.id = options.id;
+    }
+    this.lastEntry = 0;
+    this.listenTo(this, 'sync', _.bind(function () {
+      this.loading = false;
+    }, this));
+    this.listenTo(this, 'error', _.bind(function () {
+      this.loading = false;
+    }, this));
+    this.listenTo(this, 'request', _.bind(function () {
+      this.loading = true;
+    }, this));
+  },
+  sort: 'ID',
+  url() {
+    return 'http://gritos.com/jsgritos/api/index.cgi?' + this.id;
+  },
+  nextPage() {
+    if (!this.loading) {
+      this.fetch({
+        data: {
+          init: this.lastEntry,
         },
-        sort: 'ID',
-        url: function () {
-            return 'http://gritos.com/jsgritos/api/index.cgi?' + this.id;
-        },
-        nextPage: function () {
-            if (!this.loading) {
-                this.fetch({
-                    data: {
-                        init: this.lastEntry
-                    },
-                    remove: false
-                });
-            }
-        },
-        parse: function (resp, options) {
-            this.lastEntry = Math.min.apply(null, _.pluck(resp, 'num'));
-            return resp;
-        }
-    });
-
+        remove: false,
+      });
+    }
+  },
+  parse(resp) {
+    this.lastEntry = Math.min.apply(null, _.pluck(resp, 'num'));
+    return resp;
+  },
 });

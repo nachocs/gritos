@@ -1,9 +1,7 @@
-define(function (require) {
-    'use strict';
-    import msgCollectionView from './baseCollectionView';
-        MsgView = require('./msgView');
-    return msgCollectionView.extend({
-        className: 'msg-list',
-        MsgView: MsgView
-    });
+
+import msgCollectionView from './baseCollectionView';
+const MsgView = require('./msgView');
+export default msgCollectionView.extend({
+  className: 'msg-list',
+  MsgView,
 });
