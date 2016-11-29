@@ -2,6 +2,23 @@
   <header class="mdl-layout__header">
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
+    <div class="logomask pseudo">
+      <a href="#">
+        <img src="../../../img/logo50x50.gif" alt="Gritos.com" />
+      </a>
+    </div>
+    <svg height="0">
+      <!-- THE mask -->
+      <mask id="logomask-firefox">
+        <image width="50" height="50" xlink:href="../../../img/logo50x50.gif" filter="url(#logomaskfilter)" />
+      </mask>
+      <!-- the filter to make the image white -->
+      <filter id="logomaskfilter">
+        <feFlood flood-color="white" />
+        <feComposite in2="SourceAlpha" operator="in" />
+      </filter>
+    </svg>
+
       <!-- Title -->
       <span class="mdl-layout-title"><%= obj.Titulo %></span>
       <!-- Add spacer, to align navigation to the right -->
@@ -23,9 +40,11 @@
   </div>
   <main class="mdl-layout__content">
   	<div class="content">
-	  	<div class="foro-description mdl-card mdl-shadow--4dp">
-	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.INTRODUCCION %></div>
-	  	</div>
+      <% if (obj.INTRODUCCION) { %>
+  	  	<div class="foro-description mdl-card mdl-shadow--4dp">
+  	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.INTRODUCCION %></div>
+  	  	</div>
+      <% } %>
   		<div class="msg-list">
   		</div>
       <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg">

@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
-const model = require('./msgModel');
+import model from './msgModel';
+
 export default Backbone.Collection.extend({
   model,
   initialize(models, options) {

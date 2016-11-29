@@ -1,9 +1,10 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
 import $ from 'jquery';
-import template from 'text!./mainView-t.html';
+import template from './mainView-t.html';
 import LoginView from './loginView';
-const MsgCollectionView = require('./msgCollectionView');
+import MsgCollectionView from './msgCollectionView';
+
 export default Backbone.View.extend({
   initialize(options) {
     this.msgCollectionView = new MsgCollectionView({
@@ -34,10 +35,9 @@ export default Backbone.View.extend({
     return this;
   },
   afterRender() {
-    componentHandler.upgradeElement(this.$el.find('.mdl-js-layout')[0]);
-    componentHandler.upgradeElement(this.$el.find('.mdl-js-button')[0]);
-
     _.defer(_.bind(function () {
+      componentHandler.upgradeElement(this.$el.find('.mdl-js-layout')[0]);
+      componentHandler.upgradeElement(this.$el.find('.mdl-js-button')[0]);
       // debugger;
       // $(window).scroll(function () {
       //     debugger;

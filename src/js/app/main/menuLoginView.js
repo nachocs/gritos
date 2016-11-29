@@ -1,14 +1,22 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
 import $ from 'jquery';
-import template from 'text!./menuLoginView-t.html';
+import template from './menuLoginView-t.html';
+import FbView from './fbView';
 
 export default Backbone.View.extend({
   id: 'menuLogin',
   template: _.template(template),
-  initialize() {},
+  initialize() {
+    this.fbView = new FbView();
+  },
   events: {
     'click #loginSubmit': 'submit',
+    'click .facebook-login': 'fbLogin',
+  },
+  fbLogin(e){
+    e.preventDefault();
+    this.fbView.fBlogin();
   },
   submit() {
     const alias = this.$('#loginAlias').val(), pass = this.$('#loginPassword').val();

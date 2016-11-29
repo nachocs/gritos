@@ -6,7 +6,7 @@ import MsgCollection from './models/msgCollection';
 
 import HeadModel from './models/headModel';
 import moment from 'moment';
-import Fb from './main/fb';
+
 import userModel from './models/userModel';
 const App = Backbone.View.extend({
   initialize() {
@@ -14,17 +14,16 @@ const App = Backbone.View.extend({
     this.msgCollection = new MsgCollection();
     this.headModel = new HeadModel();
 
-    this.fb = new Fb();
     this.mainView = new MainView({
       collection: this.msgCollection,
       model: this.headModel,
       userModel,
     });
-    $('body').html(this.mainView.render().el);
+    $('#root').html(this.mainView.render().el);
     this.router = new Router({
       model: this.headModel,
     });
-    Backbone.history.start();
+    Backbone.history.start({pushState: false, root:''});
   },
   initialSetup() {
     moment.locale('es');
@@ -43,4 +42,4 @@ const App = Backbone.View.extend({
     };
   },
 });
-export default App;
+export default new App();

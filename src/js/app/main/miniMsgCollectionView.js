@@ -1,5 +1,6 @@
 import msgCollectionView from './baseCollectionView';
-const MiniMsgView = require('./miniMsgView');
+import MiniMsgView from './miniMsgView';
+
 export default msgCollectionView.extend({
   className: 'minimsgs',
   MsgView: MiniMsgView,

@@ -33,55 +33,17 @@
     "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
     "no-undef": 2,
     "jsx-quotes": [2, "prefer-double"],
-    "react/jsx-boolean-value": 2,
-    "react/jsx-no-duplicate-props": [2, { "ignoreCase": false }],
-    "react/jsx-no-undef": 2,
-    "react/jsx-sort-prop-types": 0,
-    "react/jsx-sort-props": 0,
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2,
-    "react/no-did-mount-set-state": 2,
-    "react/no-did-update-set-state": 2,
-    "react/no-multi-comp": 2,
-    "react/no-unknown-property": 2,
-    "react/prop-types": 2,
-    "react/react-in-jsx-scope": 2,
-    "react/require-extension": [2, { "extensions": [".js", ".jsx"] }],
-    "react/self-closing-comp": 2,
-    "react/sort-comp": [2, {
-                            "order": [
-                              "lifecycle",
-                              "everything-else",
-                              "render"
-                            ],
-                            "groups": {
-                              "lifecycle": [
-                                "displayName",
-                                "propTypes",
-                                "contextTypes",
-                                "childContextTypes",
-                                "defaultProps",
-                                "state",
-                                "constructor",
-                                "getChildContext",
-                                "componentWillMount",
-                                "componentDidMount",
-                                "componentWillReceiveProps",
-                                "shouldComponentUpdate",
-                                "componentWillUpdate",
-                                "componentDidUpdate",
-                                "componentWillUnmount"
-                              ]
-                            }
-                          }],
-    "react/wrap-multilines": 2,
     "babel/object-shorthand": 2,
     "babel/generator-star-spacing": 2
   },
   "env": {
     "es6": true,
     "browser": true,
-    "node": true
+    "node": true,
+  },
+  "globals": {
+    "FB": true,
+    "componentHandler": true,
   },
   "ecmaFeatures": {
     "jsx": true,
@@ -107,9 +69,6 @@
     "unicodeCodePointEscapes": true
   },
   "plugins": [
-    "react",
     "babel"
   ],
-  "globals": {
-  }
 }

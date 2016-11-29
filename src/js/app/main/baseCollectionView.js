@@ -1,5 +1,6 @@
 import Backbone from 'backbone';
 import $ from 'jquery';
+
 export default Backbone.View.extend({
   initialize(options) {
     this.userModel = options.userModel;

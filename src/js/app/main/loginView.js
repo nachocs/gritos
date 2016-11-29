@@ -1,14 +1,15 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
 import $ from 'jquery';
-import MenuLoginView from './menuLoginView';
-const template = require('text!./loginView-t.html');
+import template from './loginView-t.html';
+import FbView from './fbView';
 
 export default Backbone.View.extend({
   template: _.template(template),
   initialize(options) {
-    this.menuLoginView = new MenuLoginView();
     this.model = options.userModel;
+    this.fbView = new FbView();
+    this.fbView.initialize();
     this.listenTo(this.model, 'change', this.render.bind(this));
   },
   events: {
@@ -18,6 +19,14 @@ export default Backbone.View.extend({
       e.stopPropagation();
     },
     'click .login-menu-button': 'openMenu',
+    'click .fb-login': 'fBlogin',
+  },
+  fBlogin() {
+    FB.login(response => {
+      console.log('fb login response', response);
+    }, {
+      scope: 'public_profile,email',
+    });
   },
   openMenu() {
     this.$('.login-menu').toggleClass('hidden');
@@ -36,7 +45,7 @@ export default Backbone.View.extend({
         },
         success(data) {
           if (data.status !== 'ok') {
-            console.log('error', data.status);
+            console.log('error: ', data.status);
           }
         },
       });

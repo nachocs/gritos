@@ -14,7 +14,7 @@ const config = {
   entry: [
     'webpack-dev-server/client?http://0.0.0.0:3000/', // Needed for hot reloading
     'webpack/hot/only-dev-server',
-    __dirname + '/../src/js/app/app.js',
+    __dirname + '/../src/js/app/index.js',
     __dirname + '/../src/css/main.less',
   ],
   output: {
@@ -40,7 +40,7 @@ const config = {
       { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff' },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader' },
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
-      { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=10000' },
+      { test: /\.(png|jpg|gif)$/, loader: 'file-loader' },
     ],
   },
   postcss: [ autoprefixer ],
@@ -63,7 +63,7 @@ const config = {
         // This environment variable is defined in here: https://github.com/import-io/frontend-utils#api
         // In production this variable will be undefined, the root domain endpoint used to communication with api
         // will be inferred from the current domain name.
-        ENDPOINTS_ROOT_DOMAIN: JSON.stringify('staging-owl.com'),
+        ENDPOINTS_ROOT_DOMAIN: JSON.stringify('gritos.com'),
       },
     }),
     new DashboardPlugin(dashboard.setData),

@@ -4,14 +4,15 @@ import $ from 'jquery';
 import moment from 'moment';
 import Autolinker from 'autolinker';
 import MolaView from './molaView';
-import template from 'text!./msgView-t.html';
+import template from './msgView-t.html';
+
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
     match = url.match(regExp);
   return (match && match[7].length === 11) ? match[7] : false;
 };
 const autolinker = new Autolinker({
-  replaceFn (autolinker, match) {
+  replaceFn (match) {
     if (match.getType() === 'url') {
       if ((match.getUrl().indexOf('youtube.com') > 0) || (match.getUrl().indexOf('youtu.be') > 0)) {
         const youtubeId = youtube_parser(match.getUrl());
@@ -112,9 +113,16 @@ export default Backbone.View.extend({
     return autolinker.link(string);
   },
   serializer() {
+    let nombre_foro = this.model.get('INDICE');
+    const nm = nombre_foro.split(/\//g);
+    if (nm[1]) {
+      nombre_foro = nm[1];
+    }
+    const tags = '<a href="#' + nombre_foro + '">#' + nombre_foro + '</a>';
     return _.extend({}, this.model.toJSON(), {
       date: moment.unix(this.model.get('FECHA')).fromNow(),
       comments: this.formatComments(this.model.get('comments')),
+      tags,
     });
   },
 });

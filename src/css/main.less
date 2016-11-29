@@ -1,3 +1,4 @@
+@import './tipr.less';
 body{
 
 }
@@ -36,9 +37,12 @@ body{
 		margin-bottom: 20px;
 		width: initial;
 		min-height: initial;
+	    background-color: #e7ffd2;
+        font-weight: 600;
 	}
 }
 .msg-list{
+	margin-top: 20px;
 	.minimsgs{
 		.msg{
 			margin-left: 50px;
@@ -98,30 +102,44 @@ body{
 			    color: lightslategray;
 	    	}
 		}
-		.mola,.nomola{
-			align-self: flex-end;
-		    margin: 5px 10px;
-		    color: rgb(119, 122, 153);
-    		opacity: 0.5;
-    		font-size: 10pt;
-		    i.mola, i.nomola{
-		    	margin: 5px 0px;
-		    	cursor: pointer;
-		    	font-size: 16px;
-		    	&:hover{
-		    		opacity: .8;
-		    	}
-		    	&.active{
-		    		opacity: 1;
-		    	}
-		    	&.inactive{
-		    		opacity: 0.5;
-		    	}
-		    }
-		    span{
-	    	    // margin-right: -10px;
-			    vertical-align: text-bottom;
-		    }
+		.foot{
+			display: table;
+		    width: 100%;
+			.mola,.nomola{
+				text-align: right;
+			    margin: 5px 10px;
+			    color: rgb(119, 122, 153);
+	    		opacity: 0.5;
+	    		font-size: 10pt;
+			    i.mola, i.nomola{
+			    	margin: 5px 0px;
+			    	cursor: pointer;
+			    	font-size: 16px;
+			    	&:hover{
+			    		opacity: .8;
+			    	}
+			    	&.active{
+			    		opacity: 1;
+			    	}
+			    	&.inactive{
+			    		opacity: 0.5;
+			    	}
+			    }
+			    span{
+		    	    // margin-right: -10px;
+				    vertical-align: text-bottom;
+			    }
+			}
+			.tags{
+			    padding: 10px;
+			    text-decoration: none;
+			    display: table-cell;
+	    		font-size: 10pt;
+			    color: rgb(119, 122, 153);
+			    a{
+			    	text-decoration: none;
+			    }
+			}
 		}
 	}
 }
@@ -215,4 +233,39 @@ iframe {
 	height: 6px;
 	background: white;
 	right: 1px;
+}
+
+.logomask a{
+  position: relative;
+  display:block;
+  width:50px;
+  height: 50px;
+  text-align:center;
+  margin: 0px auto;
+  background: ;
+  -webkit-filter: drop-shadow(1px 1px 2px rgba(0,0,0,.5));
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.logomask a{
+  background-position: -110px 0;
+
+}
+.logomask a:hover,
+.logomask a:focus{
+  background-position: 10px 0;
+  transition: all 1s;
+}
+.logomask a::after{
+  content:'';
+  position: absolute;
+  pointer-events: none;
+  top:0; left:0; right:0px; bottom: 0;
+  background: radial-gradient(0 0,circle farthest-side, rgba(255,255,255,0) 80%,rgba(255,255,255,.8) 98%,rgba(255,255,255,0) 100%) no-repeat;
+  background: radial-gradient(circle farthest-side at 0 0, rgba(255,255,255,0) 80%,rgba(255,255,255,.8) 98%,rgba(255,255,255,0) 100%) no-repeat;
+  background-position: inherit;
+  -webkit-mask: url('../img/logo50x50.gif') center;
+  mask: url('#logomask-firefox');
+  width: 100px;
+  height: 100px;
 }
