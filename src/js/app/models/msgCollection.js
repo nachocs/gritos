@@ -9,15 +9,15 @@ export default Backbone.Collection.extend({
       this.id = options.id;
     }
     this.lastEntry = 0;
-    this.listenTo(this, 'sync', _.bind(function () {
+    this.listenTo(this, 'sync', () => {
       this.loading = false;
-    }, this));
-    this.listenTo(this, 'error', _.bind(function () {
+    });
+    this.listenTo(this, 'error', () => {
       this.loading = false;
-    }, this));
-    this.listenTo(this, 'request', _.bind(function () {
+    });
+    this.listenTo(this, 'request', () => {
       this.loading = true;
-    }, this));
+    });
   },
   sort: 'ID',
   url() {

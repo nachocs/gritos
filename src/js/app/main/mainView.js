@@ -4,6 +4,7 @@ import $ from 'jquery';
 import template from './mainView-t.html';
 import LoginView from './loginView';
 import MsgCollectionView from './msgCollectionView';
+import SpinnerView from './spinnerView';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -20,6 +21,9 @@ export default Backbone.View.extend({
     this.loginView = new LoginView({
       userModel: this.userModel,
     });
+    this.spinnerView = new SpinnerView({
+      collection: this.collection,
+    });
     this.listenTo(this.model, 'sync', this.render.bind(this));
   },
   className: 'main',
@@ -28,6 +32,8 @@ export default Backbone.View.extend({
     this.$el.html(this.template(this.serializer()));
     this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
     this.$('.login-view').html(this.loginView.render().el);
+    this.$('.spinner-view').html(this.spinnerView.render().el);
+    this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {
       this.afterRender();
