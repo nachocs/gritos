@@ -35,6 +35,7 @@ export default Backbone.View.extend({
 
   },
   upload() {
+    if (!this.userModel.get('uid')){ return; }
     this.clearArea();
     const self = this;
     const data = new FormData();
@@ -80,6 +81,8 @@ export default Backbone.View.extend({
     }
   },
   submitPost() {
+    if (!this.userModel.get('uid')){ return; }
+
     const self = this;
     // tinyMCE.triggerSave();
     let comments = this.$('#comments').html();
