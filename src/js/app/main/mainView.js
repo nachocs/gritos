@@ -5,6 +5,7 @@ import template from './mainView-t.html';
 import LoginView from './loginView';
 import MsgCollectionView from './msgCollectionView';
 import SpinnerView from './spinnerView';
+import FormView from './formView';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -23,6 +24,9 @@ export default Backbone.View.extend({
     });
     this.spinnerView = new SpinnerView({
       collection: this.collection,
+    });
+    this.formView = new FormView({
+      userModel: this.userModel,
     });
     this.listenTo(this.model, 'sync', this.render.bind(this));
   },

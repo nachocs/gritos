@@ -38,7 +38,7 @@ export default Backbone.View.extend({
     } else {
       $.ajax({
         type: 'POST',
-        url: 'api/login.cgi',
+        url: 'https://gritos.com/jsgritos/api/login.cgi',
         data: {
           alias,
           password: pass,
