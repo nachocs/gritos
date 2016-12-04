@@ -31,14 +31,16 @@ export default Backbone.View.extend({
   openMenu() {
     this.$('.login-menu').toggleClass('hidden');
   },
-  submit() {
+  submit(e) {
+    e.preventDefault();
+    const self = this;
     const alias = this.$('#loginAlias').val(), pass = this.$('#loginPassword').val();
     if ((alias.length < 1) || (pass.length < 1)) {
       console.log('te olvidaste de poner algo'); // TODO
     } else {
       $.ajax({
         type: 'POST',
-        url: 'https://gritos.com/jsgritos/api/login.cgi',
+        url: '//gritos.com/jsgritos/api/login.cgi',
         data: {
           alias,
           password: pass,
@@ -47,6 +49,7 @@ export default Backbone.View.extend({
           if (data.status !== 'ok') {
             console.log('error: ', data.status);
           }
+          self.model.set(data.user);
         },
       });
     }

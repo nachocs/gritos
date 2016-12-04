@@ -8,12 +8,13 @@ import template from './formView.html';
 export default Backbone.View.extend({
   template: _.template(template),
  	initialize(options) {
-   _.bindAll(this);
    this.userModel = options.userModel;
    this.formModel = new formModel();
    this.collection = options.collection;
-   this.listenTo(this.userModel, 'change', this.render);
+   this.wysiwyg = new Wysiwyg();
+   this.listenTo(this.userModel, 'change', this.render.bind(this));
  },
+  id: 'formulario',
   events: {
     'click #comments': 'clearArea',
     'click #formSubmit': 'submitPost',
@@ -125,18 +126,18 @@ export default Backbone.View.extend({
    // });
   },
   render() {
-    if (this.userModel.get('uid')){
-      this.$el.html(this.template());
+    // if (this.userModel.get('uid')){
+    this.$el.html(this.template());
+    this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
 
-      if (this.afterRender && typeof this.afterRender === 'function') {
-        this.afterRender.apply(this);
-      }      
+    if (this.afterRender && typeof this.afterRender === 'function') {
+      this.afterRender.apply(this);
     }
+    // }
+    this.delegateEvents();
     return this;
   },
   afterRender() {
-    const wysiwyg = new Wysiwyg;
-    wysiwyg.el.insertBefore('#comments');
     this.$('.wysiwyg').hide();
 
     this.$('#comments').keyup(function() {
