@@ -27,6 +27,7 @@ export default Backbone.View.extend({
     });
     this.formView = new FormView({
       userModel: this.userModel,
+      collection: this.collection,
     });
     this.listenTo(this.model, 'sync', this.render.bind(this));
   },
@@ -37,6 +38,7 @@ export default Backbone.View.extend({
     this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
     this.$('.login-view').html(this.loginView.render().el);
     this.$('.spinner-view').html(this.spinnerView.render().el);
+    this.$('.form-view').html(this.formView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {

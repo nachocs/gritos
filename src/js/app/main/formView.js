@@ -12,6 +12,7 @@ export default Backbone.View.extend({
    this.userModel = options.userModel;
    this.formModel = new formModel();
    this.collection = options.collection;
+   this.listenTo(this.userModel, 'change', this.render);
  },
   events: {
     'click #comments': 'clearArea',
@@ -124,10 +125,12 @@ export default Backbone.View.extend({
    // });
   },
   render() {
-    this.el.innerHTML = this.template();
-    $(this.el).prependTo($('#container'));
-    if (this.afterRender && typeof this.afterRender === 'function') {
-      this.afterRender.apply(this);
+    if (this.userModel.get('uid')){
+      this.$el.html(this.template());
+
+      if (this.afterRender && typeof this.afterRender === 'function') {
+        this.afterRender.apply(this);
+      }      
     }
     return this;
   },
@@ -135,7 +138,6 @@ export default Backbone.View.extend({
     const wysiwyg = new Wysiwyg;
     wysiwyg.el.insertBefore('#comments');
     this.$('.wysiwyg').hide();
-
 
     this.$('#comments').keyup(function() {
       $(this).height(38);
