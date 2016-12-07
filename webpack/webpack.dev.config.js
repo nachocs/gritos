@@ -12,7 +12,7 @@ const config = {
   debug: true,
   devtool: 'source-map',
   entry: [
-    'webpack-dev-server/client?http://0.0.0.0:3000/', // Needed for hot reloading
+    'webpack-dev-server/client?http://0.0.0.0:3001/', // Needed for hot reloading
     'webpack/hot/only-dev-server',
     __dirname + '/../src/js/app/index.js',
     __dirname + '/../src/css/main.less',

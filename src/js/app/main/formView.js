@@ -4,6 +4,7 @@ import _ from 'underscore';
 import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
+import endpoints from '../endpoints';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -29,7 +30,7 @@ export default Backbone.View.extend({
     for (const prop in jsonModel){
       if ((/IMAGEN\d+\_THUMB/).test(prop)){
         const thisThumb = jsonModel[prop];
-        $('#comments').append('<img src=\'' + thisThumb + '\'>');
+        this.$('#comments').append('<img src=\'' + thisThumb + '\'>');
       }
     }
 
@@ -43,7 +44,7 @@ export default Backbone.View.extend({
       data.append('FICHERO_IMAGEN' + i, file);
     });
     $.ajax({
-      url: 'web/cgi/upload.cgi?sessionId=' + this.userModel.get('uid'),
+      url: endpoints.apiUrl + 'upload.cgi?sessionId=' + this.userModel.get('uid'),
       data,
       cache: false,
       contentType: false,
@@ -91,7 +92,7 @@ export default Backbone.View.extend({
     this.formModel.save(
       {
         comments,
-        'sessionId': this.userModel.get('uid'),
+        'uid': this.userModel.get('uid'),
       },
       {
         success(data) {
