@@ -3,6 +3,7 @@ import $ from 'jquery';
 import userModel from '../models/userModel';
 import Cookies from 'js-cookie';
 import loadFBSDK from 'facebook-sdk-promise';
+import endpoints from '../endpoints';
 
 const faceb = () => {};
 
@@ -30,7 +31,7 @@ faceb.prototype = {
             FBuser: data,
           };
         $.ajax({
-          url: 'http://gritos.com/jsgritos/api/emaillogin.cgi',
+          url: endpoints.apiUrl + 'emaillogin.cgi',
           dataType: 'json',
           type: 'POST',
           data: payload,

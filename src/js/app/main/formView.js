@@ -4,6 +4,7 @@ import _ from 'underscore';
 import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
+import endpoints from '../endpoints';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -29,7 +30,7 @@ export default Backbone.View.extend({
     for (const prop in jsonModel){
       if ((/IMAGEN\d+\_THUMB/).test(prop)){
         const thisThumb = jsonModel[prop];
-        $('#comments').append('<img src=\'' + thisThumb + '\'>');
+        this.$('#comments').append('<img src=\'' + thisThumb + '\'>');
       }
     }
 
@@ -43,7 +44,7 @@ export default Backbone.View.extend({
       data.append('FICHERO_IMAGEN' + i, file);
     });
     $.ajax({
-      url: 'web/cgi/upload.cgi?sessionId=' + this.userModel.get('uid'),
+      url: endpoints.apiUrl + 'upload.cgi?sessionId=' + this.userModel.get('uid'),
       data,
       cache: false,
       contentType: false,
@@ -91,14 +92,14 @@ export default Backbone.View.extend({
     this.formModel.save(
       {
         comments,
-        'sessionId': this.userModel.get('uid'),
+        'uid': this.userModel.get('uid'),
       },
       {
         success(data) {
           self.formModel.clear();
           self.isClear = false;
           self.render();
-          self.collection.reload();
+          self.collection.fetch();
           console.log('success', data);
         },
         error(data) {
@@ -129,19 +130,20 @@ export default Backbone.View.extend({
    // });
   },
   render() {
-    // if (this.userModel.get('uid')){
-    this.$el.html(this.template());
-    this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
+    if (this.userModel.get('uid')){
+      this.$el.html(this.template());
+      this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
 
-    if (this.afterRender && typeof this.afterRender === 'function') {
-      this.afterRender.apply(this);
+      if (this.afterRender && typeof this.afterRender === 'function') {
+        this.afterRender.apply(this);
+      }
     }
-    // }
     this.delegateEvents();
     return this;
   },
   afterRender() {
     this.$('.wysiwyg').hide();
+    componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
 
     this.$('#comments').keyup(function() {
       $(this).height(38);

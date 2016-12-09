@@ -4,6 +4,7 @@ import $ from 'jquery';
 import Backbone from 'backbone';
 import FacebookUser from './FacebookUser';
 import userModel from '../models/userModel';
+import endpoints from '../endpoints';
 
 export default Backbone.View.extend({
   initialize() {
@@ -31,7 +32,7 @@ export default Backbone.View.extend({
         FBuser: model.toJSON(),
       };
     $.ajax({
-      url: 'http://gritos.com/jsgritos/api/emaillogin.cgi',
+      url: endpoints.apiUrl + 'emaillogin.cgi',
       dataType: 'json',
       type: 'POST',
       data: payload,

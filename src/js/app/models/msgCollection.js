@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
 import model from './msgModel';
+import endpoints from '../endpoints';
 
 export default Backbone.Collection.extend({
   model,
@@ -21,7 +22,7 @@ export default Backbone.Collection.extend({
   },
   sort: 'ID',
   url() {
-    return 'http://gritos.com/jsgritos/api/index.cgi?' + this.id;
+    return endpoints.apiUrl + 'index.cgi?' + this.id;
   },
   nextPage() {
     if (!this.loading) {

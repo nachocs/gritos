@@ -1,5 +1,6 @@
 import Backbone from 'backbone';
 import _ from 'underscore';
+import endpoints from '../endpoints';
 
 export default Backbone.Model.extend({
   defaults: {
@@ -7,7 +8,7 @@ export default Backbone.Model.extend({
     INTRODUCCION: '',
   },
   idAttribute: 'Name',
-  urlRoot: 'http://gritos.com/jsgritos/api/head.cgi',
+  urlRoot: endpoints.apiUrl  + 'head.cgi',
   parse(resp){
     return _.isEmpty(resp) ? this.defaults : resp;
   },

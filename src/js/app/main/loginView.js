@@ -3,6 +3,7 @@ import _ from 'underscore';
 import $ from 'jquery';
 import template from './loginView-t.html';
 import FbView from './fbView';
+import endpoints from '../endpoints';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -40,7 +41,7 @@ export default Backbone.View.extend({
     } else {
       $.ajax({
         type: 'POST',
-        url: '//gritos.com/jsgritos/api/login.cgi',
+        url: endpoints.apiUrl + 'login.cgi',
         data: {
           alias,
           password: pass,
