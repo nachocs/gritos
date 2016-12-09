@@ -5,6 +5,7 @@ export default Backbone.View.extend({
   initialize(options) {
     this.userModel = options.userModel;
     this.listenTo(this.collection, 'reset', this.render.bind(this));
+    this.listenTo(this.collection, 'sync', this.render.bind(this));
     this.listenTo(this.collection, 'add', this.renderOne.bind(this));
     $(this.el).scroll(() => {
       debugger;

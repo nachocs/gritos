@@ -16,15 +16,16 @@ export default Backbone.View.extend({
     });
   },
   showSpinner(){
-    console.log('show');
-    this.$el.find('.spinner-main').show();
+    this.$el.find('.mdl-spinner').addClass('is-active');
+    componentHandler.upgradeElement(this.$el.find('.mdl-spinner')[0]);
   },
   hideSpinner(){
-    console.log('hide');
-    this.$el.find('.spinner-main').hide();
+    this.$el.find('.mdl-spinner').removeClass('is-active');
+    componentHandler.upgradeElement(this.$el.find('.mdl-spinner')[0]);
   },
   render(){
     this.$el.html(this.template());
+    componentHandler.upgradeElement(this.$el.find('.mdl-spinner')[0]);
     return this;
   },
 });

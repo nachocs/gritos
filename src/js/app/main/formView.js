@@ -99,7 +99,7 @@ export default Backbone.View.extend({
           self.formModel.clear();
           self.isClear = false;
           self.render();
-          self.collection.reload();
+          self.collection.fetch();
           console.log('success', data);
         },
         error(data) {
@@ -130,19 +130,20 @@ export default Backbone.View.extend({
    // });
   },
   render() {
-    // if (this.userModel.get('uid')){
-    this.$el.html(this.template());
-    this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
+    if (this.userModel.get('uid')){
+      this.$el.html(this.template());
+      this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
 
-    if (this.afterRender && typeof this.afterRender === 'function') {
-      this.afterRender.apply(this);
+      if (this.afterRender && typeof this.afterRender === 'function') {
+        this.afterRender.apply(this);
+      }
     }
-    // }
     this.delegateEvents();
     return this;
   },
   afterRender() {
     this.$('.wysiwyg').hide();
+    componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
 
     this.$('#comments').keyup(function() {
       $(this).height(38);
