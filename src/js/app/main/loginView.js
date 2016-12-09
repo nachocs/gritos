@@ -4,6 +4,7 @@ import $ from 'jquery';
 import template from './loginView-t.html';
 import FbView from './fbView';
 import endpoints from '../endpoints';
+import mockup from '../mockups';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -39,20 +40,27 @@ export default Backbone.View.extend({
     if ((alias.length < 1) || (pass.length < 1)) {
       console.log('te olvidaste de poner algo'); // TODO
     } else {
-      $.ajax({
-        type: 'POST',
-        url: endpoints.apiUrl + 'login.cgi',
-        data: {
-          alias,
-          password: pass,
-        },
-        success(data) {
-          if (data.status !== 'ok') {
-            console.log('error: ', data.status);
-          }
-          self.model.set(data.user);
-        },
-      });
+      // mockup
+      if (mockup.active){
+        const data = mockup.loginMockup;
+        self.model.set(data.user);
+        return;
+      } else {
+        $.ajax({
+          type: 'POST',
+          url: endpoints.apiUrl + 'login.cgi',
+          data: {
+            alias,
+            password: pass,
+          },
+          success(data) {
+            if (data.status !== 'ok') {
+              console.log('error: ', data.status);
+            }
+            self.model.set(data.user);
+          },
+        });
+      }
     }
   },
   render() {

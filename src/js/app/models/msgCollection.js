@@ -2,6 +2,7 @@ import Backbone from 'backbone';
 import _ from 'underscore';
 import model from './msgModel';
 import endpoints from '../endpoints';
+import mockup from '../mockups';
 
 export default Backbone.Collection.extend({
   model,
@@ -21,6 +22,13 @@ export default Backbone.Collection.extend({
     });
   },
   sort: 'ID',
+  fetch(){ // mockup
+    if (mockup.active){
+      this.set([...mockup.msgCollectionMockup]);
+    } else {
+      return Backbone.Collection.prototype.fetch.apply(this, arguments);
+    }
+  },
   url() {
     return endpoints.apiUrl + 'index.cgi?' + this.id;
   },

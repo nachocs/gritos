@@ -48,8 +48,10 @@ export default Backbone.View.extend({
     });
   },
   renderMiniMsgs() {
-    this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
-    this.minimsgsCollection.fetch();
+    if (this.minimsgsCollectionView){
+      this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
+      this.minimsgsCollection.fetch();
+    }
     return this;
   },
   render() {
