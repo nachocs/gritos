@@ -439,7 +439,7 @@ const msgCollectionMockup = [{
   'INDICE': 'gritos/invisibles',
 }];
 const mockup = {
-  active: true,
+  active: false,
   loginMockup,
   msgCollectionMockup,
 };
