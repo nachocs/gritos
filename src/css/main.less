@@ -339,22 +339,63 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', end
 	padding: 0px 2px;
 	cursor: pointer;
 }
-#formulario{
-	margin: 50px 33px 33px 33px;
+.formulario{
+	padding: 20px 0 20px 0;
 	max-width: 960px;
+  input[type="file"]{
+    display: none;
+  }
+  .custom-file-upload {
+    display: inline-block;
+    padding: 2px;
+    cursor: pointer;
+    i{
+      color:rgba(0, 100, 0, 0.51);
+    }
+  }
+  .mdl-card{
+    padding: 20px 40px 20px 60px;
+    width: auto;
+    min-height: auto;
+  }
+  .file-submit{
+    display: block;
+    position: absolute;
+    bottom: 20px;
+  }
+  button.mdl-button{
+    margin-top: 10px;
+  }
+  .dreamy{
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    left: 10px;
+    top: 15px;
+    border: 1px solid aliceblue;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.14);
+  }
 }
 .formularioTextArea{
-	width: 100%;
-	margin: 0 auto;
-	overflow: hidden;
-	font-family: verdana, arial, helvetica;
-	font-size: 8pt;
-	padding: 5px;
-	border: 1px solid lightblue;
-	cursor: text;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: verdana, arial, helvetica;
+  font-size: 8pt;
+  padding: 5px 10px;
+  border: 1px solid lightblue;
+  cursor: text;
+  border-left: 0;
+  border-top: 0;
+  border-radius: 5px;
+  color:#ccc;
 }
 .formularioTextArea.on {
 	height: 50px;
+  color:initial;
+  background-color: rgb(250, 250, 250);
 }
 .form-submit{
   text-align: right;

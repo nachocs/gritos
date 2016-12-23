@@ -1,8 +1,14 @@
-<div class="wysiwyg-view"></div>
-<div contenteditable=true class='formularioTextArea' name="comments" id="comments">share your thoughts</div>
-<div class="file-submit"><input type="file" title="choose a file to upload" id="file-submit" name="FICHERO_IMAGEN1" multiple></div>
-<div class="form-submit">
-  <button id="formSubmit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-    Grita
-  </button>
+<div class="mdl-card mdl-shadow--4dp">
+  <div class="wysiwyg-view"></div>
+  <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
+  <div contenteditable=true class='formularioTextArea' name="comments" id="comments">sueltalo</div>
+  <div class="file-submit">
+    <label for="file-submit" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
+    <input type="file" title="choose a file to upload" id="file-submit" name="FICHERO_IMAGEN1" multiple>
+  </div>
+  <div class="form-submit">
+    <button id="formSubmit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+      Grita
+    </button>
+  </div>
 </div>

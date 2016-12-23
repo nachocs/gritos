@@ -15,7 +15,7 @@ export default Backbone.View.extend({
    this.wysiwyg = new Wysiwyg();
    this.listenTo(this.userModel, 'change', this.render.bind(this));
  },
-  id: 'formulario',
+  className: 'formulario',
   events: {
     'click #comments': 'clearArea',
     'click #formSubmit': 'submitPost',
@@ -131,7 +131,7 @@ export default Backbone.View.extend({
   },
   render() {
     if (this.userModel.get('uid')){
-      this.$el.html(this.template());
+      this.$el.html(this.template(this.serializer()));
       this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
 
       if (this.afterRender && typeof this.afterRender === 'function') {
@@ -149,5 +149,8 @@ export default Backbone.View.extend({
       $(this).height(38);
       $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));
     });
+  },
+  serializer(){
+    return this.userModel.toJSON();
   },
 });
