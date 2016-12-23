@@ -4,15 +4,15 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 
 const STATIC_DOMAIN = '';
-const BUILD_NUM = null;
+const BUILD_NUM = require('../package.json').version;
 
 var CDN_BASE_URL = '/'; // eslint-disable-line no-var
 
-if(STATIC_DOMAIN && BUILD_NUM) {
-  CDN_BASE_URL = `${STATIC_DOMAIN}/${BUILD_NUM}/`;
-} else if(STATIC_DOMAIN) {
-  CDN_BASE_URL = `${STATIC_DOMAIN}/`;
-}
+// if(STATIC_DOMAIN && BUILD_NUM) {
+  // CDN_BASE_URL = `${STATIC_DOMAIN}/${BUILD_NUM}/`;
+// } else if(STATIC_DOMAIN) {
+CDN_BASE_URL = `${STATIC_DOMAIN}/`;
+// }
 // const __dirname = '';
 
 const config = {
@@ -23,8 +23,8 @@ const config = {
   ],
   output: {
     path: __dirname + '/../dist',
-    filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
+    filename: BUILD_NUM + '/[name].[chunkhash].js',
+    chunkFilename: BUILD_NUM + '/[name].[chunkhash].chunk.js',
     publicPath: CDN_BASE_URL,
   },
   module: {
@@ -58,7 +58,7 @@ const config = {
         warnings: false, // ...but do not show warnings in the console (there is a lot of them)
       },
     }),
-    new ExtractTextPlugin('[name].[contenthash].css', {
+    new ExtractTextPlugin(BUILD_NUM + '/[name].[contenthash].css', {
       allChunks: true,
     }),
     new HtmlWebpackPlugin({
@@ -87,6 +87,7 @@ const config = {
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
         ENDPOINTS_ROOT_DOMAIN: JSON.stringify(process.env.ENDPOINTS_ROOT_DOMAIN),
+        VERSION: JSON.stringify(require('../package.json').version),
       },
     }),
   ],
