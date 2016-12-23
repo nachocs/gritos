@@ -30,6 +30,9 @@ export default Backbone.View.extend({
       collection: this.collection,
     });
     this.listenTo(this.model, 'sync', this.render.bind(this));
+    this.images={
+      logo:require('../../../img/logo50x50.gif'),
+    };
   },
   className: 'main',
   template: _.template(template),
@@ -76,7 +79,7 @@ export default Backbone.View.extend({
     }
   },
   serializer() {
-    return this.model.toJSON();
+    return Object.assign({}, this.model.toJSON(), {imgLogo:this.images.logo});
   },
 
 });

@@ -5,13 +5,13 @@
     <div class="mdl-layout__header-row">
     <div class="logomask pseudo">
       <a href="#">
-        <img src="../../../img/logo50x50.gif" alt="Gritos.com" />
+        <img src="<%= obj.imgLogo %>" alt="Gritos.com" />
       </a>
     </div>
     <svg height="0">
       <!-- THE mask -->
       <mask id="logomask-firefox">
-        <image width="50" height="50" xlink:href="../../../img/logo50x50.gif" filter="url(#logomaskfilter)" />
+        <image width="50" height="50" xlink:href="<%= obj.imgLogo %>" filter="url(#logomaskfilter)" />
       </mask>
       <!-- the filter to make the image white -->
       <filter id="logomaskfilter">
