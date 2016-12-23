@@ -11,7 +11,8 @@
     "deploy": "s3-deploy './dist/**' --cwd './dist/' --region $AWS_REGION --bucket $BUCKET_NAME/$CIRCLE_BUILD_NUM --gzip",
     "tag": "ci/tag.sh",
     "bump-version": "ci/bump-version.sh $OPS_FRONTEND_KEY $CIRCLE_BUILD_NUM",
-    "now-build": "npm run build && ns ./dist -n frontend-project-template --cmd \"list ./content -s\""
+    "now-build": "npm run build && ns ./dist -n gritos --cmd \"list ./content -s\"",
+    "serve": "npm run cleanup && NODE_ENV=production ENDPOINTS_ROOT_DOMAIN=gritos.com node ./webpack/webpack.prod.server.js"
   },
   "repository": {
     "type": "git",

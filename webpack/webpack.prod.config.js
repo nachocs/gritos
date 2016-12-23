@@ -3,8 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 
-const STATIC_DOMAIN = process.env.AWS_STATIC_DOMAIN;
-const BUILD_NUM = process.env.CIRCLE_BUILD_NUM;
+const STATIC_DOMAIN = '';
+const BUILD_NUM = null;
 
 var CDN_BASE_URL = '/'; // eslint-disable-line no-var
 
@@ -13,11 +13,12 @@ if(STATIC_DOMAIN && BUILD_NUM) {
 } else if(STATIC_DOMAIN) {
   CDN_BASE_URL = `${STATIC_DOMAIN}/`;
 }
+// const __dirname = '';
 
 const config = {
-  debug: false,
+  debug: true,
   entry: [
-    __dirname + '/../src/index.js',
+    __dirname + '/../src/js/app/index.js',
     __dirname + '/../src/css/main.less',
   ],
   output: {
@@ -31,7 +32,7 @@ const config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-0'],
+        loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
       },
       {
         test: /\.less$/,
@@ -61,7 +62,7 @@ const config = {
       allChunks: true,
     }),
     new HtmlWebpackPlugin({
-      template: __dirname + '/../src/app/index.ejs',
+      template: __dirname + '/../src/index.ejs',
       inject: false,
       favicon: __dirname + '/../src/img/favicon.ico',
       manifest: '/__assets__/manifest.json',
@@ -80,7 +81,6 @@ const config = {
       },
       appMountId: 'root',
       title: 'Gritos.com',
-      messagesPath: '/___messages___/messages.js',
       unsupportedBrowser: false,
     }),
     new webpack.DefinePlugin({
