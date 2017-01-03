@@ -33,8 +33,10 @@ export default Backbone.View.extend({
   initialize(options) {
     this.userModel = options.userModel;
     if (this.MiniMsgCollection) {
+      let miniIndice = this.model.get('INDICE');
+      miniIndice = miniIndice.replace(/^.*\//,'');
       this.minimsgsCollection = new this.MiniMsgCollection([], {
-        id: `${this.model.collection.id}/${this.model.id}/`,
+        id: `${miniIndice}/${this.model.id}/`,
       });
       this.minimsgsCollectionView = new this.MiniMsgCollectionView({
         collection: this.minimsgsCollection,
