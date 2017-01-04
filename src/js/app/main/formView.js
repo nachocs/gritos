@@ -111,6 +111,7 @@ export default Backbone.View.extend({
           self.formModel.clear();
           self.isClear = false;
           self.render();
+          self.collection.reset();
           self.collection.fetch();
           console.log('success', data);
         },

@@ -45,6 +45,7 @@ export default Backbone.View.extend({
         userModel: this.userModel,
       });
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
+      this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
     }
     this.molaView = new MolaView({
       model: this.model,
