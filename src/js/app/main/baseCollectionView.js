@@ -1,5 +1,4 @@
 import Backbone from 'backbone';
-import $ from 'jquery';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -7,16 +6,13 @@ export default Backbone.View.extend({
     this.listenTo(this.collection, 'reset', this.render.bind(this));
     this.listenTo(this.collection, 'sync', this.render.bind(this));
     this.listenTo(this.collection, 'add', this.renderOne.bind(this));
-    $(this.el).scroll(() => {
-      debugger;
-    });
-
   },
   render() {
     this.$el.html('');
     this.collection.each(function (model) {
       this.renderOne(model);
     }, this);
+    componentHandler.upgradeElement(this.el);
     return this;
   },
   renderOne(model) {
@@ -25,6 +21,5 @@ export default Backbone.View.extend({
       userModel: this.userModel,
     });
     this.$el.append(msgView.render().el);
-    componentHandler.upgradeElement(this.el);
   },
 });

@@ -5,6 +5,7 @@ import moment from 'moment';
 import Autolinker from 'autolinker';
 import MolaView from './molaView';
 import template from './msgView-t.html';
+import FormView from './formView';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -48,6 +49,10 @@ export default Backbone.View.extend({
       model: this.model,
       userModel: this.userModel,
     });
+    this.formView = new FormView({
+      userModel: this.userModel,
+      collection: this.minimsgsCollection,
+    });
   },
   renderMiniMsgs() {
     if (this.minimsgsCollectionView){
@@ -62,6 +67,9 @@ export default Backbone.View.extend({
       this.renderMiniMsgs();
     }
     this.$('.mola').replaceWith(this.molaView.render().el);
+    if (this.showForm){
+      this.$('.mini-form').html(this.formView.render().el);
+    }
     if (this.afterRender && typeof this.afterRender === 'function') {
       this.afterRender();
     }
