@@ -135,6 +135,7 @@ export default Backbone.View.extend({
       date: moment.unix(this.model.get('FECHA')).fromNow(),
       comments: this.formatComments(this.model.get('comments')),
       tags,
+      showForm: this.showForm,
     });
   },
 });
