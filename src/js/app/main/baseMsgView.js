@@ -39,7 +39,7 @@ export default Backbone.View.extend({
       this.minimsgsCollection = new this.MiniMsgCollection([], {
         id: `${miniIndice}/${this.model.id}/`,
       });
-      this.minimsgsCollection.comparator = (a,b) => (a.get('ID') - b.get('ID'));
+      // this.minimsgsCollection.comparator = (a,b) => (a.get('ID') - b.get('ID'));
       this.minimsgsCollectionView = new this.MiniMsgCollectionView({
         collection: this.minimsgsCollection,
         userModel: this.userModel,

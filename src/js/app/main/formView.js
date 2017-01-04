@@ -16,20 +16,20 @@ export default Backbone.View.extend({
  },
   className: 'formulario',
   events: {
-    'click #comments': 'clearArea',
-    'click #formSubmit': 'submitPost',
+    'click .formularioTextArea': 'clearArea',
+    'click .form-submit-button': 'submitPost',
     'mouseup': 'getSelectedText',
     'mousedown': 'getSelectedText',
     'keyup': 'getSelectedText',
     'keydown': 'getSelectedText',
-    'change #file-submit': 'upload',
+    'change input[type="file"]': 'upload',
   },
   addImages() {
     const jsonModel = this.formModel.toJSON();
     for (const prop in jsonModel){
       if ((/IMAGEN\d+\_THUMB/).test(prop)){
         const thisThumb = jsonModel[prop];
-        this.$('#comments').append('<img src=\'' + thisThumb + '\'>');
+        this.$('.formularioTextArea').append('<img src=\'' + thisThumb + '\'>');
       }
     }
 
@@ -39,7 +39,7 @@ export default Backbone.View.extend({
     this.clearArea();
     const self = this;
     const data = new FormData();
-    $.each($('#file-submit')[0].files, (i, file) => {
+    $.each(this.$('input[type="file"]')[0].files, (i, file) => {
       data.append('FICHERO_IMAGEN' + i, file);
     });
     $.ajax({
@@ -56,9 +56,11 @@ export default Backbone.View.extend({
       },
     });
   },
-  getSelectedText() {
+  getSelectedText(e) {
     let selection;
-
+    if (this.model && this.model.get('ID') && e.keyCode == 13){
+      _.throttle(this.submitPost(), 1000);
+    }
     //Get the selected stuff
     if(window.getSelection)
       selection = window.getSelection();
@@ -85,7 +87,7 @@ export default Backbone.View.extend({
 
     const self = this;
     // tinyMCE.triggerSave();
-    let comments = this.$('#comments').html();
+    let comments = this.$('.formularioTextArea').html();
     comments = comments.replace(/\n/ig, '<br>');
     comments = comments.replace(/\r/ig, '<br>');
     const saveObj = {
@@ -119,7 +121,7 @@ export default Backbone.View.extend({
   },
   clearArea() {
     if (this.isClear){return;}
-    this.$('#comments').html('').addClass('on');
+    this.$('.formularioTextArea').html('').addClass('on');
     this.isClear =  true;
    // tinymce.init({
    //     selector: "textarea",
@@ -155,12 +157,16 @@ export default Backbone.View.extend({
     this.$('.wysiwyg').hide();
     componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
 
-    this.$('#comments').keyup(function() {
+    this.$('.formularioTextArea').keyup(function() {
       $(this).height(38);
       $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));
     });
   },
   serializer(){
-    return this.userModel.toJSON();
+    const obj = this.userModel.toJSON();
+    if (this.model && this.model.get('ID')){
+      Object.assign(obj, {msg: this.model.toJSON()});
+    }
+    return obj;
   },
 });
