@@ -1,9 +1,9 @@
 import BaseMsgView from './baseMsgView';
-import MsgCollection from '../models/msgCollection';
-import MsgCollectionView from './miniMsgCollectionView';
+import MiniMsgCollection from '../models/msgCollection';
+import MiniMsgCollectionView from './miniMsgCollectionView';
 
 export default BaseMsgView.extend({
-  MiniMsgCollection: MsgCollection,
-  MiniMsgCollectionView: MsgCollectionView,
+  MiniMsgCollection,
+  MiniMsgCollectionView,
   showForm: true,
 });

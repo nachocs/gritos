@@ -1,7 +1,7 @@
-import msgCollectionView from './baseCollectionView';
+import baseCollectionView from './baseCollectionView';
 import MiniMsgView from './miniMsgView';
 
-export default msgCollectionView.extend({
+export default baseCollectionView.extend({
   className: 'minimsgs',
   MsgView: MiniMsgView,
 });

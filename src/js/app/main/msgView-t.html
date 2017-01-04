@@ -2,7 +2,9 @@
 	<img class="emocion" src="<%= obj.emocion %>">
 <% } %>
 <div class="mdl-card mdl-shadow--4dp">
-	<div class="icon material-icons share" title="share">share</div>
+	<% if (obj.showForm){ %>
+		<div class="icon material-icons share" title="share">share</div>
+	<% } %>
 	<div class="mdl-card__title">
 		<div class="mdl-card__title-text"><%= name %></div>
 		<div class="mdl-card__subtitle-text"><%= date %></div>
@@ -15,7 +17,7 @@
 	</div>
 	<div class="foot">
     <% if (obj.showForm){ %>
-		<div class="tags"><%= tags %></div>
+			<div class="tags"><%= tags %></div>
     <% } %>
 		<div class="mola"></div>
 	</div>

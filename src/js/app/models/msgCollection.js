@@ -21,7 +21,6 @@ export default Backbone.Collection.extend({
       this.loading = true;
     });
   },
-  sort: 'ID',
   fetch(){ // mockup
     if (mockup.active){
       this.set([...mockup.msgCollectionMockup]);

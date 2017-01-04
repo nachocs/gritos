@@ -11,7 +11,6 @@ export default Backbone.View.extend({
  	initialize(options) {
    this.userModel = options.userModel;
    this.formModel = new formModel();
-   this.collection = options.collection;
    this.wysiwyg = new Wysiwyg();
    this.listenTo(this.userModel, 'change', this.render.bind(this));
  },
@@ -89,11 +88,22 @@ export default Backbone.View.extend({
     let comments = this.$('#comments').html();
     comments = comments.replace(/\n/ig, '<br>');
     comments = comments.replace(/\r/ig, '<br>');
+    const saveObj = {
+      comments,
+      'uid': this.userModel.get('uid'),
+    };
+    if (this.model && this.model.get('ID')){
+      Object.assign(saveObj,
+        {
+          minigrito: {
+            indice: this.model.get('INDICE'),
+            entrada: this.model.get('ID'),
+          },
+        });
+    }
+
     this.formModel.save(
-      {
-        comments,
-        'uid': this.userModel.get('uid'),
-      },
+      saveObj,
       {
         success(data) {
           self.formModel.clear();

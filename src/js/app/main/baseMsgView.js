@@ -34,11 +34,12 @@ export default Backbone.View.extend({
   initialize(options) {
     this.userModel = options.userModel;
     if (this.MiniMsgCollection) {
-      let miniIndice = this.model.get('INDICE');
-      miniIndice = miniIndice.replace(/^.*\//,'');
+      const miniIndice = this.model.get('INDICE');
+      // miniIndice = miniIndice.replace(/^.*\//,'');
       this.minimsgsCollection = new this.MiniMsgCollection([], {
         id: `${miniIndice}/${this.model.id}/`,
       });
+      this.minimsgsCollection.comparator = (a,b) => (a.get('ID') - b.get('ID'));
       this.minimsgsCollectionView = new this.MiniMsgCollectionView({
         collection: this.minimsgsCollection,
         userModel: this.userModel,
@@ -52,6 +53,7 @@ export default Backbone.View.extend({
     this.formView = new FormView({
       userModel: this.userModel,
       collection: this.minimsgsCollection,
+      model: this.model,
     });
   },
   renderMiniMsgs() {
@@ -77,12 +79,11 @@ export default Backbone.View.extend({
   },
   afterRender() {
     const self = this;
-    setTimeout(() => {
-      componentHandler.upgradeElement(self.$el.find('.icon')[0]);
-      // self.$('.spoiler').tipr({
-      //     mode: 'top'
-      // });
-    }, 100);
+    if (self.$el.find('.icon').length>0){
+      setTimeout(() => {
+        componentHandler.upgradeElement(self.$el.find('.icon')[0]);
+      }, 100);
+    }
   },
   openSpoiler(e) {
     const spoiler = $(e.currentTarget).attr('data-tip');
