@@ -5,6 +5,8 @@ import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
 import endpoints from '../endpoints';
+import emojione from 'emojione';
+import EmojisModal from './emojisModal';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -12,6 +14,7 @@ export default Backbone.View.extend({
    this.userModel = options.userModel;
    this.formModel = new formModel();
    this.wysiwyg = new Wysiwyg();
+   this.emojisModal = new EmojisModal();
    this.listenTo(this.userModel, 'change', this.render.bind(this));
  },
   className: 'formulario',
@@ -23,7 +26,17 @@ export default Backbone.View.extend({
     'keyup': 'getSelectedText',
     'keydown': 'getSelectedText',
     'change input[type="file"]': 'upload',
+    'click .emojis': 'showEmojis',
   },
+  showEmojis(){
+    this.showEmojisModal = !this.showEmojisModal;
+    if (this.showEmojisModal){
+      this.$('.emojis-modal-place').html(this.emojisModal.render().el);
+    } else {
+      this.emojisModal.remove();
+    }
+  },
+
   addImages() {
     const jsonModel = this.formModel.toJSON();
     for (const prop in jsonModel){
@@ -32,8 +45,8 @@ export default Backbone.View.extend({
         this.$('.formularioTextArea').append('<img src=\'' + thisThumb + '\'>');
       }
     }
-
   },
+
   upload() {
     if (!this.userModel.get('uid')){ return; }
     this.clearArea();
@@ -170,8 +183,11 @@ export default Backbone.View.extend({
   serializer(){
     const obj = this.userModel.toJSON();
     if (this.model && this.model.get('ID')){
-      Object.assign(obj, {msg: this.model.toJSON()});
+      Object.assign(obj, { msg: this.model.toJSON() });
     }
+    Object.assign(obj, {
+      emojis: emojione.toImage(':smile:'),
+    });
     return obj;
   },
 });

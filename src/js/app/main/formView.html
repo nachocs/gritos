@@ -6,9 +6,11 @@
     <label for="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
     <input type="file" id="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" title="choose a file to upload" name="FICHERO_IMAGEN1" multiple>
   </div>
+  <div class="emojis"><%= obj.emojis %></div>
   <div class="form-submit">
     <button class="form-submit-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
       Grita
     </button>
   </div>
+  <div class="emojis-modal-place"></div>
 </div>
