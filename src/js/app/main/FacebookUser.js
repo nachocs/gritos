@@ -1,6 +1,6 @@
 // https://github.com/fabrik42/facebook-user.js
 import Backbone from 'backbone';
-import _ from 'underscore';
+import _ from 'lodash';
 // import FB from 'fb';
 
 const FacebookUser = Backbone.Model.extend({

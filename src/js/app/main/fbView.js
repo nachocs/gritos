@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import _ from 'lodash';
 import $ from 'jquery';
 import userModel from '../models/userModel';
 import Cookies from 'js-cookie';

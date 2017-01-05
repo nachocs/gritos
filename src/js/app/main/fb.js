@@ -1,5 +1,5 @@
 // import FB from 'fb';
-import _ from 'underscore';
+import _ from 'lodash';
 import $ from 'jquery';
 import Backbone from 'backbone';
 import FacebookUser from './FacebookUser';

@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 import formModel from '../models/formModel';
-import _ from 'underscore';
+import _ from 'lodash';
 import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
@@ -59,7 +59,7 @@ export default Backbone.View.extend({
   getSelectedText(e) {
     let selection;
     if (this.model && this.model.get('ID') && e.keyCode == 13){
-      _.throttle(this.submitPost(), 1000);
+      this.submitPost();
     }
     //Get the selected stuff
     if(window.getSelection)
@@ -82,7 +82,10 @@ export default Backbone.View.extend({
       this.$('.wysiwyg').hide();
     }
   },
-  submitPost() {
+  submitPost(){
+    return _.throttle(this.submitPostThrottle(), 1000);
+  },
+  submitPostThrottle() {
     if (!this.userModel.get('uid')){ return; }
     if (this.isSaving){return;}
     const self = this;

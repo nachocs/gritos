@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import _ from 'underscore';
+import _ from 'lodash';
 import endpoints from '../endpoints';
 
 export default Backbone.Model.extend({
@@ -8,7 +8,7 @@ export default Backbone.Model.extend({
     INTRODUCCION: '',
   },
   idAttribute: 'Name',
-  urlRoot: endpoints.apiUrl  + 'head.cgi',
+  urlRoot: endpoints.apiUrl  + 'head.cgi?',
   parse(resp){
     return _.isEmpty(resp) ? this.defaults : resp;
   },

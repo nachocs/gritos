@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import _ from 'underscore';
+import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
 import Autolinker from 'autolinker';
@@ -127,12 +127,24 @@ export default Backbone.View.extend({
     return autolinker.link(string);
   },
   serializer() {
-    let nombre_foro = this.model.get('INDICE');
-    const nm = nombre_foro.split(/\//g);
-    if (nm[1]) {
-      nombre_foro = nm[1];
+    let tags = [], value, mainName;
+    if (this.model.get('publicados')){
+      _.each(this.model.get('publicados').split(/\|/), (pub)=>{
+        value = pub.split(/\,/)[1];
+        value = value.replace(/^gritos\//, '');
+        tags.push({
+          name: pub.split(/\,/)[0],
+          value,
+        });
+      });
     }
-    const tags = '<a href="#' + nombre_foro + '">#' + nombre_foro + '</a>';
+    mainName = this.model.get('INDICE');
+    mainName = mainName.replace(/^gritos\//, '');
+    tags.push({
+      name: mainName,
+      value: mainName,
+    });
+    tags = _.uniqBy(tags, 'value');
     return _.extend({}, this.model.toJSON(), {
       date: moment.unix(this.model.get('FECHA')).fromNow(),
       comments: this.formatComments(this.model.get('comments')),

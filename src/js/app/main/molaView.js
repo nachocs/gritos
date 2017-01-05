@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 import template from './molaView-t.html';
-import _ from 'underscore';
+import _ from 'lodash';
 
 export default Backbone.View.extend({
   template: _.template(template),

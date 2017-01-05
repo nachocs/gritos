@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import _ from 'underscore';
+import _ from 'lodash';
 import model from './msgModel';
 import endpoints from '../endpoints';
 import mockup from '../mockups';
@@ -42,7 +42,7 @@ export default Backbone.Collection.extend({
     }
   },
   parse(resp) {
-    this.lastEntry = Math.min.apply(null, _.pluck(resp, 'num'));
+    this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));
     return resp;
   },
 });
