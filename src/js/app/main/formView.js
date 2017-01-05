@@ -84,7 +84,7 @@ export default Backbone.View.extend({
   },
   submitPost() {
     if (!this.userModel.get('uid')){ return; }
-
+    if (this.isSaving){return;}
     const self = this;
     // tinyMCE.triggerSave();
     let comments = this.$('.formularioTextArea').html();
@@ -103,11 +103,12 @@ export default Backbone.View.extend({
           },
         });
     }
-
+    this.isSaving = true;
     this.formModel.save(
       saveObj,
       {
         success(data) {
+          self.isSaving = false;
           self.formModel.clear();
           self.isClear = false;
           self.render();
