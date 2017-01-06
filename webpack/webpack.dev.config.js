@@ -41,6 +41,7 @@ const config = {
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader' },
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
       { test: /\.(png|jpg|gif)$/, loader: 'file-loader' },
+      { test: /\.json$/, loader: 'file-loader' },
     ],
   },
   postcss: [ autoprefixer ],
