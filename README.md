@@ -1,11 +1,12 @@
 # gritos
 Gritos.com
 
-This is the front-end for gritos.com website, a community around channels.
+- This is the front-end for gritos.com website, a community around channels.
+- In ES6 with Backbone.
 
 # install
-npm install
-npm start
+- npm install
+- npm start
 
 # Changelog
 ## 1.0.1
