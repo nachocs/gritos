@@ -79,7 +79,12 @@ export default Backbone.View.extend({
     }
   },
   serializer() {
-    return Object.assign({}, this.model.toJSON(), {imgLogo:this.images.logo});
+    return Object.assign({},
+      this.model.toJSON(),
+      {
+        imgLogo:this.images.logo,
+        Titulo: this.model.get('Titulo').toLowerCase(),
+      });
   },
 
 });

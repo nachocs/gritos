@@ -4,7 +4,7 @@ import endpoints from '../endpoints';
 
 export default Backbone.Model.extend({
   defaults: {
-    Titulo: 'GRITOS.COM',
+    Titulo: 'gritos.com',
     INTRODUCCION: '',
   },
   idAttribute: 'Name',

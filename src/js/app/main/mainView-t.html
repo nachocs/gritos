@@ -1,37 +1,37 @@
 <div class='spinner-view'></div>
-<div class="mdl-layout mdl-js-layout ">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
-    <div class="logomask pseudo">
-      <a href="#">
-        <img src="<%= obj.imgLogo %>" alt="Gritos.com" />
-      </a>
-    </div>
-    <svg height="0">
-      <!-- THE mask -->
-      <mask id="logomask-firefox">
-        <image width="50" height="50" xlink:href="<%= obj.imgLogo %>" filter="url(#logomaskfilter)" />
-      </mask>
-      <!-- the filter to make the image white -->
-      <filter id="logomaskfilter">
-        <feFlood flood-color="white" />
-        <feComposite in2="SourceAlpha" operator="in" />
-      </filter>
-    </svg>
+      <div class="logomask pseudo">
+        <a href="#">
+          <img src="<%= obj.imgLogo %>" alt="Gritos.com" />
+        </a>
+      </div>
+      <svg height="0" style="display: none;">
+        <!-- THE mask -->
+        <mask id="logomask-firefox">
+          <image width="50" height="50" xlink:href="<%= obj.imgLogo %>" filter="url(#logomaskfilter)" />
+        </mask>
+        <!-- the filter to make the image white -->
+        <filter id="logomaskfilter">
+          <feFlood flood-color="white" />
+          <feComposite in2="SourceAlpha" operator="in" />
+        </filter>
+      </svg>
 
       <!-- Title -->
-      <span class="mdl-layout-title"><%= obj.Titulo %></span>
+      <div class="mdl-layout-title titulo" title="<%= obj.Titulo %>"><%= obj.Titulo %></div>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
       <!-- Navigation. We hide it in small screens. -->
-      <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <div class="mdl-navigation__link login-view">Log in.</a>
+      <nav class="mdl-navigation">
+        <div class="mdl-navigation__link login-view">Log in.</a></div>
       </nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title"><%= obj.Titulo %></span>
+    <span class="mdl-layout-title newdreamers"><%= obj.Titulo %></span>
     <nav class="mdl-navigation">
       <a class="mdl-navigation__link" href="">Link</a>
       <a class="mdl-navigation__link" href="">Link</a>
