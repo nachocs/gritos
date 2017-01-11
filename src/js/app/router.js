@@ -17,10 +17,7 @@ export default Backbone.Router.extend({
     if (!foro){
       foro = 'foroscomun';
     }
-    this.model.set({
-      Name: foro,
-    });
-    this.model.fetch();
+    this.model.changeForo(foro);
   },
 
   mensaje(foro, mensajeId) {

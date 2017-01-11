@@ -11,8 +11,8 @@ import userModel from './models/userModel';
 const App = Backbone.View.extend({
   initialize() {
     this.initialSetup();
-    this.msgCollection = new MsgCollection();
     this.headModel = new HeadModel();
+    this.msgCollection = new MsgCollection([],{headModel:this.headModel});
 
     this.mainView = new MainView({
       collection: this.msgCollection,

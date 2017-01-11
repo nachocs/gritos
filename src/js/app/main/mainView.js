@@ -13,11 +13,7 @@ export default Backbone.View.extend({
       collection: this.collection,
       userModel: options.userModel,
     });
-    this.listenTo(this.model, 'change:Name', _.bind(function () {
-      this.collection.reset();
-      this.collection.id = this.model.id;
-      this.collection.fetch();
-    }, this));
+
     this.userModel = options.userModel;
     this.loginView = new LoginView({
       userModel: this.userModel,
