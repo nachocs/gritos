@@ -3,7 +3,7 @@ import ResumenItemView from './resumenItemView';
 
 export default Backbone.View.extend({
   className: 'mdl-navigation resumen-collection',
-  tag: 'nav',
+  tagName: 'nav',
   initialize() {
     this.views = {};
     this.listenTo(this.collection, 'reset', this.render.bind(this));
@@ -22,6 +22,11 @@ export default Backbone.View.extend({
   renderOne(model) {
     const msgView = new ResumenItemView({
       model,
+      attributes:()=> {
+        return{
+          href: model.get('name'),
+        };
+      },
     });
     this.views[model.id] = msgView;
     if (this.reverse){
