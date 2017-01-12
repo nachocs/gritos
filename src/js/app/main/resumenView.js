@@ -24,7 +24,7 @@ export default Backbone.View.extend({
       model,
       attributes:()=> {
         return{
-          href: model.get('name'),
+          href: '#' + model.get('name'),
         };
       },
     });
