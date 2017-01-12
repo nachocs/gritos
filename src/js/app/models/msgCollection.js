@@ -27,20 +27,17 @@ export default Backbone.Collection.extend({
       this.socket.emit('subscribe', this.id);
     }
     if (this.parentModel){
-      this.listenTo(this.parentModel, 'change:ID', _.bind(function () {
+      this.listenTo(this.parentModel, 'change:ID', () => {
         this.clean();
-        this.cleanSocket();
         this.id = this.parentModel.get('ID');
         this.socket.emit('subscribe', this.id);
         this.fetch();
-      }, this));
-      this.listenTo(this.parentModel, 'remove', _.bind(function (){
-        this.clean();
-        this.cleanSocket();
-      },this));
+      });
+      this.listenTo(this.parentModel, 'remove', this.clean.bind(this));
     }
   },
   clean(){
+    this.cleanSocket();
     this.remove(this.models);
   },
   cleanSocket(){

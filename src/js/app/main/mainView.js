@@ -6,6 +6,7 @@ import LoginView from './loginView';
 import MsgCollectionView from './msgCollectionView';
 import SpinnerView from './spinnerView';
 import FormView from './formView';
+import ResumenView from './resumenView';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -25,8 +26,11 @@ export default Backbone.View.extend({
       userModel: this.userModel,
       collection: this.collection,
     });
+    this.resumenView = new ResumenView({
+      collection: options.resumenCollection,
+    });
     this.listenTo(this.model, 'sync', this.render.bind(this));
-    this.images={
+    this.images = {
       logo:require('../../../img/logo50x50.gif'),
     };
   },
@@ -38,6 +42,7 @@ export default Backbone.View.extend({
     this.$('.login-view').html(this.loginView.render().el);
     this.$('.spinner-view').html(this.spinnerView.render().el);
     this.$('.form-view').html(this.formView.render().el);
+    this.$('.resumen-collection').replaceWith(this.resumenView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {

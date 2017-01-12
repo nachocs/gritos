@@ -16,6 +16,7 @@ export default Backbone.View.extend({
    this.wysiwyg = new Wysiwyg();
    this.emojisModal = new EmojisModal();
    this.listenTo(this.userModel, 'change', this.render.bind(this));
+   this.listenTo(this, 'remove', this.clean.bind(this));
  },
   className: 'formulario',
   events: {
@@ -192,5 +193,11 @@ export default Backbone.View.extend({
       emojis: emojione.toImage(':smile:'),
     });
     return obj;
+  },
+  clean(){
+    this.wysiwyg.remove();
+    this.emojisModal.remove();
+    delete this.wysiwyg;
+    delete this.emojisModal;
   },
 });

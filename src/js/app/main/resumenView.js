@@ -1,11 +1,13 @@
 import Backbone from 'backbone';
+import ResumenItemView from './resumenItemView';
 
 export default Backbone.View.extend({
-  initialize(options) {
-    this.userModel = options.userModel;
+  className: 'mdl-navigation resumen-collection',
+  tag: 'nav',
+  initialize() {
     this.views = {};
     this.listenTo(this.collection, 'reset', this.render.bind(this));
-    // this.listenTo(this.collection, 'sync', this.render.bind(this));
+    this.listenTo(this.collection, 'sync', this.render.bind(this));
     this.listenTo(this.collection, 'add', this.renderOne.bind(this));
     this.listenTo(this.collection, 'remove', this.removeOne.bind(this));
   },
@@ -18,9 +20,8 @@ export default Backbone.View.extend({
     return this;
   },
   renderOne(model) {
-    const msgView = new this.MsgView({
+    const msgView = new ResumenItemView({
       model,
-      userModel: this.userModel,
     });
     this.views[model.id] = msgView;
     if (this.reverse){

@@ -57,6 +57,7 @@ export default Backbone.View.extend({
       collection: this.minimsgsCollection,
       model: this.model,
     });
+    this.listenTo(this, 'remove', this.clean.bind(this));
   },
   renderMiniMsgs() {
     if (this.minimsgsCollectionView){
@@ -152,5 +153,18 @@ export default Backbone.View.extend({
       tags,
       showForm: this.showForm,
     });
+  },
+  clean(){
+    // this.formView.remove();
+    // if (this.minimsgsCollectionView){
+    //   this.minimsgsCollectionView.remove();
+    //   delete this.minimsgsCollectionView;
+    // }
+    // this.molaView.remove();
+    // delete this.formView;
+    // delete this.molaView;
+    for (const prop of Object.keys(this)) {
+      delete this[prop];
+    }
   },
 });
