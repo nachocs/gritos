@@ -1,11 +1,11 @@
 import Backbone from 'backbone';
 import _ from 'lodash';
 import endpoints from '../endpoints';
-import io from 'socket.io-client';
 
 export default Backbone.Model.extend({
-  initialize(){
-    this.socket = io(endpoints.socket);
+  initialize(values, options){
+    this.globalModel = options.globalModel;
+    this.listenTo(this.globalModel, 'change:ID', this.update.bind(this));
   },
   defaults: {
     Titulo: 'gritos.com',
@@ -16,12 +16,9 @@ export default Backbone.Model.extend({
   parse(resp){
     return _.isEmpty(resp) ? this.defaults : resp;
   },
-  changeForo(foro){
-    if (this.id){
-      this.socket.emit('unsubscribe', this.id);
-    }
+  update(){
     this.set({
-      Name: foro,
+      Name: this.globalModel.get('ID'),
     });
     this.fetch();
   },

@@ -162,11 +162,14 @@ export default Backbone.View.extend({
   render() {
     if (this.userModel.get('uid')){
       this.$el.html(this.template(this.serializer()));
+      this.$el.addClass('active');
       this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
 
       if (this.afterRender && typeof this.afterRender === 'function') {
         this.afterRender.apply(this);
       }
+    } else {
+      this.$el.removeClass('active');
     }
     this.delegateEvents();
     return this;

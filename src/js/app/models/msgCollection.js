@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 export default Backbone.Collection.extend({
   model,
   initialize(models, options) {
-    this.headModel = options.headModel;
+    this.parentModel = options.parentModel;
     if (options && options.id) {
       this.id = options.id;
     }
@@ -26,13 +26,26 @@ export default Backbone.Collection.extend({
     if (this.id){
       this.socket.emit('subscribe', this.id);
     }
-    if (this.headModel){
-      this.listenTo(this.headModel, 'sync', _.bind(function () {
-        this.reset();
-        this.id = this.headModel.id;
+    if (this.parentModel){
+      this.listenTo(this.parentModel, 'change:ID', _.bind(function () {
+        this.clean();
+        this.cleanSocket();
+        this.id = this.parentModel.get('ID');
         this.socket.emit('subscribe', this.id);
         this.fetch();
       }, this));
+      this.listenTo(this.parentModel, 'remove', _.bind(function (){
+        this.clean();
+        this.cleanSocket();
+      },this));
+    }
+  },
+  clean(){
+    this.remove(this.models);
+  },
+  cleanSocket(){
+    if (this.socket && this.socket.connected){
+      this.socket.emit('unsubscribe', this.id);
     }
   },
   fetch(){ // mockup

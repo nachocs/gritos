@@ -3,16 +3,17 @@ import $ from 'jquery';
 import Router from './router';
 import MainView from './main/mainView';
 import MsgCollection from './models/msgCollection';
-
 import HeadModel from './models/headModel';
 import moment from 'moment';
+import GlobalModel from './models/globalModel';
 
 import userModel from './models/userModel';
 const App = Backbone.View.extend({
   initialize() {
     this.initialSetup();
-    this.headModel = new HeadModel();
-    this.msgCollection = new MsgCollection([],{headModel:this.headModel});
+    this.globalModel = new GlobalModel();
+    this.headModel = new HeadModel({},{globalModel:this.globalModel});
+    this.msgCollection = new MsgCollection([],{parentModel:this.globalModel});
 
     this.mainView = new MainView({
       collection: this.msgCollection,
@@ -21,7 +22,7 @@ const App = Backbone.View.extend({
     });
     $('#root').html(this.mainView.render().el);
     this.router = new Router({
-      model: this.headModel,
+      model: this.globalModel,
     });
     Backbone.history.start({pushState: false, root:''});
   },
