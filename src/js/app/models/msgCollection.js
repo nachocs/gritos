@@ -11,6 +11,7 @@ export default Backbone.Collection.extend({
   model,
   initialize(models, options) {
     this.parentModel = options.parentModel;
+    this.subscriptions = {};
     if (options && options.id) {
       this.id = options.id;
     }
@@ -57,12 +58,18 @@ export default Backbone.Collection.extend({
     }
   },
   subscribe(room){
+    room = room.replace(/\/$/,'');
+    if (this.subscriptions[room]){return;}
+    this.subscriptions[room] = true;
     Ws.subscribe(room);
-    vent.on('updated_'+ room, function (data){
-      console.log('updated', data.room, data.data);
+    vent.on('updated_'+ room, data => {
+      this.add(data.entry, {fromSocket:true});
+      console.log('updated', data.room, data.entry);
     });
   },
   unsubscribe(room){
+    room = room.replace(/\/$/,'');
+    delete this.subscriptions[room];
     Ws.unsubscribe(room);
     vent.off('updated_' + room);
   },

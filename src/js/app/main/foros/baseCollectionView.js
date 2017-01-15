@@ -17,13 +17,17 @@ export default Backbone.View.extend({
     componentHandler.upgradeElement(this.el);
     return this;
   },
-  renderOne(model) {
+  renderOne(model, collection, options) {
     const msgView = new this.MsgView({
       model,
       userModel: this.userModel,
     });
+    let reverse = this.reverse || false;
+    if (options.fromSocket){
+      reverse = !reverse;
+    }
     this.views[model.id] = msgView;
-    if (this.reverse){
+    if (reverse){
       this.$el.prepend(msgView.render().el);
     } else {
       this.$el.append(msgView.render().el);
