@@ -1,5 +1,5 @@
 import baseCollectionView from './baseCollectionView';
-import MiniMsgView from './miniMsgView';
+import MiniMsgView from '../message/miniMsgView';
 
 export default baseCollectionView.extend({
   className: 'minimsgs',

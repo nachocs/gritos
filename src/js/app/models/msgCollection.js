@@ -25,6 +25,9 @@ export default Backbone.Collection.extend({
     });
     if (this.id){
       this.socket.emit('subscribe', this.id);
+      this.socket.on('updated', function (data){
+        console.log('recibido updated', data);
+      });
     }
     if (this.parentModel){
       this.listenTo(this.parentModel, 'change:ID', () => {
@@ -32,6 +35,9 @@ export default Backbone.Collection.extend({
         this.id = this.parentModel.get('ID');
         this.socket.emit('subscribe', this.id);
         this.fetch();
+        this.socket.on('updated', function (data){
+          console.log('recibido updated', data);
+        });
       });
       this.listenTo(this.parentModel, 'remove', this.clean.bind(this));
     }

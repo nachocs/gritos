@@ -1,10 +1,10 @@
 import Backbone from 'backbone';
-import formModel from '../models/formModel';
+import formModel from '../../models/formModel';
 import _ from 'lodash';
 import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
-import endpoints from '../endpoints';
+import endpoints from '../../endpoints';
 import emojione from 'emojione';
 import EmojisModal from './emojisModal';
 
@@ -97,7 +97,7 @@ export default Backbone.View.extend({
     }
   },
   submitPost(){
-    return _.throttle(this.submitPostThrottle, 1000);
+    return _.throttle(this.submitPostThrottle.bind(this), 1000)();
   },
   submitPostThrottle() {
     if (!this.userModel.get('uid')){ return; }

@@ -5,7 +5,7 @@ import moment from 'moment';
 import Autolinker from 'autolinker';
 import MolaView from './molaView';
 import template from './msgView-t.html';
-import FormView from './formView';
+import FormView from '../form/formView';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,

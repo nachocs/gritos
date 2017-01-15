@@ -2,11 +2,11 @@ import Backbone from 'backbone';
 import _ from 'lodash';
 import $ from 'jquery';
 import template from './mainView-t.html';
-import LoginView from './loginView';
-import MsgCollectionView from './msgCollectionView';
+import LoginView from './header/loginView';
+import MsgCollectionView from './foros/msgCollectionView';
 import SpinnerView from './spinnerView';
-import FormView from './formView';
-import ResumenView from './resumenView';
+import FormView from './form/formView';
+import ResumenView from './header/resumenView';
 
 export default Backbone.View.extend({
   initialize(options) {

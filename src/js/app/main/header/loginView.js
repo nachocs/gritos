@@ -3,8 +3,8 @@ import _ from 'lodash';
 import $ from 'jquery';
 import template from './loginView-t.html';
 import FbView from './fbView';
-import endpoints from '../endpoints';
-import mockup from '../mockups';
+import endpoints from '../../endpoints';
+import mockup from '../../mockups';
 
 export default Backbone.View.extend({
   template: _.template(template),
