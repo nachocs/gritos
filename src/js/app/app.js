@@ -12,12 +12,13 @@ import ResumenCollection from './models/resumenCollection';
 const App = Backbone.View.extend({
   initialize() {
     this.initialSetup();
+
     this.globalModel = new GlobalModel();
     this.headModel = new HeadModel({},{globalModel:this.globalModel});
     this.msgCollection = new MsgCollection([],{parentModel:this.globalModel});
     this.resumenCollection = new ResumenCollection();
     this.resumenCollection.fetch();
-    
+
     this.mainView = new MainView({
       collection: this.msgCollection,
       model: this.headModel,

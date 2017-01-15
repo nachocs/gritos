@@ -3,7 +3,9 @@ import _ from 'lodash';
 import model from './msgModel';
 import endpoints from '../endpoints';
 import mockup from '../mockups';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
+import Ws from '../Ws';
+import vent from '../vent';
 
 export default Backbone.Collection.extend({
   model,
@@ -12,7 +14,7 @@ export default Backbone.Collection.extend({
     if (options && options.id) {
       this.id = options.id;
     }
-    this.socket = io(endpoints.socket);
+    // this.socket = io(endpoints.socket);
     this.lastEntry = 0;
     this.listenTo(this, 'sync', () => {
       this.loading = false;
@@ -23,21 +25,24 @@ export default Backbone.Collection.extend({
     this.listenTo(this, 'request', () => {
       this.loading = true;
     });
+
     if (this.id){
-      this.socket.emit('subscribe', this.id);
-      this.socket.on('updated', function (data){
-        console.log('recibido updated', data);
-      });
+      this.subscribe(this.id);
+      // this.socket.emit('subscribe', this.id);
+      // this.socket.on('updated', function (data){
+      //   console.log('recibido updated', data);
+      // });
     }
     if (this.parentModel){
       this.listenTo(this.parentModel, 'change:ID', () => {
         this.clean();
         this.id = this.parentModel.get('ID');
-        this.socket.emit('subscribe', this.id);
+        this.subscribe(this.id);
+        // this.socket.emit('subscribe', this.id);
         this.fetch();
-        this.socket.on('updated', function (data){
-          console.log('recibido updated', data);
-        });
+        // this.socket.on('updated', function (data){
+        //   console.log('recibido updated', data);
+        // });
       });
       this.listenTo(this.parentModel, 'remove', this.clean.bind(this));
     }
@@ -48,8 +53,18 @@ export default Backbone.Collection.extend({
   },
   cleanSocket(){
     if (this.socket && this.socket.connected){
-      this.socket.emit('unsubscribe', this.id);
+      this.unsubscribe(this.id);
     }
+  },
+  subscribe(room){
+    Ws.subscribe(room);
+    vent.on('updated_'+ room, function (data){
+      console.log('updated', data.room, data.data);
+    });
+  },
+  unsubscribe(room){
+    Ws.unsubscribe(room);
+    vent.off('updated_' + room);
   },
   fetch(){ // mockup
     if (mockup.active){
