@@ -97,7 +97,7 @@ export default Backbone.View.extend({
     }
   },
   submitPost(){
-    return _.throttle(this.submitPostThrottle(), 1000);
+    return _.throttle(this.submitPostThrottle, 1000);
   },
   submitPostThrottle() {
     if (!this.userModel.get('uid')){ return; }
