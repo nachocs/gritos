@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
+import endpoints from '../endpoints';
 
 const UserModel = Backbone.Model.extend({
   idAttribute: 'ID',
@@ -10,6 +11,9 @@ const UserModel = Backbone.Model.extend({
       this.set('uid', city.uid);
       this.load(city.uid);
     }
+  },
+  url() {
+    return endpoints.apiUrl + 'index.cgi?' + this.get('INDICE') + '/' + this.get('ID');
   },
   load(uid) {
     const self = this;

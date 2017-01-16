@@ -17,13 +17,9 @@ export default Backbone.View.extend({
   molaAction(e) {
     const mola = this.$(e.currentTarget).hasClass('mola') ? 'mola' : 'nomola', molaTag = `${mola}.${this.clean(this.model.get('INDICE') + '.' + this.model.id)}`, userObj = {}, modelObj = {};
     userObj[molaTag] = (!this.userModel.get(molaTag)) ? 1 : null;
-    this.userModel.set(userObj, {
-      patch: true,
-    });
+    this.userModel.save(userObj);
     modelObj[mola] = Number(this.model.get(mola) || 0) + (userObj[molaTag] ? 1 : -1);
-    this.model.save(modelObj
-      // {                patch: true            }
-    );
+    this.model.save(modelObj);
   },
   render() {
     if (this.userModel && this.userModel.id) {

@@ -118,7 +118,16 @@ export default Backbone.View.extend({
             indice: this.model.get('INDICE'),
             entrada: this.model.get('ID'),
           },
+        },
+        {
+          room:this.model.get('INDICE') + this.model.get('ID'),
         });
+    } else {
+      Object.assign(saveObj,
+        {
+          room:'ciudadanos' + this.userModel.get('ID'),
+        },
+      );
     }
     this.isSaving = true;
     this.formModel.save(

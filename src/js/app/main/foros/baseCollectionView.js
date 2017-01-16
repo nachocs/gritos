@@ -23,7 +23,7 @@ export default Backbone.View.extend({
       userModel: this.userModel,
     });
     let reverse = this.reverse || false;
-    if (options.fromSocket){
+    if (options && options.fromSocket){
       reverse = !reverse;
     }
     this.views[model.id] = msgView;
