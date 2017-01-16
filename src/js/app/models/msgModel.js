@@ -9,11 +9,14 @@ export default Backbone.Model.extend({
       this.set(data.entry);
       console.log('updated msg', data.room, data.entry);
     });
-    this.listenTo('sync', () => {
+    this.listenTo(this, 'sync', () => {
       if (this.get('INDICE') && this.get('ID')){
         Ws.update(this.get('INDICE') + '/' + this.get('ID'));
       }
     });
+    if (this.get('INDICE') && this.get('ID')){
+      Ws.subscribe(this.get('INDICE') + '/' + this.get('ID'));
+    }
   },
   idAttribute: 'ID',
   url() {

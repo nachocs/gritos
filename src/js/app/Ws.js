@@ -23,7 +23,7 @@ class Ws{
     this.socket.emit('unsubscribe', room);
   }
   update(room){
-    Ws.socket.emit('update', room);
+    this.socket.emit('update', room);
   }
 }
 const ws = new Ws();

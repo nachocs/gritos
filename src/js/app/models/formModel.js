@@ -6,7 +6,7 @@ export default  Backbone.Model.extend({
   url: endpoints.apiUrl + 'post.cgi',
   defaults: {},
   initialize(){
-    this.listenTo('sync', () => {
+    this.listenTo(this, 'sync', () => {
       if (this.room){
         Ws.update(this.room);
       }

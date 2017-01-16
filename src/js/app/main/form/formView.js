@@ -120,12 +120,12 @@ export default Backbone.View.extend({
           },
         },
         {
-          room:this.model.get('INDICE') + this.model.get('ID'),
+          room: this.model.get('INDICE') + '/' + this.model.get('ID'),
         });
     } else {
       Object.assign(saveObj,
         {
-          room:'ciudadanos' + this.userModel.get('ID'),
+          room:'ciudadanos' + '/' + this.userModel.get('ID'),
         },
       );
     }

@@ -37,7 +37,7 @@ export default Backbone.Collection.extend({
     if (this.parentModel){
       this.listenTo(this.parentModel, 'change:ID', () => {
         this.clean();
-        this.id = this.parentModel.get('ID');
+        this.id = this.parentModel.get('ID'); // para cuando se cambia de foro principal
         this.subscribe(this.id);
         // this.socket.emit('subscribe', this.id);
         this.fetch();
