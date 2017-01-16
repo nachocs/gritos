@@ -125,7 +125,7 @@ export default Backbone.View.extend({
     } else {
       Object.assign(saveObj,
         {
-          room:'ciudadanos' + '/' + this.userModel.get('ID'),
+          room: this.collection.id,
         },
       );
     }

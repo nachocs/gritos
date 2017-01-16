@@ -8,7 +8,7 @@ export default  Backbone.Model.extend({
   initialize(){
     this.listenTo(this, 'sync', () => {
       if (this.room){
-        Ws.update(this.room);
+        Ws.update('collection:' + this.room);
       }
     });
   },

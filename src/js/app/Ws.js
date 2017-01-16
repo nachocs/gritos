@@ -23,6 +23,7 @@ class Ws{
     this.socket.emit('unsubscribe', room);
   }
   update(room){
+    room = room.replace(/\/$/,'');
     this.socket.emit('update', room);
   }
 }

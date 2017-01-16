@@ -47,6 +47,7 @@ export default Backbone.View.extend({
       });
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
+      this.listenTo(this.minimsgsCollection, 'add', this.renderMiniMsgs.bind(this));
     }
     this.molaView = new MolaView({
       model: this.model,
@@ -60,9 +61,10 @@ export default Backbone.View.extend({
     this.listenTo(this, 'remove', this.clean.bind(this));
   },
   renderMiniMsgs() {
-    if (this.minimsgsCollectionView){
+    if (this.minimsgsCollectionView && !this.miniMsgsAlreadyRendered){
       this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
       this.minimsgsCollection.fetch();
+      this.miniMsgsAlreadyRendered = true;
     }
     return this;
   },
