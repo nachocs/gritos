@@ -25,6 +25,7 @@ export default Backbone.View.extend({
     this.formView = new FormView({
       userModel: this.userModel,
       collection: this.collection,
+      globalModel: options.globalModel,
     });
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,

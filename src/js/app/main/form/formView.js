@@ -13,10 +13,19 @@ export default Backbone.View.extend({
  	initialize(options) {
    this.userModel = options.userModel;
    this.formModel = new formModel();
+   if (options.globalModel){
+     if (options.globalModel.get('ID')){
+       this.formModel.set('tags', options.globalModel.get('ID'));
+     }
+     this.listenTo(options.globalModel, 'change:ID', ()=>{
+       this.formModel.set('tags', options.globalModel.get('ID'));
+     });
+   }
    this.wysiwyg = new Wysiwyg();
    this.emojisModal = new EmojisModal();
    this.listenTo(this.userModel, 'change', this.render.bind(this));
    this.listenTo(this, 'remove', this.clean.bind(this));
+   this.listenTo(this.formModel, 'change', this.render.bind(this));
  },
   className: 'formulario',
   events: {
@@ -28,6 +37,27 @@ export default Backbone.View.extend({
     'keydown': 'getSelectedText',
     'change input[type="file"]': 'upload',
     'click .emojis': 'showEmojis',
+    'click .show-tags': 'toggleTags',
+    'keyup .input-tag': 'inputTag',
+  },
+  inputTag(e){
+    if (e.keyCode === 13){
+      e.preventDefault();
+      let tags = '';
+      const newTag = e.target.value.replace(/^\w/ig,'');
+      if (newTag){
+        if (this.formModel.get('tags')){
+          tags = this.formModel.get('tags') + ',';
+        }
+        tags = tags + newTag;
+        this.formModel.set('comments', this.$('.formularioTextArea').html());
+        this.formModel.set({tags});
+      }
+    }
+  },
+  toggleTags(){
+    this.tagPlaceShown = !this.tagPlaceShown;
+    this.$el.find('.tags-place ul').toggle('slow');
   },
   showEmojis(){
     this.showEmojisModal = !this.showEmojisModal;
@@ -110,6 +140,7 @@ export default Backbone.View.extend({
     const saveObj = {
       comments,
       'uid': this.userModel.get('uid'),
+      tags: this.formModel.get('tags'),
     };
     if (this.model && this.model.get('ID')){
       Object.assign(saveObj,
@@ -151,23 +182,6 @@ export default Backbone.View.extend({
     if (this.isClear){return;}
     this.$('.formularioTextArea').html('').addClass('on');
     this.isClear =  true;
-   // tinymce.init({
-   //     selector: "textarea",
-   //     plugins: [
-   //         "advlist autolink lists link image charmap print preview anchor",
-   //         "code emoticons textcolor",
-   //         "table contextmenu paste"
-   //     ],
-   //     toolbar: "preview | undo redo | bold italic fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | link image | emoticons forecolor backcolor",
-   //     menubar: false,
-   //     statusbar: false,
-   //     toolbar_items_size: 'small',
-   //     auto_focus: "formulario",
-   //     object_resizing : false,
-   //     convert_fonts_to_spans : true,
-   //     fontsize_formats: "8pt 10pt 12pt 14pt 18pt",
-   //     entity_encoding : "raw"
-   // });
   },
   render() {
     if (this.userModel.get('uid')){
@@ -200,6 +214,9 @@ export default Backbone.View.extend({
     }
     Object.assign(obj, {
       emojis: emojione.toImage(':smile:'),
+      formModel: this.formModel.toJSON(),
+      tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
+      tagPlaceShown: this.tagPlaceShown,
     });
     return obj;
   },

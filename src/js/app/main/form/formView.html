@@ -1,7 +1,7 @@
 <div class="mdl-card mdl-shadow--4dp">
   <div class="wysiwyg-view"></div>
   <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
-  <div contenteditable=true class='formularioTextArea' name="comments">sueltalo</div>
+  <div contenteditable=true class='formularioTextArea' name="comments"><%= obj.formModel.comments || 'sueltalo'%></div>
   <div class="file-submit">
     <label for="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
     <input type="file" id="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" title="choose a file to upload" name="FICHERO_IMAGEN1" multiple>
@@ -13,4 +13,17 @@
     </button>
   </div>
   <div class="emojis-modal-place"></div>
+  <% if (!obj.msg){ %>
+    <div class="tags-place">
+      <i class="material-icons show-tags" style="cursor: pointer; transform:rotate(180deg);" >label_outline</i>
+      <ul style=<%=obj.tagPlaceShown ? "display:block;" : "display:none;" %>>
+        <% if (obj.tags){%>
+          <% for(var i =0; i < obj.tags.length; i++){ %>
+          <li><span>#<%=obj.tags[i]%></span></li>
+          <% } %>
+        <% } %>
+        <li><input type="text" name="tag" class="input-tag"></li>
+      </ul>
+    </div>
+  <% } %>
 </div>

@@ -24,6 +24,7 @@ const App = Backbone.View.extend({
       model: this.headModel,
       userModel,
       resumenCollection: this.resumenCollection,
+      globalModel: this.globalModel,
     });
     $('#root').html(this.mainView.render().el);
     this.router = new Router({
