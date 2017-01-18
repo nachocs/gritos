@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 import _ from 'lodash';
-import endpoints from '../endpoints';
+import endpoints from '../util/endpoints';
 
 export default Backbone.Model.extend({
   initialize(values, options){

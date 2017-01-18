@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
-import endpoints from '../endpoints';
-import Ws from '../Ws';
+import endpoints from '../util/endpoints';
+import Ws from '../util/Ws';
 
 export default  Backbone.Model.extend({
   url: endpoints.apiUrl + 'post.cgi',

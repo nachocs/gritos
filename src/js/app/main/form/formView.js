@@ -4,7 +4,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
-import endpoints from '../../endpoints';
+import endpoints from '../../util/endpoints';
 import emojione from 'emojione';
 import EmojisModal from './emojisModal';
 
@@ -22,7 +22,7 @@ export default Backbone.View.extend({
      });
    }
    this.wysiwyg = new Wysiwyg();
-   this.emojisModal = new EmojisModal();
+   this.emojisModal = EmojisModal;
    this.listenTo(this.userModel, 'change', this.render.bind(this));
    this.listenTo(this, 'remove', this.clean.bind(this));
    this.listenTo(this.formModel, 'change', this.render.bind(this));

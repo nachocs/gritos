@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Backbone from 'backbone';
 import FacebookUser from './FacebookUser';
 import userModel from '../models/userModel';
-import endpoints from '../endpoints';
+import endpoints from '../util/endpoints';
 
 export default Backbone.View.extend({
   initialize() {

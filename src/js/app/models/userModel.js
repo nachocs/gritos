@@ -1,9 +1,9 @@
 import Backbone from 'backbone';
 import Cookies from 'js-cookie';
 import $ from 'jquery';
-import endpoints from '../endpoints';
-import Ws from '../Ws';
-import vent from '../vent';
+import endpoints from '../util/endpoints';
+import Ws from '../util/Ws';
+import vent from '../util/vent';
 
 const UserModel = Backbone.Model.extend({
   idAttribute: 'ID',

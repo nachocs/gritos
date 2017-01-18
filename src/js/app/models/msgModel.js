@@ -1,7 +1,7 @@
 import Backbone from 'backbone';
-import vent from '../vent';
-import endpoints from '../endpoints';
-import Ws from '../Ws';
+import vent from '../util/vent';
+import endpoints from '../util/endpoints';
+import Ws from '../util/Ws';
 
 export default Backbone.Model.extend({
   initialize(){

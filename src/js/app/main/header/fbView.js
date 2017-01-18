@@ -3,7 +3,7 @@ import $ from 'jquery';
 import userModel from '../../models/userModel';
 import Cookies from 'js-cookie';
 import loadFBSDK from 'facebook-sdk-promise';
-import endpoints from '../../endpoints';
+import endpoints from '../../util/endpoints';
 
 const faceb = () => {};
 

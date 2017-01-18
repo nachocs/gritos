@@ -137,26 +137,27 @@ div.titulo{
 			position: relative;
 			margin-left: 50px;
 			width: initial;
-	    	min-height: 100px;
-	    	.mdl-card__title{
-	    		display: block;
-	    		padding-bottom: 0;
-		    	.mdl-card__title-text{
-					font-size: 14px;
-		    	}
-		    	.mdl-card__subtitle-text{
-					font-size: 10px;
-		    	}
+      z-index: initial;
+    	min-height: 100px;
+    	.mdl-card__title{
+    		display: block;
+    		padding-bottom: 0;
+	    	.mdl-card__title-text{
+				font-size: 14px;
 	    	}
-	    	.share{
-	    		cursor: pointer;
-			    font-size: 14px;
-			    width: 16px;
-			    margin: 10px;
-			    position: absolute;
-			    right: 0px;
-			    color: lightslategray;
+	    	.mdl-card__subtitle-text{
+				font-size: 10px;
 	    	}
+    	}
+    	.share{
+    		cursor: pointer;
+		    font-size: 14px;
+		    width: 16px;
+		    margin: 10px;
+		    position: absolute;
+		    right: 0px;
+		    color: lightslategray;
+    	}
 		}
 		.foot{
 			display: table;
@@ -539,4 +540,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', end
 	// font-size: 12px;
 	// float: right;
 	// cursor: pointer;
+}
+.emojis-modal{
+  position: absolute;
+  background: white;
+  border: 1px solid gray;
+  padding: 10px;
+  max-height: 100px;
+  overflow: scroll;
+  z-index: 2;
+  img.emojione{
+    width: 24px;
+    height: 24px;
+  }
 }

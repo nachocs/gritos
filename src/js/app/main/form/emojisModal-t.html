@@ -1,6 +1,7 @@
-
-<div class="emojis-modal">TEST
-<% obj.forEach((emoji)=>{ %>
-  <%= emoji %>
-<% }) %>
+<div class="emojis-modal">
+<% _.forEach(obj, (category)=>{ %>
+  <% _.forEach(category, (emoji)=>{ %>
+    <%= emoji.img %>
+  <% }); %>
+<% }); %>
 </div>

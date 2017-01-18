@@ -1,11 +1,11 @@
 import Backbone from 'backbone';
 import template from './emojisModal-t.html';
 import _ from 'lodash';
-import emojione from 'emojione';
+import emojis from '../../util/emojis';
 
-export default Backbone.View.extend({
+const EmojisModal = Backbone.View.extend({
   initialize(){
-    this.emojione = emojione;
+    this.emojiList = emojis.emojis;
   },
   template: _.template(template),
   render(){
@@ -13,10 +13,8 @@ export default Backbone.View.extend({
     return this;
   },
   serializer(){
-    const list = [];
-    Object.keys(this.emojione.emojioneList).forEach((emoji)=>{
-      list.push(emojione.toImage(emoji));
-    });
-    return list;
+    // activity flags food modifier nature objects people regional symbols travel
+    return this.emojiList;
   },
 });
+export default new EmojisModal();

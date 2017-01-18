@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import endpoints from '../endpoints';
+import endpoints from '../util/endpoints';
 const resumenModel = Backbone.Model.extend({
   idAttribute: 'name',
 });

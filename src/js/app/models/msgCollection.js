@@ -1,11 +1,11 @@
 import Backbone from 'backbone';
 import _ from 'lodash';
 import model from './msgModel';
-import endpoints from '../endpoints';
-import mockup from '../mockups';
+import endpoints from '../util/endpoints';
+import mockup from '../util/mockups';
 // import io from 'socket.io-client';
-import Ws from '../Ws';
-import vent from '../vent';
+import Ws from '../util/Ws';
+import vent from '../util/vent';
 
 export default Backbone.Collection.extend({
   model,
