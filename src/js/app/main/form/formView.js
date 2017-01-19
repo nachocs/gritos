@@ -79,7 +79,7 @@ export default Backbone.View.extend({
     this.clearArea();
     if (this.currentPosition){
       this.restoreSelection(this.currentPosition);
-      this.insertTextAtCursor($(string)[0]);
+      this.insertTextAtCursor(string);
     } else {
       this.$('.formularioTextArea').append(string);
     }
@@ -142,11 +142,33 @@ export default Backbone.View.extend({
       if (sel.getRangeAt && sel.rangeCount) {
         range = sel.getRangeAt(0);
         range.deleteContents();
-        range.insertNode( element );
+        // Range.createContextualFragment() would be useful here but is
+         // only relatively recently standardized and is not supported in
+         // some browsers (IE9, for one)
+        const el = document.createElement('div');
+        el.innerHTML = element;
+        const frag = document.createDocumentFragment();
+        let node;
+        let lastNode;
+        while ( (node = el.firstChild) ) {
+          lastNode = frag.appendChild(node);
+        }
+        range.insertNode(frag);
+
+       // Preserve the selection
+        if (lastNode) {
+          range = range.cloneRange();
+          range.setStartAfter(lastNode);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
       }
-    } else if (document.selection && document.selection.createRange) {
-      document.selection.createRange().text = element;
+    } else if (document.selection && document.selection.type != 'Control') {
+        // IE < 9
+      document.selection.createRange().pasteHTML(element);
     }
+    this.currentPosition = this.saveSelection();
   },
   restoreSelection(range) {
     let sel;
