@@ -31,10 +31,10 @@ export default Backbone.View.extend({
   events: {
     'click .formularioTextArea': 'clearArea',
     'click .form-submit-button': 'submitPost',
-    'mouseup': 'getSelectedText',
-    'mousedown': 'getSelectedText',
-    'keyup': 'getSelectedText',
-    'keydown': 'getSelectedText',
+    'mouseup .formularioTextArea': 'getSelectedText',
+    'mousedown .formularioTextArea': 'getSelectedText',
+    'keyup .formularioTextArea': 'getSelectedText',
+    'keydown .formularioTextArea': 'getSelectedText',
     'change input[type="file"]': 'upload',
     'click .emojis': 'showEmojis',
     'click .show-tags': 'toggleTags',
@@ -77,7 +77,19 @@ export default Backbone.View.extend({
   },
   getEmoji(string){
     this.clearArea();
-    this.$('.formularioTextArea').append(string);
+    if (this.currentPosition){
+      this.restoreSelection(this.currentPosition);
+      this.insertTextAtCursor($(string)[0]);
+    } else {
+      this.$('.formularioTextArea').append(string);
+    }
+    // if (this.currentPosition){
+    //   const content = this.$('.formularioTextArea').html();
+    //   const newContent = content.substr(0, this.currentPosition) + string + content.substr(this.currentPosition);
+    //   this.$('.formularioTextArea').html(newContent);
+    // } else {
+    //   this.$('.formularioTextArea').append(string);
+    // }
   },
   addImages() {
     const jsonModel = this.formModel.toJSON();
@@ -111,12 +123,50 @@ export default Backbone.View.extend({
       },
     });
   },
+  saveSelection() {
+    let sel;
+    if (window.getSelection) {
+      sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+        return sel.getRangeAt(0);
+      }
+    } else if (document.selection && document.selection.createRange) {
+      return document.selection.createRange();
+    }
+    return null;
+  },
+  insertTextAtCursor(element) {
+    let sel, range;
+    if (window.getSelection) {
+      sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+        range = sel.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode( element );
+      }
+    } else if (document.selection && document.selection.createRange) {
+      document.selection.createRange().text = element;
+    }
+  },
+  restoreSelection(range) {
+    let sel;
+    if (range) {
+      if (window.getSelection) {
+        sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else if (document.selection && range.select) {
+        range.select();
+      }
+    }
+  },
   getSelectedText(e) {
     let selection;
     if (this.model && this.model.get('ID') && e.keyCode == 13){
       this.submitPost();
     }
     //Get the selected stuff
+    this.currentPosition = this.saveSelection();
     if(window.getSelection)
       selection = window.getSelection();
     else if(typeof document.selection != 'undefined')

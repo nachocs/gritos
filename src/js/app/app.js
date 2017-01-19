@@ -35,7 +35,7 @@ const App = Backbone.View.extend({
   initialSetup() {
     moment.locale('es');
     const proxiedSync = Backbone.sync;
-    Backbone.sync = function (method, model, options) {
+    Backbone.sync = (method, model, options) => {
       options = options || {};
       if (!options.crossDomain) {
         options.crossDomain = true;
