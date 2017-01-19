@@ -69,6 +69,9 @@ export default Backbone.View.extend({
     }
   },
   showEmojis(){
+    if (EmojisModal.parent && EmojisModal.parent.cid !== this.cid){
+      this.showEmojisModal = false;
+    }
     this.showEmojisModal = !this.showEmojisModal;
     this.showEmojisIn(this.showEmojisModal);
   },
