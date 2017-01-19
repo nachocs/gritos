@@ -214,10 +214,10 @@ export default Backbone.View.extend({
     this.$('.wysiwyg').hide();
     componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
 
-    this.$('.formularioTextArea').keyup(function() {
-      $(this).height(38);
-      $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));
-    });
+    // this.$('.formularioTextArea').keyup(function() {
+    //   $(this).height(38);
+    //   $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));
+    // });
   },
   serializer(){
     const obj = this.userModel.toJSON();
