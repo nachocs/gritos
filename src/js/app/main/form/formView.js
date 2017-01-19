@@ -13,6 +13,7 @@ export default Backbone.View.extend({
  	initialize(options) {
    this.userModel = options.userModel;
    this.formModel = new formModel();
+   this.showEmojisModal = false;
    if (options.globalModel){
      if (options.globalModel.get('ID')){
        this.formModel.set('tags', options.globalModel.get('ID'));
@@ -22,7 +23,6 @@ export default Backbone.View.extend({
      });
    }
    this.wysiwyg = new Wysiwyg();
-   this.emojisModal = EmojisModal;
    this.listenTo(this.userModel, 'change', this.render.bind(this));
    this.listenTo(this, 'remove', this.clean.bind(this));
    this.listenTo(this.formModel, 'change', this.render.bind(this));
@@ -59,15 +59,23 @@ export default Backbone.View.extend({
     this.tagPlaceShown = !this.tagPlaceShown;
     this.$el.find('.tags-place ul').toggle('slow');
   },
-  showEmojis(){
-    this.showEmojisModal = !this.showEmojisModal;
-    if (this.showEmojisModal){
-      this.$('.emojis-modal-place').html(this.emojisModal.render().el);
+  showEmojisIn(prev){
+    if (prev){
+      this.$('.emojis-modal-place').show('slow');
+      EmojisModal.setParent(this);
+      this.$('.emojis-modal-place').html(EmojisModal.render().el);
     } else {
-      this.emojisModal.remove();
+      this.$('.emojis-modal-place').hide('slow');
     }
   },
-
+  showEmojis(){
+    this.showEmojisModal = !this.showEmojisModal;
+    this.showEmojisIn(this.showEmojisModal);
+  },
+  getEmoji(string){
+    this.clearArea();
+    this.$('.formularioTextArea').append(string);
+  },
   addImages() {
     const jsonModel = this.formModel.toJSON();
     for (const prop in jsonModel){
@@ -180,7 +188,7 @@ export default Backbone.View.extend({
   },
   clearArea() {
     if (this.isClear){return;}
-    this.$('.formularioTextArea').html('').addClass('on');
+    this.$('.formularioTextArea').html(this.formModel.get('comments')).addClass('on');
     this.isClear =  true;
   },
   render() {
@@ -192,6 +200,7 @@ export default Backbone.View.extend({
       if (this.afterRender && typeof this.afterRender === 'function') {
         this.afterRender.apply(this);
       }
+      this.showEmojisIn(this.showEmojisModal);
     } else {
       this.$el.removeClass('active');
     }

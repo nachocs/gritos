@@ -4,7 +4,9 @@ import Ws from '../util/Ws';
 
 export default  Backbone.Model.extend({
   url: endpoints.apiUrl + 'post.cgi',
-  defaults: {},
+  defaults: {
+    comments: '',
+  },
   initialize(){
     this.listenTo(this, 'sync', () => {
       if (this.room){

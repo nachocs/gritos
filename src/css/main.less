@@ -466,6 +466,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', end
 		position: absolute;
 		bottom: 26px;
 		left: 90px;
+    cursor: pointer;
 		img{
 			width: 24px;
 			height: 24px;
@@ -541,16 +542,46 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', end
 	// float: right;
 	// cursor: pointer;
 }
+.emojis-modal-place{
+  position: relative;
+}
 .emojis-modal{
   position: absolute;
   background: white;
   border: 1px solid gray;
+  border-radius: 3px;
   padding: 10px;
-  max-height: 100px;
-  overflow: scroll;
+  max-height: 110px;
+  // overflow: scroll;
   z-index: 2;
   img.emojione{
     width: 24px;
     height: 24px;
+    cursor: pointer;
   }
+  .emojis-modal-tabs{
+    .emoji-tab{
+      border: 1px solid darkkhaki;
+      border-radius: 3px;
+      padding: 1px;
+      padding: 5px;
+      margin: 0 3px;
+      background-color: white;
+      position: relative;
+      cursor: pointer;
+      &.active{
+        border-bottom: 0;
+      }
+    }
+  }
+  .emojis-modal-content{
+    max-height: 62px;
+    overflow-y: scroll;
+    border: 1px solid darkkhaki;
+    padding: 10px;
+  }
+}
+img.emojione{
+  width: 24px;
+  height: 24px;
 }
