@@ -1,7 +1,8 @@
 <div class="mdl-card mdl-shadow--4dp">
   <div class="wysiwyg-view"></div>
   <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
-  <div contenteditable=true class='formularioTextArea' name="comments"><%= obj.formModel.comments || 'sueltalo'%></div>
+  <div contenteditable=true placeholder="Sueltalo!" class='formularioTextArea' name="comments"><%= obj.formModel.comments %></div>
+  <div class="thumbs-place"></div>
   <div class="file-submit">
     <label for="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
     <input type="file" id="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" title="choose a file to upload" name="FICHERO_IMAGEN1" multiple>
@@ -19,10 +20,22 @@
       <ul style=<%=obj.tagPlaceShown ? "display:block;" : "display:none;" %>>
         <% if (obj.tags){%>
           <% for(var i =0; i < obj.tags.length; i++){ %>
-          <li><span>#<%=obj.tags[i]%></span></li>
+          <li>
+            <span class="mdl-chip mdl-chip--deletable">
+              <span class="mdl-chip__text">#<%=obj.tags[i]%></span>
+              <button type="button" class="mdl-chip__action" data-delete-tag=<%= i %>><i class="material-icons">cancel</i></button>
+            </span>
+          </li>
           <% } %>
         <% } %>
-        <li><input type="text" name="tag" class="input-tag"></li>
+        <% if (!obj.tags || obj.tags.length < 5){%>
+        <li>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input input-tag" type="text" id="newtag<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>">
+            <label class="mdl-textfield__label" name="tag" for="newtag<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>">Tag</label>
+          </div>
+        </li>
+        <% } %>
       </ul>
     </div>
   <% } %>

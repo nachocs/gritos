@@ -6,6 +6,7 @@ import Autolinker from 'autolinker';
 import MolaView from './molaView';
 import template from './msgView-t.html';
 import FormView from '../form/formView';
+import Util from '../../util/util';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -149,11 +150,19 @@ export default Backbone.View.extend({
       value: mainName,
     });
     tags = _.uniqBy(tags, 'value');
+    const images = [];
+    Object.keys(this.model.toJSON()).forEach((key)=> {
+      if ((/IMAGEN(\d+)_URL/).exec(key)){ const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
+        images.push(Util.displayImage(this.model.toJSON(), image));
+      }
+    });
+
     return _.extend({}, this.model.toJSON(), {
       date: moment.unix(this.model.get('FECHA')).fromNow(),
       comments: this.formatComments(this.model.get('comments')),
       tags,
       showForm: this.showForm,
+      images,
     });
   },
   clean(){
