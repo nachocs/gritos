@@ -173,8 +173,19 @@ export default Backbone.View.extend({
     this.showEmojisIn(false);
     const self = this;
     const data = new FormData();
+    let imagenes_jump = 0;
+
+    Object.keys(this.formModel.toJSON()).forEach((key)=> {
+      if ((/IMAGEN(\d+)_URL/).exec(key)){
+        const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
+        if ((Number(image)+1)>imagenes_jump){
+          imagenes_jump = Number(image)+1;
+        }
+      }
+    });
     $.each(this.$('input[type="file"]')[0].files, (i, file) => {
-      data.append('FICHERO_IMAGEN' + i, file);
+      const numero = imagenes_jump + i;
+      data.append('FICHERO_IMAGEN' + numero, file);
     });
     $.ajax({
       url: endpoints.apiUrl + 'upload.cgi?sessionId=' + this.userModel.get('uid'),
@@ -186,6 +197,9 @@ export default Backbone.View.extend({
       success(data) {
         console.log('UPLOAD RESPONSE: ', data);
         self.setComments();
+        if (data.response && data.response.Ficheros && self.formModel.get('Ficheros')){
+          data.response.Ficheros = self.formModel.get('Ficheros') + ',' + data.response.Ficheros;
+        }
         self.formModel.set(data.response);
         self.addImages();
       },
