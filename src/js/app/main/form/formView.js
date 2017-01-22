@@ -44,18 +44,18 @@ export default Backbone.View.extend({
    this.formModel = new formModel();
    this.showEmojisModal = false;
    this.tagPlaceShown = false;
-   if (this.globalModel){
-     if (this.globalModel.get('ID') && this.globalModel.get('ID') !== 'foroscomun'){
-       this.formModel.set('tags', this.globalModel.get('ID'));
-     }
-     this.listenTo(this.globalModel, 'change:ID', ()=>{
-       if(this.globalModel.get('ID') !== 'foroscomun'){
-         this.formModel.set('tags', this.globalModel.get('ID'));
-       } else {
-         this.formModel.set('tags', '');
-       }
-     });
-   }
+  //  if (this.globalModel){
+  //    if (this.globalModel.get('ID') && this.globalModel.get('ID') !== 'foroscomun'){
+  //      this.formModel.set('tags', this.globalModel.get('ID'));
+  //    }
+    //  this.listenTo(this.globalModel, 'change:ID', ()=>{
+    //    if(this.globalModel.get('ID') !== 'foroscomun'){
+    //      this.formModel.set('tags', '#' + this.globalModel.get('ID'));
+    //    } else {
+    //      this.formModel.set('tags', '');
+    //    }
+    //  });
+  //  }
    this.wysiwyg = new Wysiwyg();
    this.listenTo(this.userModel, 'change', this.render.bind(this));
    this.listenTo(this, 'remove', this.clean.bind(this));
@@ -96,8 +96,9 @@ export default Backbone.View.extend({
   inputTag(e){
     if (e.keyCode === 13 || e.keyCode === 188){
       e.preventDefault();
-      const newTag = e.target.value.replace(/\W/ig,'');
+      let newTag = e.target.value.replace(/\W/ig,'');
       if (newTag){
+        newTag = '#' + newTag;
         let tags = this.formModel.get('tags') ? this.formModel.get('tags').split(',') : [];
         tags.push(newTag);
         tags = _.uniq(tags);
@@ -300,6 +301,7 @@ export default Backbone.View.extend({
     if (!this.userModel.get('uid')){ return; }
     if (this.isSaving){return;}
     this.showEmojisIn(false);
+    this.toggleTagsIn(false);
     const self = this;
     // tinyMCE.triggerSave();
     let comments = this.$('.formularioTextArea').html();
@@ -307,7 +309,7 @@ export default Backbone.View.extend({
     comments = comments.replace(/\r/ig, '<br>');
     const saveObj = {
       comments,
-      'uid': this.userModel.get('uid'),
+      uid: this.userModel.get('uid'),
       tags: this.formModel.get('tags'),
     };
     if (this.model && this.model.get('ID')){
@@ -317,14 +319,11 @@ export default Backbone.View.extend({
             indice: this.model.get('INDICE'),
             entrada: this.model.get('ID'),
           },
-        },
-        {
-          room: this.model.get('INDICE') + '/' + this.model.get('ID'),
         });
-    } else {
+    } else if (this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun'){
       Object.assign(saveObj,
         {
-          room: this.collection.id,
+          foro: this.collection.id.replace(/\/$/,''),
         },
       );
     }

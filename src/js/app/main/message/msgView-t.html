@@ -14,9 +14,9 @@
 		<%= obj.comments %>
 	</div>
 	<div class="foot">
-    <% if (obj.showForm && obj.tags && obj.tags.length > 0){ %>
+    <% if (obj.showForm && obj.tagsShown && obj.tagsShown.length > 0){ %>
 			<div class="tags">
-				<% obj.tags.forEach((tag)=>{ %>
+				<% obj.tagsShown.forEach((tag)=>{ %>
 				<a href="#<%= tag.value %>"><%= tag.value.match(/^ciudadanos/) ? '@' : '#' %><%= tag.name %></a>
 				<% }) %>
 			</div>

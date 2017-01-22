@@ -132,24 +132,26 @@ export default Backbone.View.extend({
     return autolinker.link(string);
   },
   serializer() {
-    let tags = [], value, mainName;
+    let tagsShown = [], value, mainName;
     if (this.model.get('publicados')){
       _.each(this.model.get('publicados').split(/\|/), (pub)=>{
         value = pub.split(/\,/)[1];
         value = value.replace(/^gritos\//, '');
-        tags.push({
+        tagsShown.push({
           name: pub.split(/\,/)[0],
           value,
         });
       });
     }
-    mainName = this.model.get('INDICE');
-    mainName = mainName.replace(/^gritos\//, '');
-    tags.push({
-      name: mainName,
-      value: mainName,
-    });
-    tags = _.uniqBy(tags, 'value');
+    if (!this.model.get('INDICE').match(/^ciudadanos\//)){
+      mainName = this.model.get('INDICE');
+      mainName = mainName.replace(/^gritos\//, '');
+      tagsShown.push({
+        name: mainName,
+        value: mainName,
+      });
+    }
+    tagsShown = _.uniqBy(tagsShown, 'value');
     const images = [];
     Object.keys(this.model.toJSON()).forEach((key)=> {
       if ((/IMAGEN(\d+)_URL/).exec(key)){ const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
@@ -160,7 +162,7 @@ export default Backbone.View.extend({
     return _.extend({}, this.model.toJSON(), {
       date: moment.unix(this.model.get('FECHA')).fromNow(),
       comments: this.formatComments(this.model.get('comments')),
-      tags,
+      tagsShown,
       showForm: this.showForm,
       images,
     });
