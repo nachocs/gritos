@@ -362,6 +362,7 @@ export default Backbone.View.extend({
   clearArea() {
     // if (this.isClear){return;}
     // this.$('.formularioTextArea').html(this.formModel.get('comments')).addClass('on');
+    this.active = true;
     this.$('.formularioTextArea').addClass('on');
     // this.isClear =  true;
   },
@@ -405,6 +406,7 @@ export default Backbone.View.extend({
       formModel: this.formModel.toJSON(),
       tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
       tagPlaceShown: this.tagPlaceShown,
+      active: this.active,
     });
     return obj;
   },

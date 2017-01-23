@@ -1,7 +1,7 @@
 <div class="mdl-card mdl-shadow--4dp">
   <div class="wysiwyg-view"></div>
   <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
-  <div contenteditable=true placeholder="Sueltalo!" class='formularioTextArea' name="comments"><%= obj.formModel.comments %></div>
+  <div contenteditable=true placeholder="Sueltalo!" class='formularioTextArea <%= active && 'on' %>' name="comments"><%= obj.formModel.comments %></div>
   <div class="thumbs-place"></div>
   <div class="file-submit">
     <label for="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
