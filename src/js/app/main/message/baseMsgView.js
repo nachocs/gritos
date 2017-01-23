@@ -7,7 +7,6 @@ import MolaView from './molaView';
 import template from './msgView-t.html';
 import FormView from '../form/formView';
 import Util from '../../util/util';
-import slick from 'slick-carousel';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -30,9 +29,6 @@ const autolinker = new Autolinker({
 export default Backbone.View.extend({
   template: _.template(template),
   className: 'msg',
-  events: {
-    'click .spoiler': 'openSpoiler',
-  },
   initialize(options) {
     this.userModel = options.userModel;
     if (this.MiniMsgCollection) {
@@ -62,6 +58,11 @@ export default Backbone.View.extend({
     });
     this.listenTo(this, 'remove', this.clean.bind(this));
   },
+  events: {
+    'click .spoiler': 'openSpoiler',
+    // 'click .forward': 'goToMsg',
+  },
+
   openSpoiler(e) {
     const spoiler = $(e.currentTarget).attr('data-tip');
     const d_m = 'top';
@@ -137,18 +138,18 @@ export default Backbone.View.extend({
         this.$('.images-place').slick(
           {
             dots: true,
-            infinite: false,
+            infinite: true,
             speed: 300,
-            slidesToShow: 3,
-            slidesToScroll: 3,
+            slidesToShow: this.isCarousel < 3 ? this.isCarousel:3,
+            slidesToScroll: this.isCarousel < 3 ? this.isCarousel:3,
             arrows: true,
             adaptiveHeight: true,
             responsive: [
               {
                 breakpoint: 1024,
                 settings: {
-                  slidesToShow: 3,
-                  slidesToScroll: 3,
+                  slidesToShow: this.isCarousel < 3 ? this.isCarousel:3,
+                  slidesToScroll: this.isCarousel < 3 ? this.isCarousel:3,
                   infinite: true,
                   dots: true,
                 },
@@ -180,11 +181,13 @@ export default Backbone.View.extend({
     if (this.model.get('publicados')){
       _.each(this.model.get('publicados').split(/\|/), (pub)=>{
         value = pub.split(/\,/)[1];
-        value = value.replace(/^gritos\//, '');
-        tagsShown.push({
-          name: pub.split(/\,/)[0],
-          value,
-        });
+        if (value){
+          value = value.replace(/^gritos\//, '');
+          tagsShown.push({
+            name: pub.split(/\,/)[0],
+            value,
+          });
+        }
       });
     }
     if (!this.model.get('INDICE').match(/^ciudadanos\//)){
@@ -202,7 +205,7 @@ export default Backbone.View.extend({
         images.push(Util.displayImage(this.model.toJSON(), image));
       }
     });
-    this.isCarousel = (images.length>1);
+    this.isCarousel = (images.length > 1) ? images.length : null;
     if (this.isCarousel){
       images = [];
       Object.keys(this.model.toJSON()).forEach((key)=> {

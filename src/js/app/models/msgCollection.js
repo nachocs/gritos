@@ -31,9 +31,12 @@ export default Backbone.Collection.extend({
       this.subscribe(this.id);
     }
     if (this.parentModel){
-      this.listenTo(this.parentModel, 'change:ID', () => {
+      this.listenTo(this.parentModel, 'change', () => {
         this.clean();
         this.id = this.parentModel.get('ID'); // para cuando se cambia de foro principal
+        if (this.parentModel.get('msg') || this.parentModel._previousAttributes.msg){
+          this.trigger('reset');
+        }
         this.subscribe(this.id);
         this.fetch();
       });
@@ -72,10 +75,16 @@ export default Backbone.Collection.extend({
     }
   },
   url() {
-    return endpoints.apiUrl + 'index.cgi?' + this.id;
+    let route = '';
+    if (this.parentModel.get('msg')){
+      route = this.id + '/' + this.parentModel.get('msg');
+    } else{
+      route = this.id;
+    }
+    return endpoints.apiUrl + 'index.cgi?' + route;
   },
   nextPage() {
-    if (!this.loading) {
+    if (!this.loading && !this.parentModel.get('msg')) {
       this.fetch({
         data: {
           init: this.lastEntry,
@@ -85,6 +94,9 @@ export default Backbone.Collection.extend({
     }
   },
   parse(resp) {
+    if (this.parentModel.get('msg')){
+      resp = [resp];
+    }
     this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));
     return resp;
   },

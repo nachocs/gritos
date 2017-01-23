@@ -17,7 +17,7 @@ export default Backbone.Router.extend({
     if (!foro){
       foro = 'foroscomun';
     }
-    this.model.changeForo(foro);
+    this.model.changeForo(foro, null);
   },
 
   mensaje(foro, mensajeId) {
@@ -25,6 +25,6 @@ export default Backbone.Router.extend({
     if (foro === 'ciudadanos'){
       return this.foro(foro + '/' + mensajeId + '/');
     }
-    debugger;
+    this.model.changeForo(foro, mensajeId);
   },
 });

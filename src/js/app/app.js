@@ -8,11 +8,12 @@ import moment from 'moment';
 import GlobalModel from './models/globalModel';
 import userModel from './models/userModel';
 import ResumenCollection from './models/resumenCollection';
+import Slick from 'slick-carousel';
 
 const App = Backbone.View.extend({
   initialize() {
     this.initialSetup();
-
+    this.slick = Slick;
     this.globalModel = new GlobalModel();
     this.headModel = new HeadModel({},{globalModel:this.globalModel});
     this.msgCollection = new MsgCollection([],{parentModel:this.globalModel});

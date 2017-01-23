@@ -2,6 +2,7 @@
 	<img class="emocion" src="<%= obj.emocion %>">
 <% } %>
 <div class="mdl-card mdl-shadow--4dp">
+	<div class="forward"><a href="#<%= obj.INDICE.replace(/^gritos\//,'') %>/<%= obj.ID %>"><i class="material-icons">forward</i></a></div>
 	<% if (obj.showForm){ %>
 		<div class="icon material-icons share" title="share">share</div>
 	<% } %>
