@@ -7,6 +7,7 @@ import MolaView from './molaView';
 import template from './msgView-t.html';
 import FormView from '../form/formView';
 import Util from '../../util/util';
+import slick from 'slick-carousel';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -61,36 +62,6 @@ export default Backbone.View.extend({
     });
     this.listenTo(this, 'remove', this.clean.bind(this));
   },
-  renderMiniMsgs() {
-    if (this.minimsgsCollectionView && !this.miniMsgsAlreadyRendered){
-      this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
-      this.minimsgsCollection.fetch();
-      this.miniMsgsAlreadyRendered = true;
-    }
-    return this;
-  },
-  render() {
-    this.$el.html(this.template(this.serializer()));
-    if (this.model.get('minimsgs')) {
-      this.renderMiniMsgs();
-    }
-    this.$('.mola').replaceWith(this.molaView.render().el);
-    if (this.showForm){
-      this.$('.mini-form').html(this.formView.render().el);
-    }
-    if (this.afterRender && typeof this.afterRender === 'function') {
-      this.afterRender();
-    }
-    return this;
-  },
-  afterRender() {
-    const self = this;
-    if (self.$el.find('.icon').length>0){
-      setTimeout(() => {
-        componentHandler.upgradeElement(self.$el.find('.icon')[0]);
-      }, 100);
-    }
-  },
   openSpoiler(e) {
     const spoiler = $(e.currentTarget).attr('data-tip');
     const d_m = 'top';
@@ -131,6 +102,79 @@ export default Backbone.View.extend({
     string = string.replace(/\-\:SPOILER\[([^\]\[]+)\]SPOILER\:\-/ig, replacer);
     return autolinker.link(string);
   },
+
+  renderMiniMsgs() {
+    if (this.minimsgsCollectionView && !this.miniMsgsAlreadyRendered){
+      this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
+      this.minimsgsCollection.fetch();
+      this.miniMsgsAlreadyRendered = true;
+    }
+    return this;
+  },
+  render() {
+    this.$el.html(this.template(this.serializer()));
+    if (this.model.get('minimsgs')) {
+      this.renderMiniMsgs();
+    }
+    this.$('.mola').replaceWith(this.molaView.render().el);
+    if (this.showForm){
+      this.$('.mini-form').html(this.formView.render().el);
+    }
+    if (this.afterRender && typeof this.afterRender === 'function') {
+      this.afterRender();
+    }
+    return this;
+  },
+  afterRender() {
+    const self = this;
+    if (self.$el.find('.icon').length>0){
+      setTimeout(() => {
+        componentHandler.upgradeElement(self.$el.find('.icon')[0]);
+      }, 100);
+    }
+    if (this.isCarousel){
+      setTimeout(() => {
+        this.$('.images-place').slick(
+          {
+            dots: true,
+            infinite: false,
+            speed: 300,
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            arrows: true,
+            adaptiveHeight: true,
+            responsive: [
+              {
+                breakpoint: 1024,
+                settings: {
+                  slidesToShow: 3,
+                  slidesToScroll: 3,
+                  infinite: true,
+                  dots: true,
+                },
+              },
+              {
+                breakpoint: 600,
+                settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 2,
+                },
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  slidesToShow: 1,
+                  slidesToScroll: 1,
+                },
+              },
+              // You can unslick at a given breakpoint now by adding:
+              // settings: "unslick"
+              // instead of a settings object
+            ],
+          });
+      }, 200);
+    }
+  },
   serializer() {
     let tagsShown = [], value, mainName;
     if (this.model.get('publicados')){
@@ -152,12 +196,22 @@ export default Backbone.View.extend({
       });
     }
     tagsShown = _.uniqBy(tagsShown, 'value');
-    const images = [];
+    let images = [];
     Object.keys(this.model.toJSON()).forEach((key)=> {
       if ((/IMAGEN(\d+)_URL/).exec(key)){ const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
         images.push(Util.displayImage(this.model.toJSON(), image));
       }
     });
+    this.isCarousel = (images.length>1);
+    if (this.isCarousel){
+      images = [];
+      Object.keys(this.model.toJSON()).forEach((key)=> {
+        if ((/IMAGEN(\d+)_URL/).exec(key)){ const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
+          images.push(Util.displayImage2(this.model.toJSON(), image));
+        }
+      });
+
+    }
 
     return _.extend({}, this.model.toJSON(), {
       date: moment.unix(this.model.get('FECHA')).fromNow(),

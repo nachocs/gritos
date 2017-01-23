@@ -10,7 +10,17 @@
 		<div class="mdl-card__subtitle-text"><%= date %></div>
 	</div>
 	<div class="mdl-card__supporting-text">
-		<%= images.map(image => image) %>
+    <% if (images.length>0 ){%>
+		<div class="images-place">
+			<% images.forEach(image => { %>
+        <%= image %>
+      <% }); %>
+		</div>
+    <% } else {%>
+      <% images.forEach(image => { %>
+        <%= image %>
+      <% }); %>
+    <% } %>
 		<%= obj.comments %>
 	</div>
 	<div class="foot">
