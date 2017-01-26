@@ -6,11 +6,14 @@ class Ws{
   constructor(){
     this.subscriptions = {};
     this.socket = io(endpoints.socket);
-    this.socket.on('updated', function (data){
+    this.socket.on('updated', (data)=>{
       vent.trigger('updated_' + data.room, data);
     });
-    this.socket.on('msg', function (data){
+    this.socket.on('msg', (data)=>{
       vent.trigger('msg_' + data.room, data);
+    });
+    this.socket.on('notificaciones', (data)=>{
+      vent.trigger('notificaciones_' + data.user, data.notificaciones);
     });
   }
   subscribe(room){
@@ -25,6 +28,9 @@ class Ws{
   update(room){
     room = room.replace(/\/$/,'');
     this.socket.emit('update', room);
+  }
+  prepararNotificaciones(userId){
+    this.socket.emit('prepararNotificaciones', userId);
   }
 }
 const ws = new Ws();

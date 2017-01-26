@@ -7,6 +7,7 @@ import MsgCollectionView from './foros/msgCollectionView';
 import SpinnerView from './spinnerView';
 import FormView from './form/formView';
 import ResumenView from './header/resumenView';
+import NotificacionesView from './header/notificacionesView';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -30,6 +31,7 @@ export default Backbone.View.extend({
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,
     });
+    this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
     this.images = {
       logo:require('../../../img/logo50x50.gif'),
@@ -44,6 +46,7 @@ export default Backbone.View.extend({
     this.$('.spinner-view').html(this.spinnerView.render().el);
     this.$('.form-view').html(this.formView.render().el);
     this.$('.resumen-collection').replaceWith(this.resumenView.render().el);
+    this.$('.notificaciones-view').html(this.notificacionesView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {
