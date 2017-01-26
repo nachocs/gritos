@@ -57,7 +57,7 @@ export default Backbone.Collection.extend({
     if (this.subscriptions[room]){return;}
     this.subscriptions[room] = true;
     Ws.subscribe('collection:' + room);
-    vent.on('updated_collection:' + room, data => {
+    vent.on('updated_' + 'collection:' + room, data => {
       this.add(data.entry, {fromSocket:true});
       console.log('updated', data.room, data.entry);
     });
