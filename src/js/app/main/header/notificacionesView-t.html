@@ -1,1 +1,2 @@
-<div class="material-icons mdl-badge mdl-badge--overlap notis-icon <%= active?'active':''%>" <%= active?'data-badge="1"':''%> style="font-size:36px;">public</div>
+<div class="material-icons mdl-badge mdl-badge--overlap notis-icon <%= active?'active':''%>" <%= (active && counter) ? 'data-badge=' + counter : '' %> style="font-size:36px;">public</div>
+<div class="notificaciones-collection-view <%= show ? 'active' : ''%>"></div>

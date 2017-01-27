@@ -2,23 +2,41 @@ import Backbone from 'backbone';
 import template from './notificacionesView-t.html';
 import _ from 'lodash';
 import userModel from '../../models/userModel';
+import NotificacionesCollectionView from './NotificacionesCollectionView';
+import NotificacionesCollection from '../../models/NotificacionesCollection';
 
+const Model = Backbone.Model.extend({
+  defaults:{
+    active: false,
+    counter: 0,
+    show: false,
+  },
+});
 export default Backbone.View.extend({
   template: _.template(template),
+  model: new Model,
+  events: {
+    'click': 'toggleNotificaciones',
+  },
+  toggleNotificaciones(){
+    this.model.set('show', !this.model.get('show'));
+  },
   initialize(){
-    this.active = false;
+    this.notificacionesCollectionView = new NotificacionesCollectionView();
+    this.listenTo(this.model, 'change', this.render.bind(this));
     this.listenTo(userModel, 'change', (user)=>{
-      this.active = user.id?true:false;
-      this.render();
+      this.model.set('active', user.id ? true : false);
+    });
+    this.listenTo(NotificacionesCollection, 'change', ()=>{
+      this.model.set('counter', NotificacionesCollection.length);
     });
   },
   render(){
     this.$el.html(this.template(this.serializer()));
+    this.$('.notificaciones-collection-view').html(this.notificacionesCollectionView.render().el);
     return this;
   },
   serializer(){
-    return {
-      active: this.active,
-    };
+    return this.model.toJSON();
   },
 });

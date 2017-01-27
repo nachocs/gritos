@@ -3,7 +3,7 @@ import userModel from './userModel';
 import Ws from '../util/Ws';
 import vent from '../util/vent';
 
-export default Backbone.Collection.extend({
+const NotificacionesCollection = Backbone.Collection.extend({
   initialize(){
     this.listenTo(userModel, 'change', (user)=>{
       Ws.prepararNotificaciones(user.id); // llama a que se preparen las notificaciones
@@ -14,3 +14,5 @@ export default Backbone.Collection.extend({
     });
   },
 });
+
+export default new NotificacionesCollection();
