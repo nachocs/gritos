@@ -5,9 +5,12 @@ import NotificacionesCollection from '../../models/NotificacionesCollection';
 export default Backbone.View.extend({
   itemView: NotificacionesItemView,
   tagName: 'ul',
+  className:'mdl-shadow--4dp',
   initialize(){
     this.collection = NotificacionesCollection;
     this.views = {};
+    this.listenTo(NotificacionesCollection, 'add', this.renderOne.bind(this));
+
   },
   render() {
     this.$el.html('');
@@ -22,6 +25,6 @@ export default Backbone.View.extend({
       userModel: this.userModel,
     });
     this.views[model.id] = notificacionesItemView;
-    this.$el.append(notificacionesItemView.render().el);
+    this.$el.prepend(notificacionesItemView.render().el);
   },
 });

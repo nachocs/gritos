@@ -27,13 +27,17 @@ export default Backbone.View.extend({
     this.listenTo(userModel, 'change', (user)=>{
       this.model.set('active', user.id ? true : false);
     });
-    this.listenTo(NotificacionesCollection, 'change', ()=>{
+    this.listenTo(NotificacionesCollection, 'add', ()=>{
+      this.model.set('counter', NotificacionesCollection.length);
+    });
+    this.listenTo(NotificacionesCollection, 'remove', ()=>{
       this.model.set('counter', NotificacionesCollection.length);
     });
   },
   render(){
     this.$el.html(this.template(this.serializer()));
     this.$('.notificaciones-collection-view').html(this.notificacionesCollectionView.render().el);
+    this.delegateEvents();
     return this;
   },
   serializer(){
