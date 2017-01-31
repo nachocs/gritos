@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import template from './NotificacionesItemView-t.html';
 import _ from 'lodash';
+import userModel from '../../models/userModel';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -10,6 +11,10 @@ export default Backbone.View.extend({
     return this;
   },
   serializer(){
-    return this.model.toJSON();
+    return Object.assign({},
+      this.model.toJSON(), {
+        user:userModel.toJSON(),
+      },
+    );
   },
 });

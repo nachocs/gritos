@@ -1,3 +1,16 @@
-<%= obj.tipo %><br>
-<%= obj.indice %><br>
-<%= obj.diferencia %>
+<a href="#<%=obj.indice.replace(/^gritos\//,'')%>">
+<% if (obj.tipo === 'mini'){ %>
+  <% if (obj.entry && obj.entry.name){ %>
+    <%= obj.entry.name %><%= (obj.diferencia && obj.diferencia > 1) ? ' y ' + obj.diferencia-1 + ' mas' : '' %> <% if(obj.diferencia === 1){ %>coment&oacute;<%}else{%>comentaron<%}%> en
+  <% } else { %>
+    <%= obj.diferencia %> coment&oacute; en
+  <% } %>
+  <% if (obj.parent){ %>
+    <% if (obj.parent.ciudadano === obj.user.ID){ %>
+      tu mensaje
+    <% } else { %>
+      el mensaje de <%= obj.parent.name %>
+    <% } %>
+  <% } %>
+<% } %>
+</a>
