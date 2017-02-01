@@ -44,12 +44,11 @@ export default Backbone.Collection.extend({
     }
   },
   clean(){
-    this.cleanSocket();
-    this.remove(this.models);
-  },
-  cleanSocket(){
-    if (this.socket && this.socket.connected){
+    if (this.id){
       this.unsubscribe(this.id);
+    }
+    if (this.models.length>0){
+      this.remove(this.models);
     }
   },
   subscribe(room){

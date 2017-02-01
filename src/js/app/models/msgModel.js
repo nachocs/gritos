@@ -14,6 +14,9 @@ export default Backbone.Model.extend({
         Ws.update(this.get('INDICE') + '/' + this.get('ID'));
       }
     });
+    this.listenTo(this, 'remove', ()=>{
+      Ws.unsubscribe(this.get('INDICE') + '/' + this.get('ID'));
+    });
     if (this.get('INDICE') && this.get('ID')){
       Ws.subscribe(this.get('INDICE') + '/' + this.get('ID'));
     }
