@@ -15,8 +15,10 @@ export default  Backbone.Model.extend({
     });
   },
   save(attrs){
-    if (attrs.room){
-      this.room = attrs.room;
+    if (attrs.minigrito){
+      this.room = attrs.minigrito.indice + '/' + attrs.minigrito.entrada;
+    } else if (attrs.foro){
+      this.room = attrs.foro;
     }
     return Backbone.Model.prototype.save.apply(this, arguments);
   },
