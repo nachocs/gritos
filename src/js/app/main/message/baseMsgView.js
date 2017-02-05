@@ -60,9 +60,14 @@ export default Backbone.View.extend({
   },
   events: {
     'click .spoiler': 'openSpoiler',
+    'click .show-admin': 'toggleAdminMenu',
     // 'click .forward': 'goToMsg',
   },
-
+  toggleAdminMenu(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.$(e.currentTarget).find('.admin-menu').toggleClass('active');
+  },
   openSpoiler(e) {
     const spoiler = $(e.currentTarget).attr('data-tip');
     const d_m = 'top';
@@ -124,6 +129,7 @@ export default Backbone.View.extend({
     if (this.afterRender && typeof this.afterRender === 'function') {
       this.afterRender();
     }
+    this.delegateEvents();
     return this;
   },
   afterRender() {
@@ -222,6 +228,7 @@ export default Backbone.View.extend({
       tagsShown,
       showForm: this.showForm,
       images,
+      userModel:this.userModel,
     });
   },
   clean(){

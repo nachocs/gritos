@@ -1,4 +1,6 @@
 @import './tipr.less';
+@import "../../node_modules/font-awesome/less/font-awesome.less";
+
 @font-face {
   font-family: newdreamers;
   src: url('../fonts/newdreamers.eot');/* EOT file for IE */
@@ -106,14 +108,14 @@ div.titulo{
     }
 	}
 	.msg{
-	    margin-bottom: 20px;
-	    position: relative;
+    margin-bottom: 20px;
+    position: relative;
 
-	    .spoiler{
-	    	display: inline-block;
-	    	cursor: pointer;
-	    	font-weight: bold;
-	    }
+    .spoiler{
+    	display: inline-block;
+    	cursor: pointer;
+    	font-weight: bold;
+    }
 		.emocion{
 			position: absolute;
 			z-index: 2;
@@ -142,26 +144,65 @@ div.titulo{
 				font-size: 10px;
 	    	}
     	}
-      .forward{
+      .action-icons{
         position: absolute;
-        right: 20px;
-        margin: 10px;
+        top: 10px;
+        right: 0;
+        font-size: 14px;
+        line-height: 24px;
+        margin-right: 5px;
+        >div{
+          display: inline-block;
+          padding: 5px 6px;
+        }
         i{
+          color: lightslategray;
+        }
+        .forward{
           cursor: pointer;
-  		    font-size: 14px;
-  		    width: 16px;
-  		    color: lightslategray;
+          &:hover{
+            background-color: #EEEEEE;
+          }
+        }
+      	.share{
+      		cursor: pointer;
+          &:hover{
+            background-color: #EEEEEE;
+          }
+      	}
+        .show-admin{
+      		cursor: pointer;
+          &:hover{
+            background-color: #EEEEEE;
+          }
+      	}
+        .admin-menu{
+          display: none;
+          position: absolute;
+          width: 25px;
+          right: 0;
+          top: 29px;
+          z-index: 2;
+          &.active{
+            display: block;
+          }
+          ul{
+            padding: 0;
+            margin: 0;
+            li{
+              padding: 0;
+              list-style: none;
+              margin: 0;
+              text-align: center;
+              cursor: pointer;
+              background-color: white;
+              &:hover{
+                background-color: #EEEEEE;
+              }
+            }
+          }
         }
       }
-    	.share{
-    		cursor: pointer;
-		    font-size: 14px;
-		    width: 16px;
-		    margin: 10px;
-		    position: absolute;
-		    right: 0px;
-		    color: lightslategray;
-    	}
 		}
 		.foot{
 			display: table;
