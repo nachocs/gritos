@@ -7,6 +7,7 @@ import MolaView from './molaView';
 import template from './msgView-t.html';
 import FormView from '../form/formView';
 import Util from '../../util/util';
+import ModalView from '../modalView';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -56,12 +57,45 @@ export default Backbone.View.extend({
       collection: this.minimsgsCollection,
       model: this.model,
     });
+    this.listenTo(this.model, 'destroy', this.remove.bind(this));
     this.listenTo(this, 'remove', this.clean.bind(this));
   },
   events: {
     'click .spoiler': 'openSpoiler',
     'click .show-admin': 'toggleAdminMenu',
-    // 'click .forward': 'goToMsg',
+    'click .js-ban': 'showBanModal',
+    'click .js-delete': 'showDeleteModal',
+  },
+  showBanModal(){
+    ModalView.update({
+      model:
+      {
+        show: true,
+        header: '&iquest;ESTE GRITO APESTA?',
+        body: '&iquest;Seguro que quieres denunciar este mensaje como basura?',
+      },
+      action: this.banThis.bind(this),
+    },
+    );
+  },
+  showDeleteModal(){
+    ModalView.update({
+      model:
+      {
+        show: true,
+        header:'&iquest;BORRAR GRITO?',
+        body: '&iquest;Seguro que quieres borrar este mensaje?',
+      },
+      action: this.deleteThis.bind(this),
+    },
+    );
+  },
+  deleteThis(){
+    console.log('delete run');
+    this.model.destroy();
+  },
+  banThis(){
+    console.log('ban run');
   },
   toggleAdminMenu(e){
     e.preventDefault();

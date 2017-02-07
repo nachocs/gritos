@@ -8,6 +8,7 @@ import SpinnerView from './spinnerView';
 import FormView from './form/formView';
 import ResumenView from './header/resumenView';
 import NotificacionesView from './header/notificacionesView';
+import ModalView from './modalView';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -47,6 +48,7 @@ export default Backbone.View.extend({
     this.$('.form-view').html(this.formView.render().el);
     this.$('.resumen-collection').replaceWith(this.resumenView.render().el);
     this.$('.notificaciones-view').html(this.notificacionesView.render().el);
+    this.$('.modal-view').html(ModalView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {

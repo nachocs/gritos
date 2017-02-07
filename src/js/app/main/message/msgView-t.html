@@ -7,12 +7,13 @@
       <div class="forward"><a href="#<%= obj.INDICE.replace(/^gritos\//,'') %>/<%= obj.ID %>"><i class="fa fa-chevron-circle-right fa-lg" aria-hidden="true"></i></a></div>
       <div class="share" title="share"><i class="fa fa-share-alt" aria-hidden="true"></i></div>
   	<% } %>
+
     <div class="show-admin" title="admin"><i class="fa fa-angle-down fa-lg" aria-hidden="true"></i>
       <div class="admin-menu">
         <ul>
-          <li><i class="fa fa-ban fa-lg" aria-hidden="true" title="spam!"></i></li>
-          <li><i class="fa fa-trash-o fa-lg" aria-hidden="true" title="delete"></i></li>
-          <li><i class="fa fa-pencil fa-lg" aria-hidden="true" title="edit"></i></li>
+          <li><i class="fa fa-ban fa-lg js-ban" aria-hidden="true" title="spam!"></i></li>
+          <li><i class="fa fa-trash-o fa-lg js-delete" aria-hidden="true" title="delete"></i></li>
+          <li><i class="fa fa-pencil fa-lg js-edit" aria-hidden="true" title="edit"></i></li>
         </ul>
       </div>
     </div>
