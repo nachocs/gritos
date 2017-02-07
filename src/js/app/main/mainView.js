@@ -15,6 +15,7 @@ export default Backbone.View.extend({
     this.msgCollectionView = new MsgCollectionView({
       collection: this.collection,
       userModel: options.userModel,
+      headModel: this.model,
     });
 
     this.userModel = options.userModel;
@@ -28,6 +29,7 @@ export default Backbone.View.extend({
       userModel: this.userModel,
       collection: this.collection,
       globalModel: options.globalModel,
+      type: 'foro',
     });
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,

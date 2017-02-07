@@ -41,7 +41,12 @@ export default Backbone.View.extend({
  	initialize(options) {
    this.globalModel = options.globalModel;
    this.userModel = options.userModel;
+   this.parentModel = options.parentModel;
+   this.type = options.type; // foro / msg
    this.formModel = new formModel();
+   if(options.msg){
+     this.formModel.set(options.msg.toJSON());
+   }
    this.showEmojisModal = false;
    this.tagPlaceShown = false;
   //  if (this.globalModel){
@@ -282,7 +287,7 @@ export default Backbone.View.extend({
   },
   getSelectedText(e) {
     let selection;
-    if (this.model && this.model.get('ID') && e.keyCode == 13){
+    if (this.type === 'msg' && e.keyCode == 13){
       this.submitPost();
     }
     //Get the selected stuff
@@ -326,15 +331,16 @@ export default Backbone.View.extend({
       uid: this.userModel.get('uid'),
       tags: this.formModel.get('tags'),
     };
-    if (this.model && this.model.get('ID')){
+    if (this.type === 'msg' && this.parentModel && this.parentModel.get('ID')){
       Object.assign(saveObj,
         {
           minigrito: {
-            indice: this.model.get('INDICE'),
-            entrada: this.model.get('ID'),
+            indice: this.parentModel.get('INDICE'),
+            entrada: this.parentModel.get('ID'),
           },
         });
-    } else if (this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun'){
+    }
+    if (this.type==='foro' && this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun'){
       Object.assign(saveObj,
         {
           foro: this.collection.id.replace(/\/$/,''),
@@ -398,8 +404,11 @@ export default Backbone.View.extend({
   },
   serializer(){
     const obj = this.userModel.toJSON();
-    if (this.model && this.model.get('ID')){
-      Object.assign(obj, { msg: this.model.toJSON() });
+    if (this.parentModel && this.parentModel.get('ID')){
+      Object.assign(obj, { parentModel: this.parentModel.toJSON() });
+    }
+    if (this.msg && this.msg.get('ID')){
+      Object.assign(obj, { msg: this.msg.toJSON() });
     }
     Object.assign(obj, {
       emojis: emojione.toImage(':smile:'),

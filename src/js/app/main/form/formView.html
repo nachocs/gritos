@@ -4,8 +4,8 @@
   <div contenteditable=true placeholder="Sueltalo!" class='formularioTextArea <%= active && 'on' %>' name="comments"><%= obj.formModel.comments %></div>
   <div class="thumbs-place"></div>
   <div class="file-submit">
-    <label for="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
-    <input type="file" id="file-submit<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>" title="choose a file to upload" name="FICHERO_IMAGEN1" multiple>
+    <label for="file-submit<%= obj.parentModel ? "-" + obj.parentModel.INDICE + "-" + obj.parentModel.ID : '' %>" class="custom-file-upload"><i class="material-icons">photo_camera</i></label>
+    <input type="file" id="file-submit<%= obj.parentModel ? "-" + obj.parentModel.INDICE + "-" + obj.parentModel.ID : '' %>" title="choose a file to upload" name="FICHERO_IMAGEN1" multiple>
   </div>
   <div class="emojis"><%= obj.emojis %></div>
   <div class="form-submit">
@@ -14,7 +14,7 @@
     </button>
   </div>
   <div class="emojis-modal-place"></div>
-  <% if (!obj.msg){ %>
+  <% if (!obj.parentModel){ %>
     <div class="tags-place">
       <i class="material-icons show-tags" style="cursor: pointer; transform:rotate(180deg);" >label_outline</i>
       <ul style=<%=obj.tagPlaceShown ? "display:block;" : "display:none;" %>>
@@ -31,8 +31,8 @@
         <% if (!obj.tags || obj.tags.length < 5){%>
         <li>
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input input-tag" type="text" id="newtag<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>">
-            <label class="mdl-textfield__label" name="tag" for="newtag<%= obj.msg ? "-" + obj.msg.INDICE + "-" + obj.msg.ID : '' %>">Tag</label>
+            <input class="mdl-textfield__input input-tag" type="text" id="newtag<%= obj.parentModel ? "-" + obj.parentModel.INDICE + "-" + obj.parentModel.ID : '' %>">
+            <label class="mdl-textfield__label" name="tag" for="newtag<%= obj.parentModel ? "-" + obj.parentModel.INDICE + "-" + obj.parentModel.ID : '' %>">Tag</label>
           </div>
         </li>
         <% } %>

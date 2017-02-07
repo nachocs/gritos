@@ -3,6 +3,7 @@ import Backbone from 'backbone';
 export default Backbone.View.extend({
   initialize(options) {
     this.userModel = options.userModel;
+    this.headModel = options.headModel;
     this.views = {};
     this.listenTo(this.collection, 'reset', this.render.bind(this));
     // this.listenTo(this.collection, 'sync', this.render.bind(this));
@@ -21,6 +22,7 @@ export default Backbone.View.extend({
     const msgView = new this.MsgView({
       model,
       userModel: this.userModel,
+      headModel: this.headModel,
     });
     let reverse = this.reverse || false;
     if (options && options.fromSocket){

@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import _ from 'lodash';
 import template from './modalView-t.html';
+import FormView from './form/formView';
 
 const Model = Backbone.Model.extend({
   defaults:{
@@ -29,6 +30,14 @@ const ModalView = Backbone.View.extend({
     }
     if (obj.action){
       this.action = obj.action;
+    }
+    if(obj.editForm){
+      const EditForm = new FormView({
+        userModel: obj.editForm.userModel,
+        collection: obj.editForm.collection,
+        msg: obj.editForm.msg,
+      });
+      this.$('.modal-body').html(EditForm.render().el);
     }
     this.undelegateEvents();
     this.delegateEvents();

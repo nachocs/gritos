@@ -32,6 +32,7 @@ export default Backbone.View.extend({
   className: 'msg',
   initialize(options) {
     this.userModel = options.userModel;
+    this.headModel = options.headModel;
     if (this.MiniMsgCollection) {
       const miniIndice = this.model.get('INDICE');
       // miniIndice = miniIndice.replace(/^.*\//,'');
@@ -43,20 +44,28 @@ export default Backbone.View.extend({
       this.minimsgsCollectionView = new this.MiniMsgCollectionView({
         collection: this.minimsgsCollection,
         userModel: this.userModel,
+        headModel: this.headModel,
       });
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'add', this.renderMiniMsgs.bind(this));
+      this.listenTo(this.userModel, 'change:ID', ()=>{
+        this.miniMsgsAlreadyRendered=false;
+        this.render();
+      });
     }
     this.molaView = new MolaView({
       model: this.model,
       userModel: this.userModel,
     });
-    this.formView = new FormView({
-      userModel: this.userModel,
-      collection: this.minimsgsCollection,
-      model: this.model,
-    });
+    if (this.showForm){
+      this.formView = new FormView({
+        userModel: this.userModel,
+        collection: this.minimsgsCollection,
+        parentModel: this.model,
+        type: 'msg',
+      });
+    }
     this.listenTo(this.model, 'destroy', this.remove.bind(this));
     this.listenTo(this, 'remove', this.clean.bind(this));
   },
@@ -65,6 +74,22 @@ export default Backbone.View.extend({
     'click .show-admin': 'toggleAdminMenu',
     'click .js-ban': 'showBanModal',
     'click .js-delete': 'showDeleteModal',
+    'click .js-edit': 'editThis',
+  },
+  editThis(){
+    ModalView.update({
+      model:
+      {
+        show: true,
+        header: 'EDITAR GRITO',
+      },
+      editForm:{
+        userModel: this.userModel,
+        collection: this.minimsgsCollection?this.minimsgsCollection:this.collection,
+        msg: this.model,
+      },
+    },
+    );
   },
   showBanModal(){
     ModalView.update({
@@ -153,13 +178,13 @@ export default Backbone.View.extend({
   },
   render() {
     this.$el.html(this.template(this.serializer()));
+    if (this.showForm){
+      this.$('.mini-form').html(this.formView.render().el);
+    }
     if (this.model.get('minimsgs')) {
       this.renderMiniMsgs();
     }
     this.$('.mola').replaceWith(this.molaView.render().el);
-    if (this.showForm){
-      this.$('.mini-form').html(this.formView.render().el);
-    }
     if (this.afterRender && typeof this.afterRender === 'function') {
       this.afterRender();
     }
@@ -262,7 +287,8 @@ export default Backbone.View.extend({
       tagsShown,
       showForm: this.showForm,
       images,
-      userModel:this.userModel,
+      userModel:this.userModel.toJSON(),
+      headModel: this.headModel.toJSON(),
     });
   },
   clean(){
