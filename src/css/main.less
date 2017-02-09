@@ -30,6 +30,10 @@ div.titulo{
   white-space: nowrap;
   flex: 10 0px;
   line-height: 1.5;
+  a{
+    text-decoration: none;
+    color:white;
+  }
 }
 .main{
 	a{
@@ -277,7 +281,7 @@ iframe {
 	ul.login-menu {
 	    width: 335px;
 	    position: absolute;
-	    top: 35px;
+	    top: 55px;
 	    right: 20px;
 	    padding: 20px;
 	    background: #FAFCF6;
@@ -287,18 +291,23 @@ iframe {
 	}
 	.fb-login{
 		height: 42px;
-	    color: white;
-	    background-color: #3a5795;
-	    border-radius: 5px;
-	    padding: 0px 0 0 0;
-	    margin: 20px 0 0;
-	    line-height: 40px;
-	    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
-	    cursor: pointer;
-	    &:hover{
-		    background-color: #435B8D;
-	    }
+    color: white;
+    background-color: #3a5795;
+    border-radius: 5px;
+    padding: 0px 0 0 0;
+    margin: 20px 0 0;
+    line-height: 40px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+    cursor: pointer;
+    &:hover{
+	    background-color: #435B8D;
+    }
+    .fa-facebook-official{
+      margin-left: 12px;
+      margin-top: 5px;
+    }
 		span{
+      vertical-align: top;
 			margin-left: 50px;
 		}
 	}
@@ -535,7 +544,7 @@ iframe {
   .file-submit{
     display: block;
     position: absolute;
-    bottom: 20px;
+    bottom: 14px;
   }
   button.mdl-button{
     margin-top: 10px;

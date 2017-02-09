@@ -366,11 +366,14 @@ export default Backbone.View.extend({
         },
       });
   },
-  clearArea() {
+  clearArea(focus) {
     // if (this.isClear){return;}
     // this.$('.formularioTextArea').html(this.formModel.get('comments')).addClass('on');
     this.active = true;
     this.$('.formularioTextArea').addClass('on');
+    if (focus){
+      this.$('.formularioTextArea').focus();
+    }
     // this.isClear =  true;
   },
   render() {

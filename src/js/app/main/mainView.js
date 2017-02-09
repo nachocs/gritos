@@ -11,14 +11,16 @@ import NotificacionesView from './header/notificacionesView';
 import ModalView from './modalView';
 
 export default Backbone.View.extend({
+  className: 'main',
+  template: _.template(template),
   initialize(options) {
+    this.userModel = options.userModel;
     this.msgCollectionView = new MsgCollectionView({
       collection: this.collection,
-      userModel: options.userModel,
+      userModel: this.userModel,
       headModel: this.model,
     });
 
-    this.userModel = options.userModel;
     this.loginView = new LoginView({
       userModel: this.userModel,
     });
@@ -40,8 +42,17 @@ export default Backbone.View.extend({
       logo:require('../../../img/logo50x50.gif'),
     };
   },
-  className: 'main',
-  template: _.template(template),
+  events:{
+    'click .new-msg': 'newMsg',
+  },
+  newMsg(){
+    if (this.userModel && this.userModel.get('ID')){
+      this.$el.find('main').scrollTop(0);
+      this.formView.clearArea(true);
+    } else{
+      this.loginView.openMenu();
+    }
+  },
   render() {
     this.$el.html(this.template(this.serializer()));
     this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
