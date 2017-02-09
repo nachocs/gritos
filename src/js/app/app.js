@@ -16,7 +16,7 @@ const App = Backbone.View.extend({
     this.slick = Slick;
     this.globalModel = new GlobalModel();
     this.headModel = new HeadModel({},{globalModel:this.globalModel});
-    this.msgCollection = new MsgCollection([],{parentModel:this.globalModel});
+    this.msgCollection = new MsgCollection([],{globalModel:this.globalModel});
     this.resumenCollection = new ResumenCollection();
     this.resumenCollection.fetch();
 

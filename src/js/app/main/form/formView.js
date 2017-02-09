@@ -351,13 +351,14 @@ export default Backbone.View.extend({
     this.formModel.save(
       saveObj,
       {
-        success(data) {
+        success(model, data) {
           self.isSaving = false;
           self.formModel.clear();
           self.isClear = false;
           self.render();
-          self.collection.reset();
-          self.collection.fetch();
+          self.collection.add(data.mensaje, {merge:true, individual:true});
+          // self.collection.reset();
+          // self.collection.fetch();
           console.log('success', data);
         },
         error(data) {

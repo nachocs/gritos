@@ -38,6 +38,7 @@ const ModalView = Backbone.View.extend({
         msg: obj.editForm.msg,
       });
       this.$('.modal-body').html(EditForm.render().el);
+      this.action = EditForm.submitPost.bind(EditForm);
     }
     this.undelegateEvents();
     this.delegateEvents();

@@ -10,7 +10,8 @@ import vent from '../util/vent';
 export default Backbone.Collection.extend({
   model,
   initialize(models, options) {
-    this.parentModel = options.parentModel;
+    this.globalModel = options.globalModel;
+    this.msgModel = options.msgModel;
     this.subscriptions = {};
     if (options && options.id) {
       this.id = options.id;
@@ -30,17 +31,19 @@ export default Backbone.Collection.extend({
     if (this.id){
       this.subscribe(this.id);
     }
-    if (this.parentModel){
-      this.listenTo(this.parentModel, 'change', () => {
+    if (this.globalModel){
+      this.listenTo(this.globalModel, 'change', () => {
         this.clean();
-        this.id = this.parentModel.get('ID'); // para cuando se cambia de foro principal
-        if (this.parentModel.get('msg') || this.parentModel._previousAttributes.msg){
+        this.id = this.globalModel.get('ID'); // para cuando se cambia de foro principal
+        if (this.globalModel.get('msg') || this.globalModel._previousAttributes.msg){
           this.trigger('reset');
         }
         this.subscribe(this.id);
         this.fetch();
       });
-      this.listenTo(this.parentModel, 'remove', this.clean.bind(this));
+    }
+    if (this.msgModel){ // para mini collections
+      this.listenTo(this.msgModel, 'remove', this.clean.bind(this));
     }
   },
   clean(){
@@ -75,15 +78,15 @@ export default Backbone.Collection.extend({
   },
   url() {
     let route = '';
-    if (this.parentModel.get('msg')){
-      route = this.id + '/' + this.parentModel.get('msg');
+    if (this.globalModel && this.globalModel.get('msg')){
+      route = this.id + '/' + this.globalModel.get('msg');
     } else{
       route = this.id;
     }
     return endpoints.apiUrl + 'index.cgi?' + route;
   },
   nextPage() {
-    if (!this.loading && !this.parentModel.get('msg')) {
+    if (!this.loading && this.globalModel && !this.globalModel.get('msg')) {
       this.fetch({
         data: {
           init: this.lastEntry,
@@ -93,7 +96,7 @@ export default Backbone.Collection.extend({
     }
   },
   parse(resp) {
-    if (this.parentModel.get('msg')){
+    if (this.globalModel && this.globalModel.get('msg')){
       resp = [resp];
     }
     this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));

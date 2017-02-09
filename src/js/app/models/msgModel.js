@@ -25,4 +25,10 @@ export default Backbone.Model.extend({
   url() {
     return endpoints.apiUrl + 'index.cgi?' + this.get('INDICE') + '/' + this.get('ID');
   },
+  parse(resp){
+    if (resp.INDICE){
+      resp.indice = resp.INDICE;
+    }
+    return resp;    
+  },
 });

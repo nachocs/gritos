@@ -38,7 +38,7 @@ export default Backbone.View.extend({
       // miniIndice = miniIndice.replace(/^.*\//,'');
       this.minimsgsCollection = new this.MiniMsgCollection([], {
         id: `${miniIndice}/${this.model.id}/`,
-        parentModel: this.model,
+        msgModel: this.model,
       });
       // this.minimsgsCollection.comparator = (a,b) => (a.get('ID') - b.get('ID'));
       this.minimsgsCollectionView = new this.MiniMsgCollectionView({
@@ -49,10 +49,6 @@ export default Backbone.View.extend({
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'add', this.renderMiniMsgs.bind(this));
-      this.listenTo(this.userModel, 'change:ID', ()=>{
-        this.miniMsgsAlreadyRendered=false;
-        this.render();
-      });
     }
     this.molaView = new MolaView({
       model: this.model,
@@ -68,6 +64,14 @@ export default Backbone.View.extend({
     }
     this.listenTo(this.model, 'destroy', this.remove.bind(this));
     this.listenTo(this, 'remove', this.clean.bind(this));
+    this.listenTo(this.userModel, 'change:ID', ()=>{
+      this.miniMsgsAlreadyRendered=false;
+      this.render();
+    });
+    this.listenTo(this.model, 'change', ()=>{
+      this.miniMsgsAlreadyRendered=false;
+      this.render();
+    });
   },
   events: {
     'click .spoiler': 'openSpoiler',
@@ -85,7 +89,7 @@ export default Backbone.View.extend({
       },
       editForm:{
         userModel: this.userModel,
-        collection: this.minimsgsCollection?this.minimsgsCollection:this.collection,
+        collection: this.model.collection,
         msg: this.model,
       },
     },

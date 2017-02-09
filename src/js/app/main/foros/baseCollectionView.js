@@ -25,7 +25,7 @@ export default Backbone.View.extend({
       headModel: this.headModel,
     });
     let reverse = this.reverse || false;
-    if (options && options.fromSocket){
+    if (options && (options.fromSocket || options.individual)){
       reverse = !reverse;
     }
     this.views[model.id] = msgView;
