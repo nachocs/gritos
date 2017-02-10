@@ -285,6 +285,19 @@ iframe {
 	    right: 20px;
 	    padding: 20px;
 	    background: #FAFCF6;
+      &.short{
+        width: auto;
+        height: auto;
+        min-height: auto;
+        .logout{
+          cursor: pointer;
+          display: inline-block;
+          word-spacing: initial;
+        }
+      }
+      li{
+        list-style: none;
+      }
 	}
 	.mdl-menu__item{
 		line-height: initial;
@@ -758,6 +771,26 @@ div[contenteditable = true]:empty:before{
       background-color: rgba(0, 0, 0, .05);
       text-align: center;
       padding: 8px;
+    }
+  }
+}
+
+.avisos-view{
+  position: absolute;
+  z-index: 2;
+  .avisos-main{
+    border-radius: 50px;
+    background-color: grey;
+    top: 75px;
+    left: 5px;
+    position: absolute;
+    white-space: nowrap;
+    color: white;
+    padding: 2px 10px;
+    a{
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
     }
   }
 }

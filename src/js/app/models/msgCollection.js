@@ -61,6 +61,7 @@ export default Backbone.Collection.extend({
     Ws.subscribe('collection:' + room);
     vent.on('updated_' + 'collection:' + room, data => {
       this.add(data.entry, {fromSocket:true});
+      vent.trigger('avisos', data);
       console.log('updated', data.room, data.entry);
     });
   },

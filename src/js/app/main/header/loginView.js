@@ -24,6 +24,11 @@ export default Backbone.View.extend({
     },
     'click .login-menu-button': 'openMenu',
     'click .fb-login': 'fBlogin',
+    'click .js-logout': 'logOut',
+  },
+  logOut(){
+    Cookies.set('city', null);
+    this.model.clear();
   },
   fBlogin() {
     FB.login(response => {
@@ -34,11 +39,17 @@ export default Backbone.View.extend({
   },
   openMenu() {
     this.$('.login-menu').toggleClass('hidden');
+    this.materialDesignUpdate();
+
   },
   checkCookie(){
     const cookie = Cookies.get('city');
-    const obj = JSON.parse(cookie);
-    this.loginCall(obj);
+    if (cookie){
+      const obj = JSON.parse(cookie);
+      if (obj && obj.uid){
+        this.loginCall(obj);
+      }
+    }
   },
   loginCall(data){
     const self = this;
@@ -78,17 +89,19 @@ export default Backbone.View.extend({
       }
     }
   },
-  render() {
+  materialDesignUpdate(){
     const self = this;
-    this.$el.html(this.template(this.model.toJSON()));
     _.defer(() => {
       self.$el.find('[class*=" mdl-js"]').each(function () {
         componentHandler.upgradeElement(this);
       });
     });
 
+  },
+  render() {
+    this.$el.html(this.template(this.model.toJSON()));
+    this.materialDesignUpdate();
     this.delegateEvents();
-
     return this;
   },
 });

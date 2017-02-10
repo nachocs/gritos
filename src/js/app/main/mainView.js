@@ -9,6 +9,7 @@ import FormView from './form/formView';
 import ResumenView from './header/resumenView';
 import NotificacionesView from './header/notificacionesView';
 import ModalView from './modalView';
+import AvisosView from './header/avisosView';
 
 export default Backbone.View.extend({
   className: 'main',
@@ -62,6 +63,7 @@ export default Backbone.View.extend({
     this.$('.resumen-collection').replaceWith(this.resumenView.render().el);
     this.$('.notificaciones-view').html(this.notificacionesView.render().el);
     this.$('.modal-view').html(ModalView.render().el);
+    this.$('.avisos-view').html(AvisosView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {
