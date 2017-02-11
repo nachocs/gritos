@@ -261,7 +261,7 @@ export default Backbone.View.extend({
     }
     if (!this.model.get('INDICE').match(/^ciudadanos\//)){
       mainName = this.model.get('INDICE');
-      mainName = mainName.replace(/^gritos\//, '');
+      mainName = mainName.replace(/^gritos\//, '').replace(/^foros\//, '');
       tagsShown.push({
         name: mainName,
         value: mainName,

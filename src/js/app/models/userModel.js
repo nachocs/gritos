@@ -33,7 +33,7 @@ const UserModel = Backbone.Model.extend({
     const self = this;
     $.ajax({
       type: 'POST',
-      url: 'api/login.cgi',
+      url: endpoints.apiUrl + 'login.cgi',
       data: {
         uid,
       },

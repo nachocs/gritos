@@ -1,18 +1,29 @@
 <a href="#<%=obj.indice.replace(/^gritos\//,'')%>">
 <% if (obj.tipo === 'mini' || obj.tipo === 'foro'){ %>
+  <div style="width:40px; height:40px; float:left">
+  <% if (obj.entry.emocion){ %>
+    <img src="<%= obj.entry.emocion %>" style="height:40px">
+  <% } else { %>
+    <i class="material-icons" style="height:40px">face</i>
+  <% } %>
+  </div>
+  <div style="margin-left:40px;">
   <% if (obj.entry && obj.entry.name){ %>
-    <%= obj.entry.name %><%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' mas') : '' %> <% if(obj.diferencia === 1){ %>coment&oacute;<%}else{%>comentaron<%}%> en
+    <%= obj.entry.name %><%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %> <% if(obj.diferencia === 1){ %>coment&oacute;<%}else{%>comentaron<%}%> en
   <% } else { %>
     <%= obj.diferencia %> coment&oacute; en
   <% } %>
   <% if (obj.parent){ %>
     <% if (obj.parent.ciudadano === obj.user.ID){ %>
-      tu mensaje
+      tu grito
     <% } else { %>
-      el mensaje de <%= obj.parent.name %>
+      el grito de <%= obj.parent.name %>
     <% } %>
+  <% } else if(obj.indice.match(/\//)){ %>
+    un grito de #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/\d+$/,'') %>
   <% } else {%>
-    un mensaje
+    #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'') %>
   <% } %>
 <% } %>
+</div>
 </a>

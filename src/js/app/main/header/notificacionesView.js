@@ -2,7 +2,7 @@ import Backbone from 'backbone';
 import template from './notificacionesView-t.html';
 import _ from 'lodash';
 import userModel from '../../models/userModel';
-import NotificacionesCollectionView from './NotificacionesCollectionView';
+import NotificacionesCollectionView from './notificacionesCollectionView';
 import NotificacionesCollection from '../../models/NotificacionesCollection';
 
 const Model = Backbone.Model.extend({
@@ -23,6 +23,7 @@ export default Backbone.View.extend({
   },
   initialize(){
     this.notificacionesCollectionView = new NotificacionesCollectionView();
+
     this.listenTo(this.model, 'change', this.render.bind(this));
     this.listenTo(userModel, 'change', (user)=>{
       this.model.set('active', user.id ? true : false);
@@ -36,7 +37,9 @@ export default Backbone.View.extend({
   },
   render(){
     this.$el.html(this.template(this.serializer()));
-    this.$('.notificaciones-collection-view').html(this.notificacionesCollectionView.render().el);
+    if (NotificacionesCollection.length>0){
+      this.$('.notificaciones-collection-view').html(this.notificacionesCollectionView.render().el);
+    }
     this.delegateEvents();
     return this;
   },

@@ -14,6 +14,13 @@
 body{
 
 }
+a{
+  text-decoration: none;
+  color: inherit;
+  &:hover{
+    text-decoration: none;
+  }
+}
 
 div.titulo{
 	font-family: newdreamers;
@@ -691,7 +698,7 @@ div[contenteditable = true]:empty:before{
   .notificaciones-collection-view{
     display: none;
     position: absolute;
-    width: 200px;
+    // width: 200px;
     max-height: 300px;
     &.active{
       display: block;
@@ -699,9 +706,16 @@ div[contenteditable = true]:empty:before{
     ul{
       background-color: #e7ffd2;
       width: initial;
-      padding: 5px 20px;
+      padding: 5px 10px;
       li{
+        line-height: 1.5em;
         list-style-type: none;
+        &:hover{
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+        a{
+          text-decoration: none;
+        }
       }
     }
   }
@@ -793,4 +807,15 @@ div[contenteditable = true]:empty:before{
       font-weight: bold;
     }
   }
+}
+
+nav.resumen-collection{
+  &.mdl-navigation{
+    a.mdl-navigation__link{
+      padding: 5px 40px;
+    }
+  }
+}
+h6.resumen-subheader{
+  padding: 5px 40px;
 }

@@ -1,9 +1,15 @@
 import Backbone from 'backbone';
 import ResumenItemView from './resumenItemView';
+import _ from 'lodash';
+import template from './resumenView-t.html';
+
+const Model = Backbone.Model.extend({});
 
 export default Backbone.View.extend({
+  model: new Model(),
   className: 'mdl-navigation resumen-collection',
   tagName: 'nav',
+  template: _.template(template),
   initialize() {
     this.views = {};
     this.listenTo(this.collection, 'reset', this.render.bind(this));
@@ -12,7 +18,7 @@ export default Backbone.View.extend({
     this.listenTo(this.collection, 'remove', this.removeOne.bind(this));
   },
   render() {
-    this.$el.html('');
+    this.$el.html(this.template(this.serializer()));
     this.collection.each(function (model) {
       this.renderOne(model);
     }, this);
@@ -24,21 +30,20 @@ export default Backbone.View.extend({
       model,
       attributes:()=> {
         return{
-          href: '#' + model.get('name'),
+          href: '#' + model.get('name').replace(/gritos\//,'').replace(/foros\//,''),
         };
       },
     });
     this.views[model.id] = msgView;
-    if (this.reverse){
-      this.$el.prepend(msgView.render().el);
-    } else {
-      this.$el.append(msgView.render().el);
-    }
+    this.$el.append(msgView.render().el);
   },
   removeOne(model){
     if (this.views[model.id]){
       this.views[model.id].trigger('remove');
       delete this.views[model.id];
     }
+  },
+  serializer(){
+    return this.model.toJSON();
   },
 });

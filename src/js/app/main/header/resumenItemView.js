@@ -12,7 +12,12 @@ export default Backbone.View.extend({
     return this;
   },
   serializer(){
-    return this.model.toJSON();
+    return Object.assign({},
+      this.model.toJSON(),
+      {
+        name:this.model.get('name')?this.model.get('name').replace(/gritos\//,'').replace(/foros\//,''):'',
+      }
+    );
   },
 
 });

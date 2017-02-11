@@ -6,6 +6,7 @@ import mockup from '../util/mockups';
 // import io from 'socket.io-client';
 import Ws from '../util/Ws';
 import vent from '../util/vent';
+import NotificacionesUserModel from './notificacionesUserModel';
 
 export default Backbone.Collection.extend({
   model,
@@ -100,6 +101,8 @@ export default Backbone.Collection.extend({
     if (this.globalModel && this.globalModel.get('msg')){
       resp = [resp];
     }
+    const lastReadEntry = Math.max.apply(null, _.map(resp, 'num'));
+    NotificacionesUserModel.update('foro', this.id, lastReadEntry);
     this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));
     return resp;
   },
