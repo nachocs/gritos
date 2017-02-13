@@ -1,7 +1,7 @@
 <a href="#<%=obj.indice.replace(/^gritos\//,'')%>">
-<% if (obj.tipo === 'mini' || obj.tipo === 'foro'){ %>
+<% if (obj.tipo === 'minis' || obj.tipo === 'foro'){ %>
   <div style="width:40px; height:40px; float:left">
-  <% if (obj.entry.emocion){ %>
+  <% if (obj.entry && obj.entry.emocion){ %>
     <img src="<%= obj.entry.emocion %>" style="height:40px">
   <% } else { %>
     <i class="material-icons" style="height:40px">face</i>

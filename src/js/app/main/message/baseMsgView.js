@@ -68,7 +68,7 @@ export default Backbone.View.extend({
       this.miniMsgsAlreadyRendered=false;
       this.render();
     });
-    this.listenTo(this.model, 'change', ()=>{
+    this.listenTo(this.model, 'change:comments', ()=>{
       this.miniMsgsAlreadyRendered=false;
       this.render();
     });
@@ -188,7 +188,7 @@ export default Backbone.View.extend({
     if (this.model.get('minimsgs')) {
       this.renderMiniMsgs();
     }
-    this.$('.mola').replaceWith(this.molaView.render().el);
+    this.$('.mola-view').first().replaceWith(this.molaView.render().el);
     if (this.afterRender && typeof this.afterRender === 'function') {
       this.afterRender();
     }

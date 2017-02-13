@@ -63,6 +63,9 @@ export default Backbone.Collection.extend({
     vent.on('updated_' + 'collection:' + room, data => {
       this.add(data.entry, {fromSocket:true});
       vent.trigger('avisos', data);
+      const tipo = this.msgModel ? 'minis' : 'foro';
+      NotificacionesUserModel.update(tipo, this.id.replace(/\/$/,''), data.entry.ID);
+
       console.log('updated', data.room, data.entry);
     });
   },
@@ -101,9 +104,12 @@ export default Backbone.Collection.extend({
     if (this.globalModel && this.globalModel.get('msg')){
       resp = [resp];
     }
-    const lastReadEntry = Math.max.apply(null, _.map(resp, 'num'));
-    NotificacionesUserModel.update('foro', this.id, lastReadEntry);
-    this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));
+    if (resp.length>0){
+      const lastReadEntry = Math.max.apply(null, _.map(resp, 'num'));
+      const tipo = this.msgModel ? 'minis' : 'foro';
+      NotificacionesUserModel.update(tipo, this.id.replace(/\/$/,''), lastReadEntry);
+      this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));
+    }
     return resp;
   },
 });

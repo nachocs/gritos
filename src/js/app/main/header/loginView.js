@@ -59,6 +59,7 @@ export default Backbone.View.extend({
       data,
       success(data) {
         if (data.status !== 'ok') {
+          self.showError('no tira');
           console.log('error: ', data.status);
         } else {
           self.model.set(data.user);
@@ -88,6 +89,9 @@ export default Backbone.View.extend({
         });
       }
     }
+  },
+  showError(error){
+    this.$('.error-login').html(error).addClass('active');
   },
   materialDesignUpdate(){
     const self = this;

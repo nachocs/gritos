@@ -28,12 +28,24 @@ const NotificacionesUserModel = Backbone.Model.extend({
     }
   },
   runQueue(){
+    let changed = false;
     this.updateQueue.forEach((queue)=>{
-      this.update(queue.tipo, queue.foro, queue.lastEntry);
+      if(this.runUpdate(queue.tipo, queue.foro, queue.lastEntry)){
+        changed = true;
+      }
     });
     this.updateQueue = [];
+    if (changed){
+      this.save();
+    }
   },
   update(tipo, foro, lastEntry){
+    if(this.runUpdate(tipo, foro, lastEntry)){
+      this.save();
+    }
+  },
+  runUpdate(tipo, foro, lastEntry){
+    if (tipo !== 'foro' && tipo !== 'minis' && tipo !== 'msg'){return;}
     let changed = false;
     if (!foro.match(/^gritos/)){
       foro = 'gritos/' + foro;
@@ -54,13 +66,8 @@ const NotificacionesUserModel = Backbone.Model.extend({
           }
         });
         this.set(tipo, newarray.join('|'));
-      } else {
-        changed = true;
-        this.set(tipo,foro+','+lastEntry);
       }
-      if (changed){
-        this.save();
-      }
+      return changed;
     }
   },
 });

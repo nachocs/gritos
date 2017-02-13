@@ -20,6 +20,7 @@ export default Backbone.View.extend({
   },
   toggleNotificaciones(){
     this.model.set('show', !this.model.get('show'));
+    this.model.set('counter', 0);
   },
   initialize(){
     this.notificacionesCollectionView = new NotificacionesCollectionView();
