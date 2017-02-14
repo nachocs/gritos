@@ -91,10 +91,10 @@ export default Backbone.Collection.extend({
     return endpoints.apiUrl + 'index.cgi?' + route;
   },
   nextPage() {
-    if (!this.loading && this.globalModel && !this.globalModel.get('msg')) {
+    if (!this.loading) {
       this.fetch({
         data: {
-          init: this.lastEntry,
+          init: this.firstEntry,
         },
         remove: false,
       });
@@ -108,7 +108,7 @@ export default Backbone.Collection.extend({
       const lastReadEntry = Math.max.apply(null, _.map(resp, 'num'));
       const tipo = this.msgModel ? 'minis' : 'foro';
       NotificacionesUserModel.update(tipo, this.id.replace(/\/$/,''), lastReadEntry);
-      this.lastEntry = Math.min.apply(null, _.map(resp, 'num'));
+      this.firstEntry = Math.min.apply(null, _.map(resp, 'num'));
     }
     return resp;
   },

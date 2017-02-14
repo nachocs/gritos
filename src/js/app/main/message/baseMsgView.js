@@ -8,6 +8,7 @@ import template from './msgView-t.html';
 import FormView from '../form/formView';
 import Util from '../../util/util';
 import ModalView from '../modalView';
+import PreviousMsgView from './previousMsgView';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -46,6 +47,7 @@ export default Backbone.View.extend({
         userModel: this.userModel,
         headModel: this.headModel,
       });
+      this.previousMsgView = new PreviousMsgView({collection:this.minimsgsCollection});
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'add', this.renderMiniMsgs.bind(this));
@@ -174,6 +176,7 @@ export default Backbone.View.extend({
 
   renderMiniMsgs() {
     if (this.minimsgsCollectionView && !this.miniMsgsAlreadyRendered){
+      this.$('.previous-msgs-view').html(this.previousMsgView.render().el);
       this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
       this.minimsgsCollection.fetch();
       this.miniMsgsAlreadyRendered = true;

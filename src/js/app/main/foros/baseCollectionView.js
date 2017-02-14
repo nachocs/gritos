@@ -1,4 +1,5 @@
 import Backbone from 'backbone';
+import $ from 'jquery';
 
 export default Backbone.View.extend({
   initialize(options) {
@@ -29,10 +30,13 @@ export default Backbone.View.extend({
       reverse = !reverse;
     }
     this.views[model.id] = msgView;
+    const view = $(msgView.render().el).hide();
     if (reverse){
-      this.$el.prepend(msgView.render().el);
+      view.prependTo(this.$el).slideDown('slow');
+      // this.$el.prepend(msgView.render().el);
     } else {
-      this.$el.append(msgView.render().el);
+      view.appendTo(this.$el).slideDown('slow');
+      // this.$el.append(msgView.render().el);
     }
   },
   removeOne(model){
