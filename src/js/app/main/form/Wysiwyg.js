@@ -15,6 +15,7 @@ export default Backbone.View.extend({
     'click [data-type=link]': 'link',
     'click [data-type=h2]': 'h2',
     'click [data-type=h3]': 'h3',
+    'click [data-type=spoiler]': 'spoiler',
     'click a': 'cancel',
   },
   render() {
@@ -24,11 +25,18 @@ export default Backbone.View.extend({
     this.$el.append('<a href="#" data-type="link" style="text-decoration: underline;" title="link">A</a>');
     this.$el.append('<a href="#" data-type="h2" title="large">XL</a>');
     this.$el.append('<a href="#" data-type="h3" title="medium">M</a>');
+    this.$el.append('<a href="#" data-type="spoiler" title="spoiler">SP</a>');
     this.delegateEvents();
 
     return this;
   },
-
+  spoiler(e){
+    e.preventDefault();
+    if (!this.selectTest()) {
+      return;
+    }
+    return this.exec('insertText', '-:SPOILER[' + this.getSelectedText() + ']SPOILER:-');
+  },
   bold(e) {
     e.preventDefault();
     if (!this.selectTest()) {
@@ -112,7 +120,6 @@ export default Backbone.View.extend({
 
   selectTest() {
     if (this.getSelectedText().length === 0) {
-      alert('Select some text first.');
       return false;
     }
     return true;
