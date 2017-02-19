@@ -2,12 +2,12 @@
 <div class='modal-view'></div>
 <div class='avisos-view'></div>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header">
+  <header class="mdl-layout__header"  <% if (obj.INDICE === 'ciudadanos'){ %> style="background-color:rgb(195, 80, 74);" <% } %> >
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
       <div class="logomask pseudo">
         <a href="#">
-          <img src="<%= obj.imgLogo %>" alt="Gritos.com" />
+          <img src="<%= obj.imgLogo %>" alt="Gritos.com" title="home de gritos.com"/>
         </a>
       </div>
       <svg height="0" style="display: none;">

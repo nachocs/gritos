@@ -10,7 +10,13 @@ export default Backbone.Router.extend({
     this.model = options.model;
     // options.collection.fetch();
   },
-  defaultRoute() {
+  defaultRoute(route) {
+    if (route && route.length>0){
+      const [, foro, entrada] = route.match(/(.*)\/(\d+)/);
+      if (foro && entrada){
+        return this.mensaje(foro, entrada);
+      }
+    }
     return this.foro();
   },
   foro(foro) {

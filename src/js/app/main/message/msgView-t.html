@@ -24,7 +24,7 @@
     <% } %>
   </div>
 	<div class="mdl-card__title">
-		<div class="mdl-card__title-text"><%= name %></div>
+		<div class="mdl-card__title-text"><% if (obj.ciudadano){ %><a href="/#ciudadanos/<%= obj.ciudadano %>"><%}%><%= name %><% if (obj.ciudadano){ %></a><%}%></div>
 		<div class="mdl-card__subtitle-text"><%= date %></div>
 	</div>
 	<div class="mdl-card__supporting-text">

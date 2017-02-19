@@ -79,6 +79,32 @@ export default Backbone.View.extend({
     'click .show-tags': 'toggleTags',
     'keyup .input-tag': 'inputTag',
     'click [data-delete-tag]':'deleteTag',
+    'paste .formularioTextArea' : 'onPaste',
+  },
+  onPaste(e) {
+    function replaceStyleAttr (str) {
+      return str.replace(/(<[\w\W]*?)(style)([\w\W]*?>)/g, function (a, b, c, d) {
+        return b + 'style_replace' + d;
+      });
+    }
+
+    function removeTagsExcludeA (str) {
+      return str.replace(/<\/?((?!a)(\w+))\s*[\w\W]*?>/g, '');
+    }
+
+    e.preventDefault();
+    let text = '';
+    if (e.clipboardData || e.originalEvent.clipboardData) {
+      text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    } else if (window.clipboardData) {
+      text = window.clipboardData.getData('Text');
+    }
+    text = removeTagsExcludeA(replaceStyleAttr(text));
+    if (document.queryCommandSupported('insertText')) {
+      document.execCommand('insertText', false, text);
+    } else {
+      document.execCommand('paste', false, text);
+    }
   },
   deleteTag(e){
     const tag = this.$(e.currentTarget).data('delete-tag');

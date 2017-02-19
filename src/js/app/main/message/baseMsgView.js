@@ -294,7 +294,7 @@ export default Backbone.View.extend({
       tagsShown,
       showForm: this.showForm,
       images,
-      userModel:this.userModel.toJSON(),
+      userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
     });
   },

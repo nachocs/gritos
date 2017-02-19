@@ -16,6 +16,7 @@ export default Backbone.View.extend({
   template: _.template(template),
   initialize(options) {
     this.userModel = options.userModel;
+    this.globalModel = options.globalModel;
     this.msgCollectionView = new MsgCollectionView({
       collection: this.collection,
       userModel: this.userModel,
@@ -31,7 +32,7 @@ export default Backbone.View.extend({
     this.formView = new FormView({
       userModel: this.userModel,
       collection: this.collection,
-      globalModel: options.globalModel,
+      globalModel: this.globalModel,
       type: 'foro',
     });
     this.resumenView = new ResumenView({
