@@ -11,6 +11,7 @@ export default Backbone.Model.extend({
     Titulo: 'gritos.com',
     INTRODUCCION: '',
     INDICE: '',
+    Userid: null,
   },
   idAttribute: 'Name',
   urlRoot: endpoints.apiUrl  + 'head.cgi?',
