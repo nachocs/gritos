@@ -36,6 +36,7 @@ const ModalView = Backbone.View.extend({
         userModel: obj.editForm.userModel,
         collection: obj.editForm.collection,
         msg: obj.editForm.msg,
+        isForo:obj.editForm.isForo,
       });
       this.$('.modal-body').html(EditForm.render().el);
       this.action = EditForm.submitPost.bind(EditForm);

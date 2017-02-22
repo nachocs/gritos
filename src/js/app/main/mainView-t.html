@@ -44,6 +44,9 @@
   	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.INTRODUCCION %></div>
   	  	</div>
       <% } %>
+      <% if (userModel.ID === obj.Userid){ %>
+        <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
+      <% } %>
       <div class="form-view"></div>
   		<div class="msg-list">
   		</div>

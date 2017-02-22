@@ -46,6 +46,22 @@ export default Backbone.View.extend({
   },
   events:{
     'click .new-msg': 'newMsg',
+    'click .foro-admin': 'openForoAdmin',
+  },
+  openForoAdmin(){
+    ModalView.update({
+      model:
+      {
+        show: true,
+        header: 'EDITAR FORO',
+      },
+      editForm:{
+        userModel: this.userModel,
+        msg: this.model,
+        isForo: true,
+      },
+    },
+    );
   },
   newMsg(){
     if (this.userModel && this.userModel.get('ID')){
@@ -107,6 +123,7 @@ export default Backbone.View.extend({
       {
         imgLogo:this.images.logo,
         Titulo: this.model.get('Titulo').toLowerCase(),
+        userModel: this.userModel.toJSON(),
       });
   },
 

@@ -1,5 +1,4 @@
 <a href="#<%=obj.indice.replace(/^gritos\//,'')%>">
-<% if (obj.tipo === 'minis' || obj.tipo === 'foro'){ %>
   <div style="width:40px; height:40px; float:left">
   <% if (obj.entry && obj.entry.emocion){ %>
     <img src="<%= obj.entry.emocion %>" style="height:40px">
@@ -9,7 +8,19 @@
   </div>
   <div style="margin-left:40px;">
   <% if (obj.entry && obj.entry.name){ %>
-    <%= obj.entry.name %><%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %> <% if(obj.diferencia === 1){ %>coment&oacute;<%}else{%>comentaron<%}%> en
+    <%= obj.entry.name %>
+    <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
+    <% if (obj.tipo === 'msg'){ %>
+      <% if (obj.subtipo === 'love'){ %>
+        <i class="fa fa-heart love active" aria-hidden="true"></i>
+      <% } else if (obj.subtipo === 'mola'){ %>
+        <i class="fa fa-thumbs-up mola active" aria-hidden="true"></i>
+      <% } else if (obj.subtipo === 'nomola'){ %>
+        <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
+      <% } %>
+    <% } else { %>
+      <%= (obj.diferencia === 1) ? ' coment&oacute;' : ' comentaron' %> en
+    <% } %>
   <% } else { %>
     <%= obj.diferencia %> coment&oacute; en
   <% } %>
@@ -24,6 +35,5 @@
   <% } else {%>
     #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'') %>
   <% } %>
-<% } %>
 </div>
 </a>

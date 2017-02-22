@@ -42,6 +42,7 @@ export default Backbone.View.extend({
    this.globalModel = options.globalModel;
    this.userModel = options.userModel;
    this.parentModel = options.parentModel;
+   this.isForo = options.isForo;
    this.type = options.type; // foro / msg
    this.formModel = new formModel();
    if(options.msg){
@@ -381,8 +382,10 @@ export default Backbone.View.extend({
           self.isSaving = false;
           self.formModel.clear();
           self.isClear = false;
-          self.render();
-          self.collection.add(data.mensaje, {merge:true, individual:true});
+          if (!self.isForo){
+            self.render();
+            self.collection.add(data.mensaje, {merge:true, individual:true});
+          }
           // self.collection.reset();
           // self.collection.fetch();
           console.log('success', data);
@@ -446,6 +449,7 @@ export default Backbone.View.extend({
       tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
       tagPlaceShown: this.tagPlaceShown,
       active: this.active,
+      isForo: this.isForo,
     });
     return obj;
   },

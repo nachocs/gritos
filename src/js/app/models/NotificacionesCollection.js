@@ -9,9 +9,13 @@ const NotificacionesCollection = Backbone.Collection.extend({
       Ws.prepararNotificaciones(user.id); // llama a que se preparen las notificaciones
       vent.on('notificaciones_' + user.id, data => { // recibe una lista de notificaciones
         console.log('recibida notificacion', data);
-        if (data[0].entry && data[0].entry.ciudadano !== userModel.get('ID')){
-          this.add(data, {fromSocket:true});
-        }
+        data.forEach((not)=>{
+          if (not.entry){
+            if(not.entry.ciudadano !== userModel.get('ID') || not.tipo === 'msg'){
+              this.add(data, {fromSocket:true});
+            }
+          }
+        });
       });
     });
   },

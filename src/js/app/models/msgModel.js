@@ -11,7 +11,8 @@ export default Backbone.Model.extend({
     });
     this.listenTo(this, 'sync', () => {
       if (this.get('INDICE') && this.get('ID')){
-        Ws.update(this.get('INDICE') + '/' + this.get('ID'));
+        const subtipo = this.changed.mola ? 'mola' : this.changed.nomola ? 'nomola' : this.changed.love ? 'love' : null;
+        Ws.update(this.get('INDICE') + '/' + this.get('ID'), subtipo);
       }
     });
     this.listenTo(this, 'remove', ()=>{
@@ -29,6 +30,6 @@ export default Backbone.Model.extend({
     if (resp.INDICE){
       resp.indice = resp.INDICE;
     }
-    return resp;    
+    return resp;
   },
 });

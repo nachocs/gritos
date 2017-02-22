@@ -13,6 +13,12 @@ const Model = Backbone.Model.extend({
 const AvisosView = Backbone.View.extend({
   model: new Model(),
   template: _.template(template),
+  events:{
+    'click .avisos-main':'closeThis',
+  },
+  closeThis(){
+    this.model.set({nuevos:0});
+  },
   initialize(){
     this.counters = {};
     this.listenTo(this.model, 'change', this.render.bind(this));
@@ -25,9 +31,9 @@ const AvisosView = Backbone.View.extend({
     }
     const diferencia = Number(data.entry.ID)-this.counters[data.room];
     this.model.set({room:data.room, nuevos: diferencia});
-    setTimeout(()=>{
-      this.model.set({nuevos:0});
-    }, 5000);
+    // setTimeout(()=>{
+    // this.model.set({nuevos:0});
+    // }, 5000);
   },
   render(){
     this.$el.html(this.template(this.serializer()));
