@@ -25,9 +25,9 @@ class Ws{
     delete this.subscriptions[room];
     this.socket.emit('unsubscribe', room);
   }
-  update(room, subtipo){
+  update(room, subtipo, ciudadano){
     room = room.replace(/\/$/,'');
-    this.socket.emit('update', room, subtipo);
+    this.socket.emit('update', room, subtipo, ciudadano);
   }
   prepararNotificaciones(userId){
     this.socket.emit('prepararNotificaciones', userId);

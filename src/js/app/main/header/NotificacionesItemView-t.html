@@ -1,16 +1,57 @@
 <a href="#<%=obj.indice.replace(/^gritos\//,'')%>">
-  <div style="width:40px; height:40px; float:left">
-  <% if (obj.entry && obj.entry.emocion){ %>
-    <img src="<%= obj.entry.emocion %>" style="height:40px">
-  <% } else { %>
-    <i class="material-icons" style="height:40px">face</i>
-  <% } %>
-  </div>
-  <div style="margin-left:40px;">
-  <% if (obj.entry && obj.entry.name){ %>
-    <%= obj.entry.name %>
-    <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
-    <% if (obj.tipo === 'msg'){ %>
+  <% if (obj.tipo !== 'msg'){ %>
+    <div style="width:40px; height:40px; float:left">
+    <% if (obj.entry && obj.entry.emocion){ %>
+      <img src="<%= obj.entry.emocion %>" style="height:40px">
+    <% } else { %>
+      <i class="material-icons" style="height:40px">face</i>
+    <% } %>
+    </div>
+    <div style="margin-left:40px;">
+    <% if (obj.entry && obj.entry.name){ %>
+      <%= obj.entry.name %>
+      <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
+      <% if (obj.tipo === 'msg'){ %>
+        <% if (obj.subtipo === 'love'){ %>
+          <i class="fa fa-heart love active" aria-hidden="true"></i>
+        <% } else if (obj.subtipo === 'mola'){ %>
+          <i class="fa fa-thumbs-up mola active" aria-hidden="true"></i>
+        <% } else if (obj.subtipo === 'nomola'){ %>
+          <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
+        <% } %>
+      <% } else { %>
+        <%= (obj.diferencia === 1) ? ' coment&oacute;' : ' comentaron' %> en
+      <% } %>
+    <% } else { %>
+      <%= obj.diferencia %> coment&oacute; en
+    <% } %>
+    <% if (obj.parent){ %>
+      <% if (obj.parent.ciudadano === obj.user.ID){ %>
+        tu grito
+      <% } else { %>
+        el grito de <%= obj.parent.name %>
+      <% } %>
+    <% } else if(obj.indice.match(/\//)){ %>
+      un grito de #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/\d+$/,'') %>
+    <% } else {%>
+      #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'') %>
+    <% } %>
+    </div>
+  <% } else if (obj.tipo === 'msg'){ %>
+    <div style="width:40px; height:40px; float:left">
+      <% if (obj.citizen && obj.citizen.dreamy_principal){ %>
+        <img src="<%= obj.citizen.dreamy_principal %>" style="height:40px">
+      <% } else { %>
+        <i class="material-icons" style="height:40px">face</i>
+      <% } %>
+    </div>
+    <div style="margin-left:40px;">
+      <% if (obj.citizen && obj.citizen.alias_principal){ %>
+        <%= obj.citizen.alias_principal %>
+      <% } else { %>
+        Anonimo
+      <% } %>
+      <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
       <% if (obj.subtipo === 'love'){ %>
         <i class="fa fa-heart love active" aria-hidden="true"></i>
       <% } else if (obj.subtipo === 'mola'){ %>
@@ -18,22 +59,7 @@
       <% } else if (obj.subtipo === 'nomola'){ %>
         <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
       <% } %>
-    <% } else { %>
-      <%= (obj.diferencia === 1) ? ' coment&oacute;' : ' comentaron' %> en
-    <% } %>
-  <% } else { %>
-    <%= obj.diferencia %> coment&oacute; en
+      en tu grito de #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/\d+$/,'') %>
+    </div>
   <% } %>
-  <% if (obj.parent){ %>
-    <% if (obj.parent.ciudadano === obj.user.ID){ %>
-      tu grito
-    <% } else { %>
-      el grito de <%= obj.parent.name %>
-    <% } %>
-  <% } else if(obj.indice.match(/\//)){ %>
-    un grito de #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/\d+$/,'') %>
-  <% } else {%>
-    #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'') %>
-  <% } %>
-</div>
 </a>

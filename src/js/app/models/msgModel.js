@@ -2,6 +2,7 @@ import Backbone from 'backbone';
 import vent from '../util/vent';
 import endpoints from '../util/endpoints';
 import Ws from '../util/Ws';
+import userModel from './userModel';
 
 export default Backbone.Model.extend({
   initialize(){
@@ -12,7 +13,7 @@ export default Backbone.Model.extend({
     this.listenTo(this, 'sync', () => {
       if (this.get('INDICE') && this.get('ID')){
         const subtipo = this.changed.mola ? 'mola' : this.changed.nomola ? 'nomola' : this.changed.love ? 'love' : null;
-        Ws.update(this.get('INDICE') + '/' + this.get('ID'), subtipo);
+        Ws.update(this.get('INDICE') + '/' + this.get('ID'), subtipo, userModel.get('ID'));
       }
     });
     this.listenTo(this, 'remove', ()=>{

@@ -30,7 +30,7 @@ const NotificacionesUserModel = Backbone.Model.extend({
   runQueue(){
     let changed = false;
     this.updateQueue.forEach((queue)=>{
-      if(this.runUpdate(queue.tipo, queue.foro, queue.lastEntry)){
+      if(this.runUpdate(queue.tipo, queue.foro, queue.lastEntry, queue.subtipo)){
         changed = true;
       }
     });
@@ -39,30 +39,42 @@ const NotificacionesUserModel = Backbone.Model.extend({
       this.save();
     }
   },
-  update(tipo, foro, lastEntry){
-    if(this.runUpdate(tipo, foro, lastEntry)){
+  update(tipo, foro, lastEntry, subtipo){
+    if(this.runUpdate(tipo, foro, lastEntry, subtipo)){
       this.save();
     }
   },
-  runUpdate(tipo, foro, lastEntry){
+  runUpdate(tipo, foro, lastEntry, subtipo){
     if (tipo !== 'foro' && tipo !== 'minis' && tipo !== 'msg'){return;}
     let changed = false;
     if (!foro.match(/^gritos/)){
       foro = 'gritos/' + foro;
     }
     if (!this.loadingFinished){
-      this.updateQueue.push({tipo,foro,lastEntry});
+      this.updateQueue.push({tipo,foro,lastEntry, subtipo});
     } else if (this.id){
       if (this.get(tipo)){
         const array = this.get(tipo).split('|');
         const newarray = [];
         array.forEach((ele)=>{
           const [esteforo, estenum] = ele.split(',');
-          if (esteforo === foro && estenum<lastEntry){
-            newarray.push(esteforo + ',' + lastEntry);
-            changed = true;
+          if (tipo === 'msg'){
+            const molaArray = estenum.split('/');
+            const molanumPos = subtipo === 'mola' ? 0 : subtipo === 'nomola' ? 1 : subtipo === 'love' ? 2 : -1;
+            if (esteforo === foro && molanumPos > -1 && (!molaArray[molanumPos] || molaArray[molanumPos] < lastEntry)){
+              molaArray[molanumPos] = lastEntry;
+              newarray.push(esteforo + ',' + molaArray.join('/'));
+              changed = true;
+            } else {
+              newarray.push(esteforo + ',' + estenum);
+            }
           } else {
-            newarray.push(esteforo + ',' + estenum);
+            if (esteforo === foro && estenum < lastEntry){
+              newarray.push(esteforo + ',' + lastEntry);
+              changed = true;
+            } else {
+              newarray.push(esteforo + ',' + estenum);
+            }
           }
         });
         this.set(tipo, newarray.join('|'));

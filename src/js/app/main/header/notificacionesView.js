@@ -4,6 +4,7 @@ import _ from 'lodash';
 import userModel from '../../models/userModel';
 import NotificacionesCollectionView from './notificacionesCollectionView';
 import NotificacionesCollection from '../../models/NotificacionesCollection';
+import NotificacionesUserModel from '../../models/notificacionesUserModel';
 
 const Model = Backbone.Model.extend({
   defaults:{
@@ -21,6 +22,15 @@ export default Backbone.View.extend({
   toggleNotificaciones(){
     this.model.set('show', !this.model.get('show'));
     this.model.set('counter', 0);
+    if (this.model.get('show')){
+      NotificacionesCollection.forEach((model)=>{
+        const data = model.toJSON();
+        if (data.tipo === 'msg'){
+          const foro = data.indice + '/' + data.entry.ID;
+          NotificacionesUserModel.update(data.tipo, foro, data.entry[data.subtipo], data.subtipo);
+        }
+      });
+    }
   },
   initialize(){
     this.notificacionesCollectionView = new NotificacionesCollectionView();
