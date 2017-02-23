@@ -14,6 +14,7 @@ export default Backbone.View.extend({
     return Object.assign({},
       this.model.toJSON(), {
         user:userModel.toJSON(),
+        indiceBasic: this.model.get('indice').replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/.*$/,''),
       },
     );
   },

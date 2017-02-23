@@ -27,6 +27,40 @@ const NotificacionesUserModel = Backbone.Model.extend({
       return endpoints.apiUrl + 'index.cgi?notificaciones/' + UserModel.get('ID');
     }
   },
+  add_notificaciones(notis){
+    this.set({
+      uid: UserModel.get('uid'),
+    });
+    notis.forEach((nots)=>{
+      if (!nots.room.match(/^gritos/)){
+        nots.room = 'gritos/' + nots.room;
+      }
+      if (this.get(nots.tipo)){
+        const array = this.get(nots.tipo).split('|');
+        let newarray = [];
+        let listo = false;
+        array.forEach((ele)=>{
+          const [esteforo, estenum] = ele.split(',');
+          if (esteforo === nots.room){
+            newarray.push(esteforo + ',' + nots.last);
+            listo = true;
+          } else {
+            newarray.push(esteforo + ',' + estenum);
+          }
+        });
+        if (!listo){
+          newarray.push(nots.room + ',' + nots.last);
+        }
+        if (newarray.length > 10){
+          newarray = newarray.slice(-10, newarray.length);
+        }
+        this.set(nots.tipo, newarray.join('|'));
+      } else {
+        this.set(nots.tipo, nots.room + ',' + nots.last);
+      }
+    });
+    this.save();
+  },
   runQueue(){
     let changed = false;
     this.updateQueue.forEach((queue)=>{
@@ -51,7 +85,7 @@ const NotificacionesUserModel = Backbone.Model.extend({
       foro = 'gritos/' + foro;
     }
     if (!this.loadingFinished){
-      this.updateQueue.push({tipo,foro,lastEntry, subtipo});
+      this.updateQueue.push({tipo, foro, lastEntry, subtipo});
     } else if (this.id){
       if (this.get(tipo)){
         const array = this.get(tipo).split('|');

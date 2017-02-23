@@ -28,16 +28,19 @@
     <% if (obj.parent){ %>
       <% if (obj.parent.ciudadano === obj.user.ID){ %>
         tu grito
+      <% } else if (obj.parent.name === obj.entry.name){ %>
+        su grito
       <% } else { %>
         el grito de <%= obj.parent.name %>
       <% } %>
+      de #<%= obj.indiceBasic %>
     <% } else if(obj.indice.match(/\//)){ %>
-      un grito de #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/\d+$/,'') %>
+      un grito de #<%= obj.indiceBasic %>
     <% } else {%>
-      #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'') %>
+      #<%= obj.indiceBasic %>
     <% } %>
     </div>
-  <% } else if (obj.tipo === 'msg'){ %>
+  <% } else if (obj.tipo === 'msg' && obj.subtipo){ %>
     <div style="width:40px; height:40px; float:left">
       <% if (obj.citizen && obj.citizen.dreamy_principal){ %>
         <img src="<%= obj.citizen.dreamy_principal %>" style="height:40px">
@@ -59,7 +62,7 @@
       <% } else if (obj.subtipo === 'nomola'){ %>
         <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
       <% } %>
-      en tu grito de #<%= obj.indice.replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/\d+$/,'') %>
+      en tu <%= (obj.indice.match(/\d+$/)) ? 'comentario' : 'grito' %> de #<%= obj.indiceBasic %>
     </div>
   <% } %>
 </a>
