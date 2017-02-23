@@ -9,6 +9,9 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.2.0
+Working notifications
+
 ## 1.1.0
 Working sockets, emojis, post... very nearly ready
 
