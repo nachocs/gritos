@@ -30,7 +30,7 @@ const AvisosView = Backbone.View.extend({
       this.counters[data.room] = Number(data.entry.ID) - 1;
     }
     const diferencia = Number(data.entry.ID)-this.counters[data.room];
-    this.model.set({room:data.room, nuevos: diferencia});
+    this.model.set({room:data.room.replace(/collection:/,''), nuevos: diferencia});
     // setTimeout(()=>{
     // this.model.set({nuevos:0});
     // }, 5000);

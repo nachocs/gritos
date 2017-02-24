@@ -1,6 +1,7 @@
 import Backbone from 'backbone';
 import template from './notificacionesView-t.html';
 import _ from 'lodash';
+import $ from 'jquery';
 import userModel from '../../models/userModel';
 import NotificacionesCollectionView from './notificacionesCollectionView';
 import NotificacionesCollection from '../../models/NotificacionesCollection';
@@ -29,6 +30,7 @@ export default Backbone.View.extend({
           const foro = data.indice + '/' + data.entry.ID;
           NotificacionesUserModel.update(data.tipo, foro, data.entry[data.subtipo], data.subtipo);
         }
+        model.set('read', true);
       });
     }
   },
@@ -40,17 +42,30 @@ export default Backbone.View.extend({
       this.model.set('active', user.id ? true : false);
     });
     this.listenTo(NotificacionesCollection, 'add', ()=>{
-      this.model.set('counter', NotificacionesCollection.length);
+      const notRead = NotificacionesCollection.filter((model)=> !model.get('read'));
+      this.model.set('counter', notRead.length);
     });
     this.listenTo(NotificacionesCollection, 'remove', ()=>{
       this.model.set('counter', NotificacionesCollection.length);
     });
+    this.listenTo(this.model, 'change:show', (model)=>{
+      if (model.get('show')){
+        $('body').on('click.toggleNotificaciones', (e)=>{
+          if (!$(e.target).hasClass('notis-icon')){
+            if (this.model.get('show')){
+              this.model.set('show', false);
+              $('body').off('click.toggleNotificaciones');
+            }
+          }
+        });
+      }
+    });
   },
   render(){
     this.$el.html(this.template(this.serializer()));
-    if (NotificacionesCollection.length>0){
-      this.$('.notificaciones-collection-view').html(this.notificacionesCollectionView.render().el);
-    }
+    // if (NotificacionesCollection.length>0){
+    this.$('.notificaciones-collection-view').html(this.notificacionesCollectionView.render().el);
+    // }
     this.delegateEvents();
     return this;
   },

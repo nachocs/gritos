@@ -735,7 +735,8 @@ div[contenteditable = true]:empty:before{
       width: initial;
       padding: 5px 10px;
       li{
-        line-height: 1.5em;
+        line-height: 16px;
+        font-size: 12px;
         list-style-type: none;
         min-height: 40px;
         margin-bottom: 5px;
@@ -747,6 +748,14 @@ div[contenteditable = true]:empty:before{
         }
         a{
           text-decoration: none;
+        }
+        .nots-text{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          margin-left: 40px;
+          min-height: 40px;
+          word-wrap: break-word;
         }
       }
     }

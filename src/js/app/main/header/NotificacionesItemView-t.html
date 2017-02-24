@@ -1,4 +1,4 @@
-<a href="#<%=obj.indice.replace(/^gritos\//,'')%>">
+<a href="#<%=obj.indice.replace(/^gritos\//,'').replace(/\/(\d+)\/\d+$/, '/$1')%>">
   <% if (obj.tipo !== 'msg'){ %>
     <div style="width:40px; height:40px; float:left">
     <% if (obj.entry && obj.entry.emocion){ %>
@@ -7,38 +7,47 @@
       <i class="material-icons" style="height:40px">face</i>
     <% } %>
     </div>
-    <div style="margin-left:40px;">
-    <% if (obj.entry && obj.entry.name){ %>
-      <%= obj.entry.name %>
-      <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
-      <% if (obj.tipo === 'msg'){ %>
-        <% if (obj.subtipo === 'love'){ %>
-          <i class="fa fa-heart love active" aria-hidden="true"></i>
-        <% } else if (obj.subtipo === 'mola'){ %>
-          <i class="fa fa-thumbs-up mola active" aria-hidden="true"></i>
-        <% } else if (obj.subtipo === 'nomola'){ %>
-          <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
+    <div class="nots-text">
+      <% if (obj.entry && obj.entry.name){ %>
+        <%= obj.entry.name %>
+        <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
+        <% if (obj.tipo === 'msg'){ %>
+          <% if (obj.subtipo === 'love'){ %>
+            <i class="fa fa-heart love active" aria-hidden="true"></i>
+          <% } else if (obj.subtipo === 'mola'){ %>
+            <i class="fa fa-thumbs-up mola active" aria-hidden="true"></i>
+          <% } else if (obj.subtipo === 'nomola'){ %>
+            <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
+          <% } %>
+        <% } else { %>
+          <% if (obj.tipo === 'foro'){ %>
+            <%= (obj.diferencia === 1) ? ' grit&oacute;' : ' gritaron' %> en
+          <% }else { %>
+            <%= (obj.diferencia === 1) ? ' coment&oacute;' : ' comentaron' %> en
+          <% } %>
         <% } %>
       <% } else { %>
-        <%= (obj.diferencia === 1) ? ' coment&oacute;' : ' comentaron' %> en
+        <% if (obj.tipo === 'foro'){ %>
+          <%= obj.diferencia %> grit&oacute; en
+        <% }else { %>
+          <%= obj.diferencia %> coment&oacute; en
+        <% } %>
       <% } %>
-    <% } else { %>
-      <%= obj.diferencia %> coment&oacute; en
-    <% } %>
-    <% if (obj.parent){ %>
-      <% if (obj.parent.ciudadano === obj.user.ID){ %>
-        tu grito
-      <% } else if (obj.parent.name === obj.entry.name){ %>
-        su grito
-      <% } else { %>
-        el grito de <%= obj.parent.name %>
+      <% if (obj.parent){ %>
+        <% if (obj.parent.ciudadano === obj.user.ID){ %>
+          tu grito
+        <% } else if (obj.parent.name === obj.entry.name){ %>
+          su grito
+        <% } else { %>
+          el grito de <%= obj.parent.name %>
+        <% } %>
+        de #<%= obj.indiceBasic %>
+      <% } else if(obj.indice.match(/\/\d+$/)){ %>
+        un grito de #<%= obj.indiceBasic %>
+      <% } else {%>
+        #<%= obj.indiceBasic %>
       <% } %>
-      de #<%= obj.indiceBasic %>
-    <% } else if(obj.indice.match(/\//)){ %>
-      un grito de #<%= obj.indiceBasic %>
-    <% } else {%>
-      #<%= obj.indiceBasic %>
-    <% } %>
+      <div style="color:#90949c;"><%= obj.date %></div>
     </div>
   <% } else if (obj.tipo === 'msg' && obj.subtipo){ %>
     <div style="width:40px; height:40px; float:left">
@@ -48,12 +57,15 @@
         <i class="material-icons" style="height:40px">face</i>
       <% } %>
     </div>
-    <div style="margin-left:40px;">
+    <div class="nots-text">
+      <div>
+      <span>
       <% if (obj.citizen && obj.citizen.alias_principal){ %>
         <%= obj.citizen.alias_principal %>
       <% } else { %>
         Anonimo
       <% } %>
+      </span>
       <%= (obj.diferencia && (Number(obj.diferencia) > 1)) ? (' y ' + (Number(obj.diferencia)-1) + ' m&aacute;s') : '' %>
       <% if (obj.subtipo === 'love'){ %>
         <i class="fa fa-heart love active" aria-hidden="true"></i>
@@ -62,7 +74,10 @@
       <% } else if (obj.subtipo === 'nomola'){ %>
         <i class="fa fa-thumbs-down nomola active" aria-hidden="true"></i>
       <% } %>
-      en tu <%= (obj.indice.match(/\d+$/)) ? 'comentario' : 'grito' %> de #<%= obj.indiceBasic %>
+      <span>
+      en tu <%= (obj.indice.match(/\/\d+\/\d+$/)) ? 'comentario' : 'grito' %> de #<%= obj.indiceBasic %>
+      </span>
+      </div>
     </div>
   <% } %>
 </a>
