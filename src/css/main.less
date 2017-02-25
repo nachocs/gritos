@@ -12,7 +12,7 @@
   text-transform: lowercase;
 }
 body{
-
+  font-family: 'Open Sans', sans-serif!important;
 }
 a{
   text-decoration: none;
@@ -22,7 +22,16 @@ a{
     text-decoration: none;
   }
 }
-
+.main{
+  header{
+    &.ciudadano{
+      background-color:rgb(195, 80, 74);
+      .alias-principal,.desplegable{
+        color: white;
+      }
+    }
+  }
+}
 div.titulo{
   font-family: newdreamers;
   text-transform: lowercase;
@@ -87,7 +96,51 @@ div.titulo{
     width: initial;
     min-height: initial;
     background-color: #e7ffd2;
-    font-weight: 600;
+    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+  }
+  &.ciudadano{
+    background-color: rgba(250,255,247,1);
+  }
+  &.conimagen{
+    background-size: cover;
+    min-height: 200px;
+    display: table;
+    width: 100%;
+    .dreamy{
+      float:left;
+      width: 100px;
+      height: 100px;
+    }
+    .description{
+      margin-left: 100px;
+      width: 100%;
+      height: 200px;
+      padding-right: 100px;
+    }
+    div.table{
+      display: table;
+      height: 100%;
+    }
+    div.collumn{
+      display: table-column;
+    }
+    div.bottom-row{
+      display: table-row;
+      height: 1px;
+      display: table-row;
+      vertical-align: bottom;
+    }
+    .texto-introduccion{
+      background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,255,247,1) 48%);
+      background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,255,247,1) 48%);
+      background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(250,255,247,1) 48%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#fafff7',GradientType=0 );
+      bottom: 0;
+      position: relative;
+      padding: 16px;
+      width: 100%;
+    }
   }
 }
 .msg-list{

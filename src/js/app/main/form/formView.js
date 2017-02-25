@@ -42,11 +42,14 @@ export default Backbone.View.extend({
    this.globalModel = options.globalModel;
    this.userModel = options.userModel;
    this.parentModel = options.parentModel;
-   this.isForo = options.isForo;
+   this.isHead = options.isHead;
    this.type = options.type; // foro / msg
    this.formModel = new formModel();
    if(options.msg){
      this.formModel.set(options.msg.toJSON());
+   }
+   if (this.isHead){
+     this.headModel = options.msg;
    }
    this.showEmojisModal = false;
    this.tagPlaceShown = false;
@@ -192,7 +195,7 @@ export default Backbone.View.extend({
   addImages() {
     const jsonModel = this.formModel.toJSON();
     for (const prop in jsonModel){
-      if ((/IMAGEN\d+\_THUMB/).test(prop)){
+      if ((/IMAGEN\d+\_THUMB$/).test(prop)){
         const thisThumb = jsonModel[prop];
         this.$('.thumbs-place').append('<img src=\'' + thisThumb + '\'>');
       }
@@ -215,6 +218,9 @@ export default Backbone.View.extend({
         }
       }
     });
+    if (this.isHead){
+      imagenes_jump=0;
+    }
     $.each(this.$('input[type="file"]')[0].files, (i, file) => {
       const numero = imagenes_jump + i;
       data.append('FICHERO_IMAGEN' + numero, file);
@@ -374,6 +380,13 @@ export default Backbone.View.extend({
         },
       );
     }
+    if (this.isHead){
+      Object.assign(saveObj,
+        {
+          foro: this.formModel.get('INDICE'),
+        },
+      );
+    }
     this.isSaving = true;
     this.formModel.save(
       saveObj,
@@ -382,9 +395,13 @@ export default Backbone.View.extend({
           self.isSaving = false;
           self.formModel.clear();
           self.isClear = false;
-          if (!self.isForo){
+          if (!self.isHead){
             self.render();
             self.collection.add(data.mensaje, {merge:true, individual:true});
+          } else {
+            if (self.headModel){
+              self.headModel.update();
+            }
           }
           // self.collection.reset();
           // self.collection.fetch();
@@ -449,7 +466,7 @@ export default Backbone.View.extend({
       tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
       tagPlaceShown: this.tagPlaceShown,
       active: this.active,
-      isForo: this.isForo,
+      isHead: this.isHead,
     });
     return obj;
   },

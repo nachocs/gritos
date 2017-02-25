@@ -67,8 +67,10 @@ export default Backbone.View.extend({
     this.listenTo(this.model, 'destroy', this.remove.bind(this));
     this.listenTo(this, 'remove', this.clean.bind(this));
     this.listenTo(this.userModel, 'change:ID', ()=>{
-      this.miniMsgsAlreadyRendered=false;
-      this.render();
+      if (this.$el){
+        this.miniMsgsAlreadyRendered=false;
+        this.render();
+      }
     });
     this.listenTo(this.model, 'change:comments', ()=>{
       this.miniMsgsAlreadyRendered=false;

@@ -1,13 +1,15 @@
 <% if (obj.alias_principal){ %>
-	<% if (obj.dreamy_principal){ %>
-		<img src="<%= obj.dreamy_principal %>" style="height:48px">
-	<% } else { %>
-    <i class="material-icons" style="height:48px">face</i>
-  <% } %>
-	<span class="mdl-layout--large-screen-only	">
-		<%= obj.alias_principal %>
-	</span>
-	<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon">
+	<a href="/#ciudadanos/<%=obj.ID%>">
+		<% if (obj.dreamy_principal){ %>
+			<img src="<%= obj.dreamy_principal %>" style="height:48px">
+		<% } else { %>
+	    <i class="material-icons" style="height:48px">face</i>
+	  <% } %>
+		<span class="mdl-layout--large-screen-only alias-principal">
+			<%= obj.alias_principal %>
+		</span>
+	</a>
+	<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon desplegable">
 		<i class="material-icons">keyboard_arrow_down</i>
 	</button>
   <ul class="login-menu hidden short mdl-card mdl-shadow--4dp">

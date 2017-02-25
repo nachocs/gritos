@@ -12,6 +12,7 @@ export default Backbone.Model.extend({
     INTRODUCCION: '',
     INDICE: '',
     Userid: null,
+    IMAGEN0_URL:null,
   },
   idAttribute: 'Name',
   urlRoot: endpoints.apiUrl  + 'head.cgi?',
@@ -19,6 +20,7 @@ export default Backbone.Model.extend({
     return _.isEmpty(resp) ? this.defaults : resp;
   },
   update(){
+    this.clear();
     this.set({
       Name: this.globalModel.get('ID'),
     });

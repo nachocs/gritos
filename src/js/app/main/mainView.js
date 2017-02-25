@@ -53,12 +53,12 @@ export default Backbone.View.extend({
       model:
       {
         show: true,
-        header: 'EDITAR FORO',
+        header: this.model.get('INDICE') === 'ciudadanos' ? 'EDITA TU MURO' : 'EDITAR FORO',
       },
       editForm:{
         userModel: this.userModel,
         msg: this.model,
-        isForo: true,
+        isHead: true,
       },
     },
     );

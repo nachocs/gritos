@@ -2,7 +2,7 @@
 <div class='modal-view'></div>
 <div class='avisos-view'></div>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header"  <% if (obj.INDICE === 'ciudadanos'){ %> style="background-color:rgb(195, 80, 74);" <% } %> >
+  <header class="mdl-layout__header <%= (obj.INDICE === 'ciudadanos')?'ciudadano':'' %>"  >
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
       <div class="logomask pseudo">
@@ -39,12 +39,35 @@
   </div>
   <main class="mdl-layout__content">
   	<div class="content">
-      <% if (obj.INTRODUCCION) { %>
-  	  	<div class="foro-description mdl-card mdl-shadow--4dp">
-  	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.INTRODUCCION %></div>
-  	  	</div>
+      <% if (obj.INDICE === 'ciudadanos'){ %>
+        <div class="foro-description mdl-card mdl-shadow--4dp conimagen ciudadano" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
+          <div class="dreamy"><img src="<%=obj.dreamy_principal%>"></div>
+          <div class="description">
+            <div class="table">
+              <div></div>
+              <div class="bottom-row">
+                <div class="mdl-card--border mdl-card__supporting-text texto-introduccion"><%= obj.comments || obj.INTRODUCCION %></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <% if (obj.INTRODUCCION) { %>
+          <% if (obj.IMAGEN0_URL){ %>
+    	  	<div class="foro-description mdl-card mdl-shadow--4dp conimagen" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
+            <div></div>
+            <div class="bottom-row">
+      	  		<div class="mdl-card--border mdl-card__supporting-text texto-introduccion"><%= obj.comments || obj.INTRODUCCION %></div>
+            </div>
+    	  	</div>
+          <% } else { %>
+            <div class="foro-description mdl-card mdl-shadow--4dp">
+      	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.comments || obj.INTRODUCCION %></div>
+      	  	</div>
+          <% } %>
+        <% } %>
       <% } %>
-      <% if (userModel.ID === obj.Userid){ %>
+      <% if (userModel.ID === obj.Userid || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID)){ %>
         <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
       <% } %>
       <div class="form-view"></div>

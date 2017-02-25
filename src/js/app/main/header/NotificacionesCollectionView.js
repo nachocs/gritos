@@ -13,7 +13,7 @@ export default Backbone.View.extend({
 
   },
   render() {
-    this.$el.html((this.collection.length < 1) ? 'No hay notificaciones' : '');
+    this.$el.html((this.collection.length < 1) ? 'No hay nuevas notificaciones' : '');
     this.collection.each(function (model) {
       this.renderOne(model);
     }, this);
