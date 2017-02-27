@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 
-export default Backbone.Model.extend({
+const GlobalModel = Backbone.Model.extend({
   idAttribute: 'ID',
   changeForo(ID, msg){
     this.set(
@@ -11,3 +11,5 @@ export default Backbone.Model.extend({
     );
   },
 });
+
+export default new GlobalModel();

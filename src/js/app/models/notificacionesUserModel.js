@@ -32,7 +32,7 @@ const NotificacionesUserModel = Backbone.Model.extend({
       uid: UserModel.get('uid'),
     });
     notis.forEach((nots)=>{
-      if (!nots.room.match(/^gritos/)){
+      if (!nots.room.match(/^gritos/) && !nots.room.match(/^ciudadanos/)){
         nots.room = 'gritos/' + nots.room;
       }
       if (this.get(nots.tipo)){
@@ -81,7 +81,7 @@ const NotificacionesUserModel = Backbone.Model.extend({
   runUpdate(tipo, foro, lastEntry, subtipo){
     if (tipo !== 'foro' && tipo !== 'minis' && tipo !== 'msg'){return;}
     let changed = false;
-    if (!foro.match(/^gritos/)){
+    if (!foro.match(/^gritos/) && !foro.match(/^ciudadanos/)){
       foro = 'gritos/' + foro;
     }
     if (!this.loadingFinished){

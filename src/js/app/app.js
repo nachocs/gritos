@@ -5,7 +5,7 @@ import MainView from './main/mainView';
 import MsgCollection from './models/msgCollection';
 import HeadModel from './models/headModel';
 import moment from 'moment';
-import GlobalModel from './models/globalModel';
+import globalModel from './models/globalModel';
 import userModel from './models/userModel';
 import ResumenCollection from './models/resumenCollection';
 import Slick from 'slick-carousel';
@@ -14,9 +14,9 @@ const App = Backbone.View.extend({
   initialize() {
     this.initialSetup();
     this.slick = Slick;
-    this.globalModel = new GlobalModel();
-    this.headModel = new HeadModel({},{globalModel:this.globalModel});
-    this.msgCollection = new MsgCollection([],{globalModel:this.globalModel});
+
+    this.headModel = new HeadModel({},{globalModel});
+    this.msgCollection = new MsgCollection([],{globalModel});
     this.resumenCollection = new ResumenCollection();
     this.resumenCollection.fetch();
 
@@ -25,12 +25,10 @@ const App = Backbone.View.extend({
       model: this.headModel,
       userModel,
       resumenCollection: this.resumenCollection,
-      globalModel: this.globalModel,
+      globalModel,
     });
     $('#root').html(this.mainView.render().el);
-    this.router = new Router({
-      model: this.globalModel,
-    });
+    this.router = Router;
     Backbone.history.start({pushState: false, root:''});
   },
   initialSetup() {

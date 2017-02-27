@@ -1,4 +1,4 @@
-import Backbone from 'backbone';
+import ViewBase from '../base/ViewBase';
 import formModel from '../../models/formModel';
 import _ from 'lodash';
 import $ from 'jquery';
@@ -7,6 +7,8 @@ import template from './formView.html';
 import endpoints from '../../util/endpoints';
 import emojione from 'emojione';
 import EmojisModal from './emojisModal';
+import GlobalModel from '../../models/globalModel';
+import router from '../../router';
 
 function isOrContains(node, container) {
   while (node) {
@@ -36,7 +38,7 @@ function elementContainsSelection(el) {
   return false;
 }
 
-export default Backbone.View.extend({
+export default ViewBase.extend({
   template: _.template(template),
  	initialize(options) {
    this.globalModel = options.globalModel;
@@ -355,10 +357,20 @@ export default Backbone.View.extend({
     this.showEmojisIn(false);
     this.toggleTagsIn(false);
     const self = this;
+    let titulo;
     // tinyMCE.triggerSave();
     let comments = this.$('.formularioTextArea').html();
     comments = comments.replace(/\n/ig, '<br>');
     comments = comments.replace(/\r/ig, '<br>');
+    if (comments.length < 1 ){
+      return;
+    }
+    if (this.isHead){
+      titulo = this.$('#titulo').val();
+      if (titulo.length < 1){
+        return;
+      }
+    }
     const saveObj = {
       comments,
       uid: this.userModel.get('uid'),
@@ -384,6 +396,9 @@ export default Backbone.View.extend({
       Object.assign(saveObj,
         {
           foro: this.formModel.get('INDICE'),
+          Titulo: titulo,
+          isHead: 1,
+          Name: this.formModel.get('Name'),
         },
       );
     }
@@ -400,7 +415,9 @@ export default Backbone.View.extend({
             self.collection.add(data.mensaje, {merge:true, individual:true});
           } else {
             if (self.headModel){
-              self.headModel.update();
+              GlobalModel.changeForo(self.headModel.get('Name'));
+              self.headModel.fetch();
+              router.navigate('/' + self.headModel.get('Name'), {trigger: true});
             }
           }
           // self.collection.reset();
@@ -447,6 +464,7 @@ export default Backbone.View.extend({
         componentHandler.upgradeElement(ele);
       });
     }
+    this.materialDesignUpdate();
     // this.$('.formularioTextArea').keyup(function() {
     //   $(this).height(38);
     //   $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));

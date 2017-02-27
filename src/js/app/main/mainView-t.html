@@ -52,7 +52,7 @@
           </div>
         </div>
       <% } else { %>
-        <% if (obj.INTRODUCCION) { %>
+        <% if (obj.INTRODUCCION || obj.comments) { %>
           <% if (obj.IMAGEN0_URL){ %>
     	  	<div class="foro-description mdl-card mdl-shadow--4dp conimagen" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
             <div></div>

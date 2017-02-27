@@ -1,4 +1,3 @@
-import Backbone from 'backbone';
 import _ from 'lodash';
 import $ from 'jquery';
 import template from './loginView-t.html';
@@ -6,8 +5,9 @@ import FbView from './fbView';
 import endpoints from '../../util/endpoints';
 import mockup from '../../util/mockups';
 import Cookies from 'js-cookie';
+import ViewBase from '../base/ViewBase';
 
-export default Backbone.View.extend({
+export default ViewBase.extend({
   template: _.template(template),
   initialize(options) {
     this.model = options.userModel;
@@ -92,15 +92,6 @@ export default Backbone.View.extend({
   },
   showError(error){
     this.$('.error-login').html(error).addClass('active');
-  },
-  materialDesignUpdate(){
-    const self = this;
-    _.defer(() => {
-      self.$el.find('[class*=" mdl-js"]').each(function () {
-        componentHandler.upgradeElement(this);
-      });
-    });
-
   },
   render() {
     this.$el.html(this.template(this.model.toJSON()));
