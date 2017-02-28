@@ -43,7 +43,7 @@ export default ViewBase.extend({
 
   },
   checkCookie(){
-    let obj;
+    let obj = {};
     const cookie = Cookies.get('city');
     if (cookie){
       try{
@@ -51,7 +51,13 @@ export default ViewBase.extend({
       }
       catch(e){
         console.log('cookie', cookie);
-        return;
+        if (cookie.match(/^uid\:\:(.+)/)){
+          obj = {
+            uid: cookie.match(/^uid\:\:(.*)/)[1],
+          };
+        } else {
+          return;
+        }
       }
       if (obj && obj.uid){
         this.loginCall(obj);
