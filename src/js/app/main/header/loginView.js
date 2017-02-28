@@ -43,9 +43,15 @@ export default ViewBase.extend({
 
   },
   checkCookie(){
+    let obj;
     const cookie = Cookies.get('city');
     if (cookie){
-      const obj = JSON.parse(cookie);
+      try{
+        obj = JSON.parse(cookie);
+      }
+      catch(e){
+        return;
+      }
       if (obj && obj.uid){
         this.loginCall(obj);
       }
