@@ -301,7 +301,7 @@ export default Backbone.View.extend({
       userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
       rabito,
-      emocion: this.model.get('emocion').replace('http:',''),
+      emocion: this.model.get('emocion') && this.model.get('emocion').replace('http:',''),
     });
   },
   clean(){
