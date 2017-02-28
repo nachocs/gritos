@@ -365,7 +365,7 @@ export default ViewBase.extend({
     if (comments.length < 1 ){
       return;
     }
-    if (this.isHead){
+    if (this.isHead && this.formModel.get('INDICE') === 'gritosdb'){
       titulo = this.$('#titulo').val();
       if (titulo.length < 1){
         return;
@@ -396,11 +396,17 @@ export default ViewBase.extend({
       Object.assign(saveObj,
         {
           foro: this.formModel.get('INDICE'),
-          Titulo: titulo,
           isHead: 1,
-          Name: this.formModel.get('Name'),
         },
       );
+      if (this.formModel.get('INDICE') === 'gritosdb'){
+        Object.assign(saveObj,
+          {
+            Titulo: titulo,
+            Name: this.formModel.get('Name'),
+          },
+        );
+      }
     }
     this.isSaving = true;
     this.formModel.save(

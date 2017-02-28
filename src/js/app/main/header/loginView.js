@@ -1,3 +1,4 @@
+import ViewBase from '../base/ViewBase';
 import _ from 'lodash';
 import $ from 'jquery';
 import template from './loginView-t.html';
@@ -5,7 +6,6 @@ import FbView from './fbView';
 import endpoints from '../../util/endpoints';
 import mockup from '../../util/mockups';
 import Cookies from 'js-cookie';
-import ViewBase from '../base/ViewBase';
 
 export default ViewBase.extend({
   template: _.template(template),

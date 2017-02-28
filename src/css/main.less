@@ -142,6 +142,13 @@ div.titulo{
       width: 100%;
     }
   }
+  &.sinimagen{
+    min-height: initial;
+    .description{
+      height: initial;
+    }
+  }
+
 }
 .msg-list{
   margin-top: 20px;
@@ -185,7 +192,14 @@ div.titulo{
   .msg{
     margin-bottom: 20px;
     position: relative;
-
+    .rabito{
+      position: absolute;
+      left: 0;
+      background-image: url('../img/rabito.gif');
+      width: 134px;
+      height: 16px;
+      opacity: 0.25;
+    }
     .spoiler{
       display: inline-block;
       cursor: pointer;
@@ -928,4 +942,23 @@ h6.resumen-subheader{
     i.load-previous{
       cursor: pointer;
     }
+}
+.rabito-css{ // this is only a test
+  &:before{
+    position: absolute;
+    content: ' ';
+    width: 0;
+    height: 0;
+    border-radius: 0 45px;
+    top: 30px;
+    left: -6px;
+    border: solid transparent;
+    border-color: rgba(117, 136, 148, 0);
+    border-right-color: #fdfeff;
+    border-width: 36px;
+    margin-top: -36px;
+    transform: rotate(300deg);
+    z-index: -1;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2);
+  }
 }

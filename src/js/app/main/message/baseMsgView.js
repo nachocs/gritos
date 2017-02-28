@@ -9,6 +9,7 @@ import FormView from '../form/formView';
 import Util from '../../util/util';
 import ModalView from '../modalView';
 import PreviousMsgView from './previousMsgView';
+import rabito from '../../../../img/rabito.gif';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -298,6 +299,7 @@ export default Backbone.View.extend({
       images,
       userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
+      rabito,
     });
   },
   clean(){

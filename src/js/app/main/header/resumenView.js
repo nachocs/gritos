@@ -1,3 +1,4 @@
+import ViewBase from '../base/ViewBase';
 import Backbone from 'backbone';
 import ResumenItemView from './resumenItemView';
 import _ from 'lodash';
@@ -8,7 +9,7 @@ import ModalView from '../modalView';
 
 const Model = Backbone.Model.extend({});
 
-export default Backbone.View.extend({
+export default ViewBase.extend({
   model: new Model(),
   className: 'mdl-navigation resumen-collection',
   tagName: 'nav',
@@ -73,7 +74,7 @@ export default Backbone.View.extend({
     this.collection.each(function (model) {
       this.renderOne(model);
     }, this);
-    componentHandler.upgradeElement(this.el);
+    this.materialDesignUpdate();
     this.delegateEvents();
     return this;
   },

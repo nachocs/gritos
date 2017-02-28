@@ -1,4 +1,4 @@
-<% if (obj.isHead){ %>
+<% if (obj.isHead && obj.formModel.INDICE === 'gritosdb'){ %>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     <input class="mdl-textfield__input" type="text" id="name" value="<%= obj.formModel.Name %>" disabled>
     <label class="mdl-textfield__label" for="name">Tema</label>
