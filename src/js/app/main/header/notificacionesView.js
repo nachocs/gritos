@@ -4,7 +4,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import userModel from '../../models/userModel';
 import NotificacionesCollectionView from './notificacionesCollectionView';
-import NotificacionesCollection from '../../models/NotificacionesCollection';
+import NotificacionesCollection from '../../models/notificacionesCollection';
 import NotificacionesUserModel from '../../models/notificacionesUserModel';
 
 const Model = Backbone.Model.extend({

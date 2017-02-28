@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import template from './NotificacionesItemView-t.html';
+import template from './notificacionesItemView-t.html';
 import _ from 'lodash';
 import userModel from '../../models/userModel';
 import moment from 'moment';

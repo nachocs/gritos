@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
-import NotificacionesItemView from './NotificacionesItemView';
-import NotificacionesCollection from '../../models/NotificacionesCollection';
+import NotificacionesItemView from './notificacionesItemView';
+import NotificacionesCollection from '../../models/notificacionesCollection';
 
 export default Backbone.View.extend({
   itemView: NotificacionesItemView,
