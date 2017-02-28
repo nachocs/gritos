@@ -5,7 +5,7 @@ import vent from './vent';
 class Ws{
   constructor(){
     this.subscriptions = {};
-    this.socket = io(endpoints.socket);
+    this.socket = io(endpoints.socket, {secure: true});
     this.socket.on('updated', (data)=>{
       vent.trigger('updated_' + data.room, data);
     });
