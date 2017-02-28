@@ -9,7 +9,6 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 const dashboard = new Dashboard();
 
 const config = {
-  debug: true,
   devtool: 'source-map',
   entry: [
     'webpack-dev-server/client?http://0.0.0.0:3001/', // Needed for hot reloading
@@ -31,21 +30,29 @@ const config = {
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader'),
+        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader!less-loader'}),
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
+        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader'}),
       },
       { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff' },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader' },
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
       { test: /\.(png|jpg|gif)$/, loader: 'file-loader' },
-      { test: /\.json$/, loader: 'json' },
+      { test: /\.json$/, loader: 'json-loader' },
     ],
   },
-  postcss: [ autoprefixer ],
   plugins: [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        context: __dirname,
+        postcss: [ autoprefixer ],
+        debug: true,
+        progress: true,
+        colors: true,
+      },
+    }),
     new ExtractTextPlugin('bundle.css'),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
@@ -69,8 +76,6 @@ const config = {
     }),
     new DashboardPlugin(dashboard.setData),
   ],
-  progress: true,
-  colors: true,
 };
 
 module.exports = config;

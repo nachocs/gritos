@@ -16,7 +16,6 @@ CDN_BASE_URL = `${STATIC_DOMAIN}/`;
 // const __dirname = '';
 
 const config = {
-  debug: true,
   entry: [
     __dirname + '/../src/js/app/index.js',
     __dirname + '/../src/css/main.less',
@@ -36,30 +35,39 @@ const config = {
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader'),
+        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader!less-loader'}),
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
+        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader'}),
       },
       { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff&name='+ BUILD_NUM +'/fonts/[name].[ext]' },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader?name='+ BUILD_NUM +'/fonts/[name].[ext]' },
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
       { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=10000' },
-      { test: /\.json$/, loader: 'json' },
+      { test: /\.json$/, loader: 'json-loader' },
     ],
   },
-  postcss: [ autoprefixer ],
   plugins: [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        context: __dirname,
+        postcss: [ autoprefixer ],
+        debug: true,
+        progress: true,
+        colors: true,
+      },
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(true),
     // Merge all duplicate modules
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({ // Optimize the JavaScript...
       compress: {
         warnings: false, // ...but do not show warnings in the console (there is a lot of them)
       },
     }),
-    new ExtractTextPlugin(BUILD_NUM + '/[name].[contenthash].css', {
+    new ExtractTextPlugin({
+      filename:BUILD_NUM + '/[name].[contenthash].css',
+      disable: false,
       allChunks: true,
     }),
     new HtmlWebpackPlugin({
@@ -92,8 +100,6 @@ const config = {
       },
     }),
   ],
-  progress: true,
-  colors: true,
 };
 
 module.exports = config;
