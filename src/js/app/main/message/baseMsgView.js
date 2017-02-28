@@ -21,7 +21,7 @@ const autolinker = new Autolinker({
     if (match.getType() === 'url') {
       if ((match.getUrl().indexOf('youtube.com') > 0) || (match.getUrl().indexOf('youtu.be') > 0)) {
         const youtubeId = youtube_parser(match.getUrl());
-        return `<div class="videodelimitador"><div class="videocontenedor"><iframe src="http://www.youtube.com/embed/${youtubeId}" frameborder="0" allowfullscreen=""></iframe></div></div>`;
+        return `<div class="videodelimitador"><div class="videocontenedor"><iframe src="//www.youtube.com/embed/${youtubeId}" frameborder="0" allowfullscreen=""></iframe></div></div>`;
       }
     } else {
       return;
