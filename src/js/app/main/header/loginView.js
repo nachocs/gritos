@@ -50,6 +50,7 @@ export default ViewBase.extend({
         obj = JSON.parse(cookie);
       }
       catch(e){
+        console.log('cookie', cookie);
         return;
       }
       if (obj && obj.uid){
