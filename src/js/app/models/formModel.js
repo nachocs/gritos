@@ -10,7 +10,7 @@ export default  Backbone.Model.extend({
   },
   initialize(){
     this.listenTo(this, 'sync', (model, response) => {
-      if (this.room){
+      if (this.room && !this.room.match(/gritosdb/ig)){
         Ws.update('collection:' + this.room);
         this.add_notificaciones(response);
       }
