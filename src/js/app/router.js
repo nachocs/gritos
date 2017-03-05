@@ -20,7 +20,7 @@ const Router = Backbone.Router.extend({
           return this.foro(foro);
         }
       } else if (route.match(/(.*)\//)){
-        return this.foro(route.replace(/\/$/,''));
+        return this.foro(route.replace(/\/[^/]*$/,''));
       }
     }
     return this.foro();
