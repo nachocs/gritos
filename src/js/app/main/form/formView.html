@@ -11,7 +11,11 @@
 <div class="mdl-card mdl-shadow--4dp">
   <div class="wysiwyg-view"></div>
   <% if (!obj.isHead){ %>
-    <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
+    <% if (obj.dreamy_principal ){ %>
+      <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
+    <% } else { %>
+      <div class="dreamy"><i class="material-icons" style="font-size:48px">face</i></div>
+    <% } %>
   <%}%>
   <div contenteditable=true placeholder="<%= obj.isHead ? 'Introduccion' : 'Sueltalo!' %>" class='formularioTextArea <%= active && 'on' %>' name="comments"><%= obj.formModel.comments || obj.formModel.INTRODUCCION %></div>
   <div class="thumbs-place"></div>
