@@ -20,6 +20,7 @@ export default Backbone.View.extend({
     return this;
   },
   renderOne(model, collection, options) {
+    if (!model.id){return;}
     const msgView = new this.MsgView({
       model,
       userModel: this.userModel,

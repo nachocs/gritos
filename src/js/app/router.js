@@ -12,15 +12,15 @@ const Router = Backbone.Router.extend({
   },
   defaultRoute(route) {
     if (route && route.length>0){
-      if (route.match(/(.*)\/(\d+)\/?/)){
-        const [, foro, entrada] = route.match(/(.*)\/(\d+)\/?/);
+      if (route.match(/^\/?(\w+)\/(\d+)\/?/)){
+        const [, foro, entrada] = route.match(/^\/?(\w+)\/(\d+)\/?/);
         if (foro && entrada){
           return this.mensaje(foro, entrada);
         } else if (foro){
           return this.foro(foro);
         }
-      } else if (route.match(/(.*)\//)){
-        return this.foro(route.replace(/\/[^/]*$/,''));
+      } else if (route.match(/^(\w+)\//)){
+        this.navigate(route.match(/^(\w+)\//)[1], {trigger:true});
       }
     }
     return this.foro();
@@ -37,7 +37,11 @@ const Router = Backbone.Router.extend({
     if (foro === 'ciudadanos'){
       return this.foro(foro + '/' + mensajeId + '/');
     }
-    this.model.changeForo(foro, mensajeId);
+    if (mensajeId.match(/^\d+$/)){
+      this.model.changeForo(foro, mensajeId);
+    } else {
+      this.foro(foro);
+    }
   },
 });
 
