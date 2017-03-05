@@ -28,9 +28,11 @@ export default ViewBase.extend({
   searchNuevoTema(e){
     e.preventDefault();
     e.stopPropagation();
-    const nuevoTema = this.$('#nuevo-tema').val();
+    let nuevoTema = this.$('#nuevo-tema').val();
     const newHead = new HeadModel();
     const self = this;
+    if (!nuevoTema){return;}
+    nuevoTema = nuevoTema.replace(/\s/ig,'_').replace(/\W/ig,'');
     newHead.set('Name', nuevoTema);
     newHead.fetch({
       success(model){
