@@ -22,8 +22,8 @@ const config = {
   ],
   output: {
     path: __dirname + '/../dist',
-    filename: BUILD_NUM + '/[name].[chunkhash].js',
-    chunkFilename: BUILD_NUM + '/[name].[chunkhash].chunk.js',
+    filename: 'dist/' + BUILD_NUM + '/[name].[chunkhash].js',
+    chunkFilename: 'dist/' + BUILD_NUM + '/[name].[chunkhash].chunk.js',
     publicPath: CDN_BASE_URL,
   },
   module: {
@@ -41,8 +41,8 @@ const config = {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader'}),
       },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff&name='+ BUILD_NUM +'/fonts/[name].[ext]' },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader?name='+ BUILD_NUM +'/fonts/[name].[ext]' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff&name=dist/'+ BUILD_NUM +'/fonts/[name].[ext]' },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader?name=dist/'+ BUILD_NUM +'/fonts/[name].[ext]' },
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
       { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=10000' },
       { test: /\.json$/, loader: 'json-loader' },
@@ -66,7 +66,7 @@ const config = {
       },
     }),
     new ExtractTextPlugin({
-      filename:BUILD_NUM + '/[name].[contenthash].css',
+      filename:'dist/' + BUILD_NUM + '/[name].[contenthash].css',
       disable: false,
       allChunks: true,
     }),
