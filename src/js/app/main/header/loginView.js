@@ -29,6 +29,8 @@ export default ViewBase.extend({
   logOut(){
     Cookies.set('city', null);
     this.model.clear();
+    FB.logout();
+
   },
   fBlogin() {
     FB.login(response => {
