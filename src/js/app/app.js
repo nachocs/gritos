@@ -31,10 +31,12 @@ const App = Backbone.View.extend({
     this.router = Router;
     Backbone.history.start({pushState: true, root:'/'});
     $('body').on('click', 'a', (e)=>{
-      e.preventDefault();
-      e.stopPropagation();
       const route = e.currentTarget.getAttribute('href');
-      this.router.navigate(route, {trigger: true});
+      if (!route.match(/^http/) && !route.match(/^\/\//)){
+        e.preventDefault();
+        e.stopPropagation();
+        this.router.navigate(route, {trigger: true});
+      }
     });
   },
   initialSetup() {
