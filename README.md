@@ -9,6 +9,9 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.4.0
+Final version, not push state.
+
 ## 1.3.0
 This is ready
 
