@@ -1,7 +1,7 @@
 {
   "name": "gritos",
-  "version": "1.4.0",
-  "description": "Gritos.com platform",
+  "version": "1.5.0",
+  "description": "Gritos.com",
   "main": "js/app/app.js",
   "scripts": {
     "lint": "eslint .",

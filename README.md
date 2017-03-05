@@ -9,6 +9,9 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.5.0
+Added PushState
+
 ## 1.4.0
 Final version, not push state.
 
