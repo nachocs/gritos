@@ -6,7 +6,7 @@
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
       <div class="logomask pseudo">
-        <a href="#">
+        <a href="/">
           <img src="<%= obj.imgLogo %>" alt="Gritos.com" title="home de gritos.com"/>
         </a>
       </div>
@@ -23,7 +23,7 @@
       </svg>
 
       <!-- Title -->
-      <div class="mdl-layout-title titulo" title="<%= obj.Titulo %>"><a href="/<%= obj.Name!=='foroscomun'?'#'+obj.Name:'' %>"><%= obj.Titulo %></a></div>
+      <div class="mdl-layout-title titulo" title="<%= obj.Titulo %>"><a href="/<%= obj.Name !== 'foroscomun'? '' + obj.Name : '' %>"><%= obj.Titulo %></a></div>
       <!-- Add spacer, to align navigation to the right -->
       <!-- <div class="mdl-layout-spacer"></div> -->
       <!-- Navigation. We hide it in small screens. -->
