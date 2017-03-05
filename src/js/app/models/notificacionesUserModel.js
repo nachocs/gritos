@@ -79,7 +79,7 @@ const NotificacionesUserModel = Backbone.Model.extend({
     }
   },
   runUpdate(tipo, foro, lastEntry, subtipo){
-    if (tipo !== 'foro' && tipo !== 'minis' && tipo !== 'msg'){return;}
+    if (tipo !== 'foro' && tipo !== 'minis' && tipo !== 'msg' && tipo !== 'yo'){return;}
     let changed = false;
     if (!foro.match(/^gritos/) && !foro.match(/^ciudadanos/)){
       foro = 'gritos/' + foro;
