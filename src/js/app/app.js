@@ -29,7 +29,7 @@ const App = Backbone.View.extend({
     });
     $('#root').html(this.mainView.render().el);
     this.router = Router;
-    Backbone.history.start({pushState: false, root:''});
+    Backbone.history.start({pushState: true, root:''});
   },
   initialSetup() {
     moment.locale('es');
