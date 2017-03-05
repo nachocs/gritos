@@ -30,6 +30,10 @@ export default Backbone.View.extend({
           const foro = data.indice + '/' + data.entry.ID;
           NotificacionesUserModel.update(data.tipo, foro, data.entry[data.subtipo], data.subtipo);
         }
+        if (data.tipo === 'yo'){
+          const foro = data.indice;
+          NotificacionesUserModel.update(data.tipo, foro, data.entry.ID);
+        }
         model.set('read', true);
       });
     }

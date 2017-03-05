@@ -102,6 +102,13 @@ const NotificacionesUserModel = Backbone.Model.extend({
             } else {
               newarray.push(esteforo + ',' + estenum);
             }
+          } else if(tipo === 'yo'){
+            if (ele < lastEntry){
+              newarray.push(lastEntry);
+              changed = true;
+            } else {
+              newarray.push(estenum);
+            }
           } else {
             if (esteforo === foro && estenum < lastEntry){
               newarray.push(esteforo + ',' + lastEntry);
