@@ -1,5 +1,5 @@
 <% if (obj.alias_principal){ %>
-	<a href="/ciudadanos/<%=obj.ID%>">
+	<a href="/ciudadanos/<%=obj.ID%>" class="mdl-layout--large-screen-only">
 		<% if (obj.dreamy_principal){ %>
 			<img src="<%= obj.dreamy_principal %>" style="height:48px">
 		<% } else { %>
@@ -22,7 +22,9 @@
   </ul>
 
 <%} else {%>
-	Log In
+	<span class="mdl-layout--large-screen-only">
+		Log In
+	</span>
 	<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon">
 	  <i class="material-icons">power_settings_new</i>
 	</button>
