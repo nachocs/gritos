@@ -29,7 +29,13 @@ const App = Backbone.View.extend({
     });
     $('#root').html(this.mainView.render().el);
     this.router = Router;
-    Backbone.history.start({pushState: true, root:''});
+    Backbone.history.start({pushState: true, root:'/'});
+    $('body').on('click', 'a', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const route = e.currentTarget.getAttribute('href');
+      this.router.navigate(route, {trigger: true});
+    });
   },
   initialSetup() {
     moment.locale('es');

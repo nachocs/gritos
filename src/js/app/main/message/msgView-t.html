@@ -48,7 +48,7 @@
     <% if (obj.showForm && obj.tagsShown && obj.tagsShown.length > 0){ %>
 			<div class="tags">
 				<% obj.tagsShown.forEach((tag)=>{ %>
-				<a href="/<%= tag.value %>"><%= tag.value.match(/^ciudadanos/) ? '@' : '/' %><%= tag.name %></a>
+				<a href="/<%= tag.value %>"><%= tag.value.match(/^ciudadanos/) ? '@' : '#' %><%= tag.name %></a>
 				<% }) %>
 			</div>
     <% } %>

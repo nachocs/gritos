@@ -12,7 +12,7 @@ export default Backbone.View.extend({
     return this;
   },
   serializer(){
-    let indiceBasic = this.model.get('indice').replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/.*$/,'');
+    let indiceBasic = '# ' + this.model.get('indice').replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/.*$/,'');
     if (this.model.get('indice').match(/^ciudadanos/) && this.model.get('head')){
       if (this.model.get('head').ID === userModel.get('ID')){
         indiceBasic = 'tu muro';
