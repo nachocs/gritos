@@ -5,7 +5,14 @@
   <div class="action-icons">
   	<% if (obj.showForm){ %>
       <div class="forward"><a href="/<%= obj.INDICE.replace(/^gritos\//,'') %>/<%= obj.ID %>"><i class="fa fa-chevron-circle-right fa-lg" aria-hidden="true"></i></a></div>
-      <div class="share" title="share"><i class="fa fa-share-alt" aria-hidden="true"></i></div>
+      <div class="share" title="share"><i class="fa fa-share-alt" aria-hidden="true"></i>
+				<div class="share-menu">
+					<ul>
+						<li><i class="fa fa-facebook-official fa-lg" aria-hidden="true"></i></li>
+						<li><i class="fa fa-twitter-square fa-lg" aria-hidden="true"></i></li>
+					</ul>
+				</div>
+			</div>
   	<% } %>
   <% if (userModel.ID){ %>
     <div class="show-admin" title="admin"><i class="fa fa-angle-down fa-lg" aria-hidden="true"></i>

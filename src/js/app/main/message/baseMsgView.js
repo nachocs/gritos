@@ -84,6 +84,20 @@ export default Backbone.View.extend({
     'click .js-ban': 'showBanModal',
     'click .js-delete': 'showDeleteModal',
     'click .js-edit': 'editThis',
+    'click .share':'openShare',
+    'click .fa-facebook-official':'shareFb',
+    'click .fa-twitter-square':'shareTw',
+  },
+  shareFb(){
+    Util.bookmarkthis('facebook', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//,'') + '/' + this.model.get('ID'), this.headModel.get('Title'));
+  },
+  shareTw(){
+    Util.bookmarkthis('twitter', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//,'') + '/' + this.model.get('ID'), this.headModel.get('Title'));
+  },
+  openShare(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.$(e.currentTarget).find('.share-menu').toggleClass('active');
   },
   editThis(){
     ModalView.update({
