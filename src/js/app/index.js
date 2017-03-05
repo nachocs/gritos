@@ -1,5 +1,6 @@
 import App from './app';
 import loadFBSDK from 'facebook-sdk-promise';
+import $ from 'jquery';
 
 loadFBSDK().then(FB => {
   FB.init({
@@ -16,5 +17,3 @@ loadFBSDK().then(FB => {
   // });
   // app.initialize();
 });
-
-export default App;

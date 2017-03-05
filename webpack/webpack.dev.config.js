@@ -68,6 +68,7 @@ const config = {
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
         // This allows us to overwrite the root domain endpoint that will be used during development run of the application.
+        // This environment variable is defined in here: https://github.com/import-io/frontend-utils#api
         // In production this variable will be undefined, the root domain endpoint used to communication with api
         // will be inferred from the current domain name.
         ENDPOINTS_ROOT_DOMAIN: JSON.stringify('gritos.com'),

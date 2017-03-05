@@ -83,7 +83,7 @@ export default ViewBase.extend({
       model,
       attributes:()=> {
         return{
-          href: '/' + model.get('name').replace(/gritos\//,'').replace(/foros\//,''),
+          href: '#' + model.get('name').replace(/gritos\//,'').replace(/foros\//,''),
         };
       },
     });
