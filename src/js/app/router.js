@@ -3,8 +3,8 @@ import GlobalModel from './models/globalModel';
 
 const Router = Backbone.Router.extend({
   routes: {
-    ':foro': 'foro',
-    ':foro/:id': 'mensaje',
+    ':foro(/)': 'foro',
+    ':foro/:id(/)': 'mensaje',
     '*something': 'defaultRoute',
   },
   initialize() {
@@ -12,11 +12,15 @@ const Router = Backbone.Router.extend({
   },
   defaultRoute(route) {
     if (route && route.length>0){
-      const [, foro, entrada] = route.match(/(.*)\/(\d+)/);
-      if (foro && entrada){
-        return this.mensaje(foro, entrada);
-      } else if (foro){
-        return this.foro(foro);
+      if (route.match(/(.*)\/(\d+)\/?/)){
+        const [, foro, entrada] = route.match(/(.*)\/(\d+)\/?/);
+        if (foro && entrada){
+          return this.mensaje(foro, entrada);
+        } else if (foro){
+          return this.foro(foro);
+        }
+      } else if (route.match(/(.*)\//)){
+        return this.foro(route.replace(/\/$/,''));
       }
     }
     return this.foro();
