@@ -3,10 +3,13 @@
 @import "../../node_modules/bootstrap/less/bootstrap.less";
 
 @font-face {
-  font-family: newdreamers;
+  font-family: 'newdreamers';
   src: url('../fonts/newdreamers.eot');/* EOT file for IE */
-  src: url('../fonts/newdreamers.ttf'); /* TTF file for CSS3 browsers */
+  src: local('?'),
+    url('../fonts/newdreamers.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    url('../fonts/newdreamers.ttf') format('truetype'); /* TTF file for CSS3 browsers */
 }
+
 .newdreamers{
   font-family: newdreamers!important;
   text-transform: lowercase;
