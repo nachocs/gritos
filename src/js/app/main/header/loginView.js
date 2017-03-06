@@ -76,6 +76,7 @@ export default ViewBase.extend({
         if (data.status !== 'ok') {
           self.showError('no tira');
           console.log('error: ', data.status);
+          Cookies.set('city', null);
         } else {
           self.model.set(data.user);
           Cookies.set('city', {

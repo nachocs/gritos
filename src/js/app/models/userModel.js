@@ -40,6 +40,7 @@ const UserModel = Backbone.Model.extend({
       success(data) {
         if (data.status !== 'ok') {
           console.log('error: ', data.status);
+          self.clear();
         } else {
           self.set(data.user);
           self.set('uid', uid);
