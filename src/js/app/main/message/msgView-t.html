@@ -40,12 +40,12 @@
 	<div class="mdl-card__supporting-text">
     <% if (images.length>0 ){%>
 		<div class="images-place">
-			<% images.forEach(image => { %>
+			<% images.forEach(function(image){ %>
         <%= image %>
       <% }); %>
 		</div>
     <% } else {%>
-      <% images.forEach(image => { %>
+      <% images.forEach(function(image){ %>
         <%= image %>
       <% }); %>
     <% } %>
@@ -54,7 +54,7 @@
 	<div class="foot">
     <% if (obj.showForm && obj.tagsShown && obj.tagsShown.length > 0){ %>
 			<div class="tags">
-				<% obj.tagsShown.forEach((tag)=>{ %>
+				<% obj.tagsShown.forEach(function(tag){ %>
 				<a href="/<%= tag.value %>"><%= tag.value.match(/^ciudadanos/) ? '@' : '#' %><%= tag.name %></a>
 				<% }) %>
 			</div>
