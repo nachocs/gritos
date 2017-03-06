@@ -188,7 +188,6 @@ export default Backbone.View.extend({
     const replacer = (match, p1) => ` <span class="spoiler" data-tip="${p1}">SPOILER</span> `;
 
     string = string.replace(/\-\:SPOILER\[([^\]\[]+)\]SPOILER\:\-/ig, replacer);
-    string = string.replace('http:','');
     return autolinker.link(string);
   },
 
