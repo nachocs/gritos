@@ -1,6 +1,6 @@
 <div class="emojis-modal-body">
   <div class="emojis-modal-tabs">
-    <% _.forEach(obj.list, (category, key)=>{ if(key !== 'modifier' && key !== 'regional'){ %>
+    <% _.forEach(obj.list, function(category, key){ if(key !== 'modifier' && key !== 'regional'){ %>
       <span data-tab="<%= key %>" class="emoji-tab <%= key === obj.selectedCategory ? 'active': '' %>" title="<%= key %>" >
         <%= category[0].img %>
       </span>
