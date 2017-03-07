@@ -362,6 +362,7 @@ export default ViewBase.extend({
     let comments = this.$('.formularioTextArea').html();
     comments = comments.replace(/\n/ig, '<br>');
     comments = comments.replace(/\r/ig, '<br>');
+    comments = comments.replace(/\&nbsp\;/ig, ' ');
     if (comments.length < 1 ){
       return;
     }
