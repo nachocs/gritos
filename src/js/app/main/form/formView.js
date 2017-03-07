@@ -131,17 +131,24 @@ export default ViewBase.extend({
     this.formModel.set({tags: newTags});
   },
   inputTag(e){
+    e.preventDefault();
+    if (e.target.value && e.target.value.length > 10){
+      e.target.value = e.target.value.substring(0,10);
+    }
     if (e.keyCode === 13 || e.keyCode === 188){
-      e.preventDefault();
+      e.target.value = e.target.value.replace(/\W/ig,'');
       let newTag = e.target.value.replace(/\W/ig,'');
-      if (newTag){
+      if (newTag && newTag.length > 2 ){
         newTag = '#' + newTag;
         let tags = this.formModel.get('tags') ? this.formModel.get('tags').split(',') : [];
         tags.push(newTag);
         tags = _.uniq(tags);
         this.setComments();
         this.formModel.set({tags:_.join(tags, ',')});
+        this.$('.input-tag').focus();
       }
+    } else {
+      e.target.value = e.target.value.replace(/\W/ig,'');
     }
   },
   toggleTags(){
@@ -156,7 +163,8 @@ export default ViewBase.extend({
       this.$el.find('.tags-place ul').hide('slow');
     }
     if (prev){
-      componentHandler.upgradeElement(this.$el.find('.mdl-js-textfield')[0]);
+      this.materialDesignUpdate();
+      // componentHandler.upgradeElement(this.$el.find('.mdl-js-textfield')[0]);
     }
     this.tagPlaceShown = prev;
   },
@@ -465,12 +473,12 @@ export default ViewBase.extend({
   },
   afterRender() {
     this.$('.wysiwyg').hide();
-    componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
-    if (this.tagPlaceShown){
-      this.$el.find('.mdl-js-textfield').each((index, ele)=>{
-        componentHandler.upgradeElement(ele);
-      });
-    }
+    // componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
+    // if (this.tagPlaceShown){
+    //   this.$el.find('.mdl-js-textfield').each((index, ele)=>{
+    //     componentHandler.upgradeElement(ele);
+    //   });
+    // }
     this.materialDesignUpdate();
     // this.$('.formularioTextArea').keyup(function() {
     //   $(this).height(38);
