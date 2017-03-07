@@ -49,11 +49,19 @@ export default Backbone.View.extend({
     'click .new-msg': 'newMsg',
     'click .foro-admin': 'openForoAdmin',
     'click .logomask':'goHome',
+    'click [data-link]':'goToLink',
+  },
+  goToLink(e){
+    e.stopPropagation();
+    e.preventDefault();
+    const route = $(e.currentTarget).data('link');
+    router.navigate(route, {trigger:true});
+    this.$el.find('main').scrollTop(0);
   },
   goHome(e){
     e.stopPropagation();
     e.preventDefault();
-    router.navigate('/',{trigger:true});
+    router.navigate('/', {trigger:true});
     this.$el.find('main').scrollTop(0);
   },
   openForoAdmin(){

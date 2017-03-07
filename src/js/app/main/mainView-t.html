@@ -21,8 +21,8 @@
       </svg>
 
       <!-- Title -->
-      <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>"><a href="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo : obj.Titulo %></a></div>
-      <div class="mdl-layout-title titulo mdl-layout--small-screen-only	" title="<%= obj.Titulo %>"><a href="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@'+obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></a></div>
+      <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo : obj.Titulo %></span></div>
+      <div class="mdl-layout-title titulo mdl-layout--small-screen-only	" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@'+obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></span></div>
       <!-- Add spacer, to align navigation to the right -->
       <!-- <div class="mdl-layout-spacer"></div> -->
       <!-- Navigation. We hide it in small screens. -->
