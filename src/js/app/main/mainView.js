@@ -10,6 +10,7 @@ import ResumenView from './header/resumenView';
 import NotificacionesView from './header/notificacionesView';
 import ModalView from './modalView';
 import AvisosView from './header/avisosView';
+import router from '../router';
 
 export default Backbone.View.extend({
   className: 'main',
@@ -47,6 +48,13 @@ export default Backbone.View.extend({
   events:{
     'click .new-msg': 'newMsg',
     'click .foro-admin': 'openForoAdmin',
+    'click .logomask':'goHome',
+  },
+  goHome(e){
+    e.stopPropagation();
+    e.preventDefault();
+    router.navigate('/',{trigger:true});
+    this.$el.find('main').scrollTop(0);
   },
   openForoAdmin(){
     ModalView.update({
