@@ -3,6 +3,7 @@ import template from './notificacionesItemView-t.html';
 import _ from 'lodash';
 import userModel from '../../models/userModel';
 import moment from 'moment';
+import router from '../../router';
 
 export default Backbone.View.extend({
   template: _.template(template),
@@ -10,6 +11,15 @@ export default Backbone.View.extend({
   render(){
     this.$el.html(this.template(this.serializer()));
     return this;
+  },
+  events:{
+    'click':'goTo',
+  },
+  goTo(e){
+    e.stopPropagation();
+    e.preventDefault();
+    router.navigate('/' + this.model.get('indice').replace(/^gritos\//,'').replace(/\/(\d+)\/\d+$/, '/$1'), {trigger:true});
+    
   },
   serializer(){
     let indiceBasic = '# ' + this.model.get('indice').replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/.*$/,'');
