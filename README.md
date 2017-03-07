@@ -9,6 +9,13 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.5.1
+Scroll Up on tittle and G
+Polyfill and css changes for IE
+IPad bug
+font-size estandard in all forms
+usual links change
+
 ## 1.5.0
 Added PushState
 
