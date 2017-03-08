@@ -11,6 +11,9 @@ export default Backbone.View.extend({
     this.listenTo(this.collection, 'error', () => {
       this.hideSpinner();
     });
+    this.listenTo(this.collection, 'destroy', () => {
+      this.hideSpinner();
+    });
     this.listenTo(this.collection, 'request', () => {
       this.showSpinner();
     });
