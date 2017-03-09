@@ -2,6 +2,7 @@ import Backbone from 'backbone';
 import template from './avisosView-t.html';
 import _ from 'lodash';
 import vent from '../../util/vent';
+import ViewBase from '../base/ViewBase';
 
 const Model = Backbone.Model.extend({
   // defaults:{
@@ -10,7 +11,7 @@ const Model = Backbone.Model.extend({
   // },
 });
 
-const AvisosView = Backbone.View.extend({
+const AvisosView = ViewBase.extend({
   model: new Model(),
   template: _.template(template),
   events:{
@@ -18,6 +19,7 @@ const AvisosView = Backbone.View.extend({
   },
   closeThis(){
     this.model.set({nuevos:0});
+    this.goToRoute(this.model.get('room'));
   },
   initialize(){
     this.counters = {};
@@ -37,6 +39,7 @@ const AvisosView = Backbone.View.extend({
   },
   render(){
     this.$el.html(this.template(this.serializer()));
+    this.delegateEvents();
     return this;
   },
   serializer(){
