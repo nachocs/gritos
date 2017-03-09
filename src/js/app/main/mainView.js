@@ -105,6 +105,11 @@ export default Backbone.View.extend({
     return this;
   },
   afterRender() {
+    // if (this.model.get('SET') === '2'){
+    //   $('body').addClass('oscuro');
+    // } else {
+    //   $('body').removeClass('oscuro');
+    // }
     _.defer(_.bind(function () {
       componentHandler.upgradeElement(this.$el.find('.mdl-js-layout')[0]);
       componentHandler.upgradeElement(this.$el.find('.mdl-js-button')[0]);
