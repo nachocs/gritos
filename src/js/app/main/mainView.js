@@ -1,4 +1,3 @@
-import Backbone from 'backbone';
 import _ from 'lodash';
 import $ from 'jquery';
 import template from './mainView-t.html';
@@ -11,8 +10,9 @@ import NotificacionesView from './header/notificacionesView';
 import ModalView from './modalView';
 import AvisosView from './header/avisosView';
 import router from '../router';
+import ViewBase from './base/ViewBase';
 
-export default Backbone.View.extend({
+export default ViewBase.extend({
   className: 'main',
   template: _.template(template),
   initialize(options) {
@@ -110,25 +110,10 @@ export default Backbone.View.extend({
     // } else {
     //   $('body').removeClass('oscuro');
     // }
+    this.materialDesignUpdate();
     _.defer(_.bind(function () {
-      componentHandler.upgradeElement(this.$el.find('.mdl-js-layout')[0]);
-      componentHandler.upgradeElement(this.$el.find('.mdl-js-button')[0]);
-      // debugger;
-      // $(window).scroll(function () {
-      //     debugger;
-      // });
-      // $('*').scroll(function () {
-      //     debugger;
-      // });
-      // $('body div').scroll(function () {
-      //     debugger;
-      // });
-      // $('body div div').scroll(function () {
-      //     debugger;
-      // });
-      // $('body div div div').scroll(function () {
-      //     debugger;
-      // });
+      // componentHandler.upgradeElement(this.$el.find('.mdl-js-layout')[0]);
+      // componentHandler.upgradeElement(this.$el.find('.mdl-js-button')[0]);
 
       $('.mdl-layout__content').scroll(this.detect_scroll.bind(this));
     }, this));
