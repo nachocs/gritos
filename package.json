@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nachocs/gritos.git"
+    "url": "git+git@github.com:nachocs/gritos.git"
   },
   "author": "Gritos.com",
   "license": "UNLICENSED",
