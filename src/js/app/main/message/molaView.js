@@ -20,7 +20,6 @@ export default Backbone.View.extend({
     e.stopPropagation();
     e.preventDefault();
     const mola = this.$(e.currentTarget).hasClass('mola') ? 'mola' : this.$(e.currentTarget).hasClass('nomola') ? 'nomola' : 'love';
-      // molaTag = `${mola}.${this.clean(this.model.get('INDICE') + '.' + this.model.id)}`, userObj = {},
     const modelObj = {};
     const array = this.model.get(mola + 'log') ? this.model.get(mola + 'log').split('|') : [];
     const newarray = [];

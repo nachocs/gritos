@@ -23,7 +23,7 @@ export default Backbone.Model.extend({
       Ws.subscribe(this.get('INDICE') + '/' + this.get('ID'));
     }
   },
-  idAttribute: 'ID',
+  idAttribute: 'num',
   url() {
     return endpoints.apiUrl + 'index.cgi?' + this.get('INDICE') + '/' + this.get('ID');
   },

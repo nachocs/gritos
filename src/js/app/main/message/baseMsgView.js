@@ -39,7 +39,7 @@ export default Backbone.View.extend({
       const miniIndice = this.model.get('INDICE');
       // miniIndice = miniIndice.replace(/^.*\//,'');
       this.minimsgsCollection = new this.MiniMsgCollection([], {
-        id: `${miniIndice}/${this.model.id}/`,
+        id: `${miniIndice}/${this.model.get('ID')}/`,
         msgModel: this.model,
       });
       // this.minimsgsCollection.comparator = (a,b) => (a.get('ID') - b.get('ID'));
