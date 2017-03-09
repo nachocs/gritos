@@ -107,21 +107,21 @@ div.titulo{
   &.mdl-card {
     margin-bottom: 20px;
     width: 100%;
-    min-height: auto;
+    min-height: 50px;
     background-color: white;
     font-weight: 400;
     font-family: 'Montserrat', sans-serif;
   }
   &.ciudadano{
-    background-color: rgba(250,255,247,1);
+    background-color: #C3504A;
   }
   &.conimagen{
-    background-size: initial;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position-x: 50%;
-    background-position-y: 0;
+    background-position: 50% 0;
     min-height: 200px;
-    display: table;
+    display: block;
+    position: relative;
     width: 100%;
     .dreamy{
       float:left;
@@ -135,35 +135,38 @@ div.titulo{
       padding-right: 100px;
     }
     div.table{
-      display: table;
+      display: block;
+      position: relative;
       height: 100%;
     }
     div.collumn{
       display: table-column;
     }
     div.bottom-row{
-      display: table-row;
-      height: 1px;
-      display: table-row;
-      vertical-align: bottom;
+      display: block;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
     }
     .texto-introduccion{
-      background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,255,247,1) 48%);
-      background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,255,247,1) 48%);
-      background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(250,255,247,1) 48%);
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#fafff7',GradientType=0 );
+      color: white;
+      text-shadow: 1px 1px 1px #000;
+      // background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,255,247,1) 48%);
+      // background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,255,247,1) 48%);
+      // background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(250,255,247,1) 48%);
+      // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#fafff7',GradientType=0 );
       bottom: 0;
       position: relative;
       padding: 16px;
       width: 100%;
     }
   }
-  &.sinimagen{
-    min-height: initial;
-    .description{
-      height: initial;
-    }
-  }
+  // &.sinimagen{
+  //   min-height: initial;
+  //   .description{
+  //     height: initial;
+  //   }
+  // }
 
 }
 .msg-list{
@@ -680,7 +683,7 @@ iframe {
   .mdl-card{
     padding: 20px 40px 20px 60px;
     width: auto;
-    min-height: auto;
+    min-height: 50px;
     overflow: initial;
   }
   .file-submit{
