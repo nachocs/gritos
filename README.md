@@ -9,6 +9,9 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.5.3
+Added manifest and phone icons.
+
 ## 1.5.2
 Break Change. Changed msgModel to id:num as it was merging bad. Hope it doesn't have bad consecuences
 
