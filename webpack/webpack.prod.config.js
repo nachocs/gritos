@@ -98,6 +98,9 @@ const config = {
       output: 'manifest.json',
       assets: {
         'name': 'Gritos.com',
+        'homepage_url': 'https://gritos.com',
+        'description': 'Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.',
+        'version': JSON.stringify(require('../package.json').version),
         'icons': [
           {
             'src': '/assets/android-icon-36x36.png',
