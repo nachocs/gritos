@@ -98,7 +98,10 @@ const config = {
       output: 'manifest.json',
       assets: {
         'name': 'Gritos.com',
-        'homepage_url': 'https://gritos.com',
+        'start_url': 'https://gritos.com',
+        'theme_color': 'white',
+        'display': 'standalone',
+        'background_color': 'white',
         'description': 'Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.',
         'version': JSON.stringify(require('../package.json').version),
         'icons': [
