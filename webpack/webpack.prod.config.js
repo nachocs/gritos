@@ -100,7 +100,7 @@ const config = {
         'name': 'Gritos.com',
         'start_url': 'https://gritos.com',
         'theme_color': 'white',
-        'display': 'fullscreen',
+        'display': 'standalone',
         'background_color': 'white',
         'description': 'Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.',
         'version': JSON.stringify(require('../package.json').version),
