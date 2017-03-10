@@ -79,6 +79,7 @@
     "url-loader": "latest",
     "webpack": "latest",
     "webpack-dashboard": "latest",
-    "webpack-dev-server": "latest"
+    "webpack-dev-server": "latest",
+    "webpack-assets-manifest": "^0.6.2"
   }
 }
