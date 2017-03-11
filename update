@@ -1,4 +1,5 @@
-cd /home/gritos/secure/gritos
-git pull
-npm run build
-cp -R dist/* ../www/
+set -x;
+cd /home/gritos/secure/gritos;
+git pull;
+npm run build;
+cp -R dist/* ../www/;
