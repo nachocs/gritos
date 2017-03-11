@@ -105,10 +105,13 @@ export default ViewBase.extend({
     // }
     this.materialDesignUpdate();
     _.defer(_.bind(function () {
-      // componentHandler.upgradeElement(this.$el.find('.mdl-js-layout')[0]);
-      // componentHandler.upgradeElement(this.$el.find('.mdl-js-button')[0]);
+      // $(window).scroll(()=>{debugger;});
+      // $('.mdl-layout__content').scroll(()=>{debugger;});
+      // $('.mdl-layout').scroll(()=>{debugger;});
+      // $('.mdl-layout__container').scroll(()=>{debugger;});
 
-      $('.mdl-layout__content').scroll(this.detect_scroll.bind(this));
+      $(window).scroll(this.detect_scroll.bind(this));
+      // $('.mdl-layout__content').scroll(this.detect_scroll.bind(this));
     }, this));
   },
   detect_scroll(e) {
