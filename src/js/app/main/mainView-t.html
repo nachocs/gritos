@@ -38,14 +38,14 @@
   </div>
   <main class="mdl-layout__content">
   	<div class="content">
-      <% if (obj.INDICE === 'ciudadanos' && (obj.INTRODUCCION || obj.comments || obj.IMAGEN0_URL)){ %>
+      <% if (obj.INDICE === 'ciudadanos' ){ %>
         <div class="foro-description mdl-card mdl-shadow--4dp conimagen ciudadano <%= obj.IMAGEN0_URL?'':'sinimagen'%>" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
           <div class="dreamy"><img src="<%=obj.dreamy_principal%>"></div>
           <div class="description">
             <div class="table">
               <div></div>
               <div class="bottom-row">
-                <div class="mdl-card--border mdl-card__supporting-text texto-introduccion"><%= obj.comments || obj.INTRODUCCION %></div>
+                <div class="mdl-card--border mdl-card__supporting-text texto-introduccion"><%= obj.comments || obj.INTRODUCCION || 'Bienvenid@ a mi muro!'%></div>
               </div>
             </div>
           </div>

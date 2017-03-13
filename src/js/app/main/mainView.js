@@ -35,6 +35,7 @@ export default ViewBase.extend({
       collection: this.collection,
       globalModel: this.globalModel,
       type: 'foro',
+      headModel: this.model,
     });
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,

@@ -2,7 +2,7 @@
 	<a href="/ciudadanos/<%=obj.ID%>" class="mdl-layout--large-screen-only">
 		<% if (obj.dreamy_principal){ %>
 			<img src="<%= obj.dreamy_principal %>" style="height:48px">
-		<% else if (obj.FB_picture){ %>
+		<% } else if (obj.FB_picture){ %>
 			<img src="<%= obj.FB_picture %>" style="height:48px">
 		<% } else { %>
 	    <i class="material-icons" style="font-size:48px">face</i>

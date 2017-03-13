@@ -47,6 +47,7 @@ export default ViewBase.extend({
    this.isHead = options.isHead;
    this.type = options.type; // foro / msg
    this.formModel = new formModel();
+   this.headModel = options.headModel;
    if(options.msg){
      this.formModel.set(options.msg.toJSON());
    }
@@ -489,11 +490,19 @@ export default ViewBase.extend({
   },
   serializer(){
     const obj = this.userModel.toJSON();
+    let titulo_head;
     if (this.parentModel && this.parentModel.get('ID')){
       Object.assign(obj, { parentModel: this.parentModel.toJSON() });
     }
     if (this.msg && this.msg.get('ID')){
       Object.assign(obj, { msg: this.msg.toJSON() });
+    }
+    if (this.headModel){
+      if (this.headModel.get('INDICE') && this.headModel.get('INDICE').match(/^ciudadanos/)){
+        titulo_head = 'Escribe en el muro de ' + this.headModel.get('Titulo');
+      } else if (this.headModel.get('INDICE')){
+        titulo_head = 'Explayate a tu gusto en el foro de ' + this.headModel.get('Titulo');
+      }
     }
     Object.assign(obj, {
       emojis: emojione.toImage(':smile:'),
@@ -502,6 +511,7 @@ export default ViewBase.extend({
       tagPlaceShown: this.tagPlaceShown,
       active: this.active,
       isHead: this.isHead,
+      titulo_head,
     });
     return obj;
   },
