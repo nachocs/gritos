@@ -428,6 +428,7 @@ export default ViewBase.extend({
           self.isClear = false;
           if (!self.isHead){
             self.render();
+            if (!data.mensaje.num){data.mensaje.num = data.mensaje.ID;}
             self.collection.add(data.mensaje, {merge:true, individual:true});
           } else {
             if (self.headModel){

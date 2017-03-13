@@ -287,6 +287,13 @@ export default Backbone.View.extend({
         value: mainName,
       });
     }
+    if (this.model.get('INDICE').match(/^ciudadanos\//) && this.model.get('indice_ciudadano_alias')){
+      mainName = this.model.get('INDICE');
+      tagsShown.push({
+        name: this.model.get('indice_ciudadano_alias').replace(/\s/g, '_'),
+        value: mainName,
+      });
+    }
     tagsShown = _.uniqBy(tagsShown, 'value');
     let images = [];
     Object.keys(this.model.toJSON()).forEach((key)=> {
