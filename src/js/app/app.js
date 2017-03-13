@@ -32,7 +32,7 @@ const App = Backbone.View.extend({
     Backbone.history.start({pushState: true, root:'/'});
     $('body').on('click', 'a', (e)=>{
       const route = e.currentTarget.getAttribute('href');
-      if (!route.match(/^http/) && !route.match(/^\/\//)){
+      if (!route.match(/^http/) && !route.match(/^\/\//) && !route.match(/^mailto/) && !route.match(/^tel\:/)){
         e.preventDefault();
         e.stopPropagation();
         this.router.navigate(route, {trigger: true});

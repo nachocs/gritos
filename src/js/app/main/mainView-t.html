@@ -21,7 +21,7 @@
       </svg>
 
       <!-- Title -->
-      <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo : obj.Titulo %></span></div>
+      <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo.toLowerCase().replace(/\s+/g, '_') : obj.Titulo %></span></div>
       <div class="mdl-layout-title titulo mdl-layout--small-screen-only	" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@'+obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></span></div>
       <!-- Add spacer, to align navigation to the right -->
       <!-- <div class="mdl-layout-spacer"></div> -->

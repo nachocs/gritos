@@ -350,8 +350,8 @@ export default ViewBase.extend({
 
     //If the range spans some text, and inside a tag, set its css class.
     if(range && !selection.isCollapsed)
-    {
-      this.$('.wysiwyg').show().offset({top: range.getBoundingClientRect().top-22, left: range.getBoundingClientRect().left});
+    { // range da la posicion sin contar el scroll
+      this.$('.wysiwyg').show().css({top: (range.getBoundingClientRect().top+$(window).scrollTop()-this.$('.mdl-card').first().offset().top-22)+'px', left: (range.getBoundingClientRect().left-this.$('.mdl-card').first().offset().left)+'px'});
     } else if (selection.isCollapsed){
       this.$('.wysiwyg').hide();
     }

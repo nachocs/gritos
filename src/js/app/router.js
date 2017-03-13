@@ -29,6 +29,9 @@ const Router = Backbone.Router.extend({
     if (!foro || foro === 'admin' || foro === 'ciudadanos' || foro === 'jsgritos'){
       foro = 'foroscomun';
     }
+    if (foro.match(/[^\w\/]+/)){
+      return;
+    }
     this.model.changeForo(foro, null);
   },
 

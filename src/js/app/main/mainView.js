@@ -124,7 +124,7 @@ export default ViewBase.extend({
       this.model.toJSON(),
       {
         imgLogo:this.images.logo,
-        Titulo: this.model.get('Titulo').toLowerCase(),
+        Titulo: this.model.get('Titulo'),
         userModel: this.userModel.toJSON(),
       });
   },
