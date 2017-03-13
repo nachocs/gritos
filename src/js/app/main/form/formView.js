@@ -371,6 +371,7 @@ export default ViewBase.extend({
     comments = comments.replace(/\n/ig, '<br>');
     comments = comments.replace(/\r/ig, '<br>');
     comments = comments.replace(/\&nbsp\;/ig, ' ');
+    comments = comments.replace(/\&amp\;/ig, '&');
     if (comments.length < 1 ){
       return;
     }
