@@ -67,7 +67,9 @@
         <% } %>
       <% } %>
       <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>8){ %>
-        <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
+        <% if (obj.INDICE && obj.INDICE !== 'foroscomun'){ %>
+          <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
+        <% } %>
       <% } %>
       <div class="form-view"></div>
   		<div class="msg-list">
