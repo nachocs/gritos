@@ -9,6 +9,9 @@ import emojione from 'emojione';
 import EmojisModal from './emojisModal';
 import GlobalModel from '../../models/globalModel';
 import router from '../../router';
+import Ws from '../../util/Ws';
+import vent from '../../util/vent';
+import Util from '../../util/util';
 
 function isOrContains(node, container) {
   while (node) {
@@ -56,6 +59,7 @@ export default ViewBase.extend({
    }
    this.showEmojisModal = false;
    this.tagPlaceShown = false;
+   this.capturedUrls = {};
   //  if (this.globalModel){
   //    if (this.globalModel.get('ID') && this.globalModel.get('ID') !== 'foroscomun'){
   //      this.formModel.set('tags', this.globalModel.get('ID'));
@@ -329,11 +333,36 @@ export default ViewBase.extend({
       }
     }
   },
+  getCaptureUrls(){
+    let content = this.$('.formularioTextArea').clone();
+    content.find('.captured-url').remove();
+    content = content.html();
+    content = content.replace(/&nbsp;/ig,' ');
+    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s/igm);
+    if (urlMatch && urlMatch.length>0){
+      urlMatch.forEach((url)=>{
+        url = url.replace(/[\s\t\n]+/,'');
+        if (!this.capturedUrls[url]){
+          vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
+            if (!this.capturedUrls[url]){
+              this.capturedUrls[url] = true;
+              console.log('recibido capture_url_reply ', data);
+              const capturedUrlDiv = Util.displayCapturedUrl(data.reply);
+              this.$('.formularioTextArea').append(capturedUrlDiv);
+            }
+          });
+          console.log('capture url request', url);
+          Ws.captureUrlRequest(this.userModel.get('ID'), url);
+        }
+      });
+    }
+  },
   getSelectedText(e) {
     let selection;
     if (this.type === 'msg' && e.keyCode == 13){
       this.submitPost();
     }
+    this.getCaptureUrls();
     //Get the selected stuff
     this.currentPosition = this.saveSelection();
 

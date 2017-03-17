@@ -15,6 +15,9 @@ class Ws{
     this.socket.on('notificaciones', (data)=>{
       vent.trigger('notificaciones_' + data.user, data.notificaciones);
     });
+    this.socket.on('capture_url_reply', (data)=>{
+      vent.trigger('capture_url_reply_' + data.user, data);
+    });
   }
   subscribe(room){
     if (this.subscriptions[room]){return;}
@@ -31,6 +34,9 @@ class Ws{
   }
   prepararNotificaciones(userId){
     this.socket.emit('prepararNotificaciones', userId);
+  }
+  captureUrlRequest(userId, url){
+    this.socket.emit('capture_url_request', userId, url);
   }
 }
 const ws = new Ws();

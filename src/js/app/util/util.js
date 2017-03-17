@@ -1,17 +1,22 @@
 import _ from 'lodash';
 import template from './displayImage.html';
 import template2 from './displayImage2.html';
+import templateCapturedUrl from './displayCapturedUrl.html';
 
 class Util{
   constructor(){
     this.template = _.template(template);
     this.template2 = _.template(template2);
+    this.templateCapturedUrl = _.template(templateCapturedUrl);
   }
   displayImage(obj, image){
     return this.template(Object.assign({}, obj, {image}));
   }
   displayImage2(obj, image){
     return this.template2(Object.assign({}, obj, {image}));
+  }
+  displayCapturedUrl(obj){
+    return this.templateCapturedUrl(obj);
   }
   bookmarkthis(quin, href, title) {
     let url;
