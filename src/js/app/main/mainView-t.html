@@ -66,7 +66,7 @@
           <% } %>
         <% } %>
       <% } %>
-      <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>8){ %>
+      <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>7){ %>
         <% if (obj.INDICE && obj.INDICE !== 'foroscomun'){ %>
           <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
         <% } %>
