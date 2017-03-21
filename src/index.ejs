@@ -6,7 +6,19 @@
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="" <% if(htmlWebpackPlugin.files.manifest) { %> manifest="<%= htmlWebpackPlugin.files.manifest %>"<% } %>> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title><%= htmlWebpackPlugin.options.title || 'Webpack App'%></title>
+  <title><%= htmlWebpackPlugin.options.title || 'Gritos.com'%></title>
+  <meta property="og:title" content="<%= htmlWebpackPlugin.options.title || 'Gritos.com'%>" />
+  <meta property="og:image" content="https://gritos.com/assets/logogritos.jpg" />
+  <meta property="og:image:secure_url" content="https://gritos.com/assets/logogritos.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="1024" />
+  <meta property="og:url" content="https://gritos.com" />
+  <meta property="fb:app_id" content="472185159492660" />
+  <meta property="og:description" content="Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras." />
+  <meta name="description" content="Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.">
+  <meta name="keywords" content="Foros, opinion, participa, grita">
+  <meta name="author" content="Nacho Carmona">
 
   <% if (htmlWebpackPlugin.files.favicon) { %>
   <link rel="shortcut icon" href="<%= htmlWebpackPlugin.files.favicon%>">

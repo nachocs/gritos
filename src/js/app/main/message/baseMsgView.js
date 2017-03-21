@@ -1,4 +1,3 @@
-import Backbone from 'backbone';
 import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
@@ -10,6 +9,7 @@ import Util from '../../util/util';
 import ModalView from '../modalView';
 import PreviousMsgView from './previousMsgView';
 import rabito from '../../../../img/rabito.gif';
+import ViewBase from '../base/ViewBase';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -29,7 +29,7 @@ const autolinker = new Autolinker({
   },
 });
 
-export default Backbone.View.extend({
+export default ViewBase.extend({
   template: _.template(template),
   className: 'msg',
   initialize(options) {
@@ -151,6 +151,8 @@ export default Backbone.View.extend({
     this.$(e.currentTarget).find('.admin-menu').toggleClass('active');
   },
   openSpoiler(e) {
+    e.preventDefault();
+    e.stopPropagation();
     const spoiler = $(e.currentTarget).attr('data-tip');
     const d_m = 'top';
     let w_t;
@@ -165,19 +167,27 @@ export default Backbone.View.extend({
       out = `<div class="tipr_container_${d_m}"><div class="tipr_point_${d_m}"><div class="tipr_content">${spoiler}</div></div></div>`;
       this.$(e.currentTarget).append(out);
 
-      w_t = this.$(tipr_cont).outerWidth();
+      w_t = this.$(e.currentTarget).find(tipr_cont).outerWidth();
       w_e = this.$(e.currentTarget).width();
       m_l = (w_e / 2) - (w_t / 2);
-      if (-m_l > this.$(e.currentTarget).position().left) {
-        m_l = m_l + this.$(e.currentTarget).position().left;
-      }
-      h_t = -this.$(tipr_cont).outerHeight() - this.$(e.currentTarget).height() - 8;
+      // if (-m_l > this.$(e.currentTarget).position().left) {
+        // m_l = m_l + this.$(e.currentTarget).position().left;
+      // }
+      h_t = -this.$(e.currentTarget).find(tipr_cont).height() - this.$(e.currentTarget).height() - 12;
 
-      this.$(tipr_cont).css('margin-left', `${m_l}px`);
-      this.$(tipr_cont).css('margin-top', `${h_t}px`);
+      this.$(e.currentTarget).find(tipr_cont).css('margin-left', `${m_l}px`);
+      this.$(e.currentTarget).find(tipr_cont).css('margin-top', `${h_t}px`);
+      // paso dos veces porque cambia el alto al cambiar el margen
+      w_t = this.$(e.currentTarget).find(tipr_cont).outerWidth();
+      w_e = this.$(e.currentTarget).width();
+      m_l = (w_e / 2) - (w_t / 2);
+      h_t = -this.$(e.currentTarget).find(tipr_cont).height() - this.$(e.currentTarget).height() - 12;
+      this.$(e.currentTarget).find(tipr_cont).css('margin-left', `${m_l}px`);
+      this.$(e.currentTarget).find(tipr_cont).css('margin-top', `${h_t}px`);
+
       this.$(this).removeAttr('title alt');
 
-      this.$(tipr_cont).fadeIn('300');
+      this.$(e.currentTarget).find(tipr_cont).fadeIn('300');
       this.$(e.currentTarget).addClass('spoiler-on');
     }
   },
@@ -185,7 +195,10 @@ export default Backbone.View.extend({
     if (!string) {
       return string;
     }
-    const replacer = (match, p1) => ` <span class="spoiler" data-tip="${p1}">SPOILER</span> `;
+    const replacer = (match, p1) => {
+      p1 = p1.replace(/\"/ig, '&quot;');
+      return ` <span class="spoiler" data-tip="${p1}">SPOILER</span> `;
+    };
 
     string = string.replace(/\-\:SPOILER\[([^\]\[]+)\]SPOILER\:\-/ig, replacer);
     return autolinker.link(string);
@@ -222,6 +235,7 @@ export default Backbone.View.extend({
         componentHandler.upgradeElement(self.$el.find('.icon')[0]);
       }, 100);
     }
+    this.materialDesignUpdate();
     if (this.isCarousel){
       setTimeout(() => {
         this.$('.images-place').slick(
@@ -325,12 +339,13 @@ export default Backbone.View.extend({
     });
   },
   clean(){
-    // this.formView.remove();
-    // if (this.minimsgsCollectionView){
-    //   this.minimsgsCollectionView.remove();
-    //   delete this.minimsgsCollectionView;
-    // }
-    // this.molaView.remove();
+    this.formView && this.formView.trigger('remove');
+    if (this.minimsgsCollectionView){
+      this.minimsgsCollectionView.remove();
+      delete this.minimsgsCollectionView;
+    }
+    this.molaView && this.molaView.remove();
+
     // delete this.formView;
     // delete this.molaView;
     for (const prop of Object.keys(this)) {

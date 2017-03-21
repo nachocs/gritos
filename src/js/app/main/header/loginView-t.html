@@ -1,5 +1,5 @@
 <% if (obj.alias_principal){ %>
-	<a href="/ciudadanos/<%=obj.ID%>" class="mdl-layout--large-screen-only">
+	<span data-link="/ciudadanos/<%=obj.ID%>" class="mdl-layout--large-screen-only">
 		<% if (obj.dreamy_principal){ %>
 			<img src="<%= obj.dreamy_principal %>" style="height:48px">
 		<% } else if (obj.FB_picture){ %>
@@ -10,7 +10,7 @@
 		<span class="mdl-layout--large-screen-only alias-principal">
 			<%= obj.alias_principal %>
 		</span>
-	</a>
+	</span>
 	<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon desplegable">
 		<i class="material-icons">keyboard_arrow_down</i>
 	</button>

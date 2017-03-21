@@ -249,7 +249,7 @@ div.titulo{
       min-height: 100px;
       overflow: initial; // importante para spoilers
       .mdl-card__supporting-text{
-        max-height: 500px;
+        // max-height: 500px;
         overflow-y: auto;
         width: auto;
       }
@@ -839,7 +839,7 @@ div[contenteditable = true]:empty:before{
   }
 }
 .images-place{
-  margin: 0 20px;
+  margin: 0 20px 10px;
   .slick-prev:before, .slick-next:before{
     color:initial;
   }
@@ -906,7 +906,7 @@ div[contenteditable = true]:empty:before{
   display: none;
 }
 .modal-back{
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
@@ -995,7 +995,7 @@ div[contenteditable = true]:empty:before{
 
 nav.resumen-collection{
   &.mdl-navigation{
-    a.mdl-navigation__link{
+    .mdl-navigation__link{
       padding: 5px 40px;
     }
   }
@@ -1014,7 +1014,7 @@ h6.resumen-subheader{
     margin-left: 50px;
     box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2);
     text-align: center;
-    i.load-previous{
+    &.load-previous{
       cursor: pointer;
     }
 }

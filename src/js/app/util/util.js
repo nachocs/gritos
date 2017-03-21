@@ -2,6 +2,7 @@ import _ from 'lodash';
 import template from './displayImage.html';
 import template2 from './displayImage2.html';
 import templateCapturedUrl from './displayCapturedUrl.html';
+import $ from 'jquery';
 
 class Util{
   constructor(){
@@ -99,6 +100,30 @@ class Util{
     }
     window.open(url, '', specs);
   }
+  checkForms(success, error){
+    let check = true;
+    $('.formularioTextArea').each((index, el)=>{
+      if ($(el).html().length>0 && check){
+        const currentScrollTop = $('body').scrollTop();
+        const go = confirm('Tienes un mensaje pendiente de enviar.\n ¿Continuar y descartar mensaje?');
+        if (go){
+          success();
+        } else {
+          if (error){
+            error();
+            setTimeout(()=>{
+              $('body').scrollTop(currentScrollTop);
+            },0);
+          }
+        }
+        check = false;
+      }
+    });
+    if (check){
+      success();
+    }
+  }
+
 };
 
 export default new Util();

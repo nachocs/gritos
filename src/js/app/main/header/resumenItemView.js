@@ -3,7 +3,7 @@ import template from './resumenItemView-t.html';
 import _ from 'lodash';
 
 export default Backbone.View.extend({
-  tagName: 'a',
+  tagName: 'span',
   className: 'mdl-navigation__link',
   attributes: {},
   template: _.template(template),

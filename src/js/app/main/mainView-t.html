@@ -5,7 +5,7 @@
   <header class="mdl-layout__header <%= (obj.INDICE === 'ciudadanos')?'ciudadano':'' %>"  >
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
-      <div class="logomask pseudo mdl-layout--large-screen-only">
+      <div data-link="/" class="logomask pseudo mdl-layout--large-screen-only">
         <img src="<%= obj.imgLogo %>" alt="Gritos.com" title="home de gritos.com"/>
       </div>
       <svg height="0" style="display: none;">
@@ -21,8 +21,16 @@
       </svg>
 
       <!-- Title -->
-      <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo.toLowerCase().replace(/\s+/g, '_') : obj.Titulo %></span></div>
-      <div class="mdl-layout-title titulo mdl-layout--small-screen-only	" title="<%= obj.Titulo %>"><span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@'+obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></span></div>
+      <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>">
+        <% if (obj.Titulo && obj.Name){ %>
+          <span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo.toLowerCase().replace(/\s+/g, '_') : obj.Titulo %></span>
+        <% } %>
+      </div>
+      <div class="mdl-layout-title titulo mdl-layout--small-screen-only	" title="<%= obj.Titulo %>">
+        <% if (obj.Titulo && obj.Name){ %>
+          <span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></span>
+        <% } %>
+      </div>
       <!-- Add spacer, to align navigation to the right -->
       <!-- <div class="mdl-layout-spacer"></div> -->
       <!-- Navigation. We hide it in small screens. -->
@@ -66,7 +74,7 @@
           <% } %>
         <% } %>
       <% } %>
-      <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>8){ %>
+      <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>7){ %>
         <% if (obj.INDICE && obj.INDICE !== 'foroscomun'){ %>
           <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
         <% } %>

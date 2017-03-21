@@ -1,5 +1,7 @@
 import Backbone from 'backbone';
 import GlobalModel from './models/globalModel';
+import Util from './util/util';
+import $ from 'jquery';
 
 const Router = Backbone.Router.extend({
   routes: {
@@ -9,6 +11,7 @@ const Router = Backbone.Router.extend({
   },
   initialize() {
     this.model = GlobalModel;
+    this.history = [];
   },
   defaultRoute(route) {
     if (route && route.length>0){
@@ -32,7 +35,16 @@ const Router = Backbone.Router.extend({
     if (foro.match(/[^\w\/]+/)){
       return;
     }
-    this.model.changeForo(foro, null);
+    Util.checkForms(()=>{
+      this.history.push(foro !=='foroscomun' ? foro : '/');
+      this.model.changeForo(foro, null);
+      $('body').scrollTop(0);
+
+    }, ()=>{
+      if (this.history.length > 0){
+        this.navigate(this.history[this.history.length-1], {replace:true});
+      }
+    });
   },
 
   mensaje(foro, mensajeId) {
@@ -41,7 +53,17 @@ const Router = Backbone.Router.extend({
       return this.foro(foro + '/' + mensajeId + '/');
     }
     if (mensajeId.match(/^\d+$/)){
-      this.model.changeForo(foro, mensajeId);
+      Util.checkForms(()=>{
+        this.history.push(foro + '/' + mensajeId);
+        this.model.changeForo(foro, mensajeId);
+        setTimeout(()=>{
+          $('body').animate({scrollTop:380}, 'slow');
+        },1000);
+      }, ()=>{
+        if (this.history.length > 0){
+          this.navigate(this.history[this.history.length-1], {replace: true});
+        }
+      });
     } else {
       this.foro(foro);
     }
