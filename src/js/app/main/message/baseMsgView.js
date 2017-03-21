@@ -151,6 +151,8 @@ export default Backbone.View.extend({
     this.$(e.currentTarget).find('.admin-menu').toggleClass('active');
   },
   openSpoiler(e) {
+    e.preventDefault();
+    e.stopPropagation();
     const spoiler = $(e.currentTarget).attr('data-tip');
     const d_m = 'top';
     let w_t;
@@ -165,19 +167,27 @@ export default Backbone.View.extend({
       out = `<div class="tipr_container_${d_m}"><div class="tipr_point_${d_m}"><div class="tipr_content">${spoiler}</div></div></div>`;
       this.$(e.currentTarget).append(out);
 
-      w_t = this.$(tipr_cont).outerWidth();
+      w_t = this.$(e.currentTarget).find(tipr_cont).outerWidth();
       w_e = this.$(e.currentTarget).width();
       m_l = (w_e / 2) - (w_t / 2);
-      if (-m_l > this.$(e.currentTarget).position().left) {
-        m_l = m_l + this.$(e.currentTarget).position().left;
-      }
-      h_t = -this.$(tipr_cont).outerHeight() - this.$(e.currentTarget).height() - 8;
+      // if (-m_l > this.$(e.currentTarget).position().left) {
+        // m_l = m_l + this.$(e.currentTarget).position().left;
+      // }
+      h_t = -this.$(e.currentTarget).find(tipr_cont).height() - this.$(e.currentTarget).height() - 12;
 
-      this.$(tipr_cont).css('margin-left', `${m_l}px`);
-      this.$(tipr_cont).css('margin-top', `${h_t}px`);
+      this.$(e.currentTarget).find(tipr_cont).css('margin-left', `${m_l}px`);
+      this.$(e.currentTarget).find(tipr_cont).css('margin-top', `${h_t}px`);
+      // paso dos veces porque cambia el alto al cambiar el margen
+      w_t = this.$(e.currentTarget).find(tipr_cont).outerWidth();
+      w_e = this.$(e.currentTarget).width();
+      m_l = (w_e / 2) - (w_t / 2);
+      h_t = -this.$(e.currentTarget).find(tipr_cont).height() - this.$(e.currentTarget).height() - 12;
+      this.$(e.currentTarget).find(tipr_cont).css('margin-left', `${m_l}px`);
+      this.$(e.currentTarget).find(tipr_cont).css('margin-top', `${h_t}px`);
+
       this.$(this).removeAttr('title alt');
 
-      this.$(tipr_cont).fadeIn('300');
+      this.$(e.currentTarget).find(tipr_cont).fadeIn('300');
       this.$(e.currentTarget).addClass('spoiler-on');
     }
   },
