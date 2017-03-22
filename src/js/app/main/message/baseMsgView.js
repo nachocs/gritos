@@ -195,7 +195,10 @@ export default Backbone.View.extend({
     if (!string) {
       return string;
     }
-    const replacer = (match, p1) => ` <span class="spoiler" data-tip="${p1}">SPOILER</span> `;
+    const replacer = (match, p1) => {
+      p1 = p1.replace(/\"/ig, '&quot;');
+      return ` <span class="spoiler" data-tip="${p1}">SPOILER</span> `;
+    };
 
     string = string.replace(/\-\:SPOILER\[([^\]\[]+)\]SPOILER\:\-/ig, replacer);
     return autolinker.link(string);
