@@ -96,6 +96,10 @@ export default ViewBase.extend({
     'keyup .input-tag': 'inputTag',
     'click [data-delete-tag]':'deleteTag',
     'paste .formularioTextArea' : 'onPaste',
+    'error': 'imgError',
+  },
+  imgError(e){
+    console.log(e);
   },
   onPaste(e) {
     function replaceStyleAttr (str) {
@@ -343,14 +347,15 @@ export default ViewBase.extend({
     content.find('.captured-url').remove();
     content = content.html();
     content = content.replace(/&nbsp;/ig,' ');
-    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s/igm);
+    console.log('in', content);
+    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)[\s\n\t<]/igm);
     if (urlMatch && urlMatch.length>0){
       urlMatch.forEach((url)=>{
-        url = url.replace(/[\s\t\n]+/,'');
+        url = url.replace(/[\s\t\n<]+/ig,'');
         if (!this.capturedUrls[url]){
           vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
-            if (!this.capturedUrls[url]){
-              this.capturedUrls[url] = true;
+            if (!this.capturedUrls[data.url]){
+              this.capturedUrls[data.url] = true;
               console.log('recibido capture_url_reply ', data);
               const capturedUrlDiv = Util.displayCapturedUrl(data.reply);
               this.$('.formularioTextArea').append(capturedUrlDiv);
@@ -361,13 +366,20 @@ export default ViewBase.extend({
         }
       });
     }
+    this.$('.formularioTextArea').find('img').on('error', (e)=>{
+      console.log('img error ',e);
+    });
+
   },
   getSelectedText(e) {
     let selection;
     if (this.type === 'msg' && e.keyCode == 13){
       this.submitPost();
     }
-    this.getCaptureUrls();
+    if (e.keyCode == 32 || e.keyCode == 13){
+      this.getCaptureUrls();
+    }
+    console.log(e.keyCode);
     //Get the selected stuff
     this.currentPosition = this.saveSelection();
 
