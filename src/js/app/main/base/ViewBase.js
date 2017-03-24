@@ -18,7 +18,7 @@ export default Backbone.View.extend({
   },
   goToRoute(route){
     router.navigate(route, {trigger:true});
-    $('main').scrollTop(0);
+    $('body').scrollTop(0);
   },
 
 });
