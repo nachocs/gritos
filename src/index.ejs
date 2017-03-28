@@ -5,8 +5,14 @@
 <!--[if IE 9 ]>    <html lang="en" class="ie9" <% if(htmlWebpackPlugin.files.manifest) { %> manifest="<%= htmlWebpackPlugin.files.manifest %>"<% } %>> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="" <% if(htmlWebpackPlugin.files.manifest) { %> manifest="<%= htmlWebpackPlugin.files.manifest %>"<% } %>> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  <title><%= htmlWebpackPlugin.options.title || 'Webpack App'%></title>
+  <meta charset="iso-8859-1">
+  <title><%= htmlWebpackPlugin.options.title || 'Gritos.com'%></title>
+  <meta property="og:title" content="<%= htmlWebpackPlugin.options.title || 'Gritos.com'%>" />
+  <meta property="og:image" content="/assets/android-icon-192x192.png" />
+  <meta property="og:description" content="Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras." />
+  <meta name="description" content="Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.">
+  <meta name="keywords" content="Foros, opinion, participa, grita">
+  <meta name="author" content="Nacho Carmona">
 
   <% if (htmlWebpackPlugin.files.favicon) { %>
   <link rel="shortcut icon" href="<%= htmlWebpackPlugin.files.favicon%>">
