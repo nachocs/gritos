@@ -502,6 +502,8 @@ export default ViewBase.extend({
         titulo_head = 'Escribe en el muro de ' + this.headModel.get('Titulo');
       } else if (this.headModel.get('INDICE')){
         titulo_head = 'Explayate a tu gusto en el foro de ' + this.headModel.get('Titulo');
+      } else {
+        titulo_head = 'Sueltate! Grita! (en tu muro).';
       }
     }
     Object.assign(obj, {
