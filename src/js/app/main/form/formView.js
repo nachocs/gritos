@@ -72,6 +72,11 @@ export default ViewBase.extend({
    this.listenTo(this.userModel, 'change', this.render.bind(this));
    this.listenTo(this, 'remove', this.clean.bind(this));
    this.listenTo(this.formModel, 'change', this.render.bind(this));
+   $(window).on('beforeunload', ()=>{
+     if (this.$('.formularioTextArea').html().length>0){
+       return 'tienes un mensaje pendiente de enviar';
+     }
+   });
  },
   className: 'formulario',
   events: {
@@ -518,9 +523,17 @@ export default ViewBase.extend({
     return obj;
   },
   clean(){
-    this.wysiwyg.remove();
-    this.emojisModal.remove();
+    if (this.wysiwyg){
+      this.wysiwyg.remove();
+    }
+    if (this.emojisModal){
+      this.emojisModal.remove();
+    }
     delete this.wysiwyg;
     delete this.emojisModal;
+    for (const prop of Object.keys(this)) {
+      delete this[prop];
+    }
+    $(window).off('beforeunload');
   },
 });

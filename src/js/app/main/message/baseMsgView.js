@@ -1,4 +1,3 @@
-import Backbone from 'backbone';
 import _ from 'lodash';
 import $ from 'jquery';
 import moment from 'moment';
@@ -10,6 +9,7 @@ import Util from '../../util/util';
 import ModalView from '../modalView';
 import PreviousMsgView from './previousMsgView';
 import rabito from '../../../../img/rabito.gif';
+import ViewBase from '../base/ViewBase';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -29,7 +29,7 @@ const autolinker = new Autolinker({
   },
 });
 
-export default Backbone.View.extend({
+export default ViewBase.extend({
   template: _.template(template),
   className: 'msg',
   initialize(options) {
@@ -235,6 +235,7 @@ export default Backbone.View.extend({
         componentHandler.upgradeElement(self.$el.find('.icon')[0]);
       }, 100);
     }
+    this.materialDesignUpdate();
     if (this.isCarousel){
       setTimeout(() => {
         this.$('.images-place').slick(
@@ -338,12 +339,13 @@ export default Backbone.View.extend({
     });
   },
   clean(){
-    // this.formView.remove();
-    // if (this.minimsgsCollectionView){
-    //   this.minimsgsCollectionView.remove();
-    //   delete this.minimsgsCollectionView;
-    // }
-    // this.molaView.remove();
+    this.formView && this.formView.trigger('remove');
+    if (this.minimsgsCollectionView){
+      this.minimsgsCollectionView.remove();
+      delete this.minimsgsCollectionView;
+    }
+    this.molaView && this.molaView.remove();
+
     // delete this.formView;
     // delete this.molaView;
     for (const prop of Object.keys(this)) {
