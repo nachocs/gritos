@@ -42,7 +42,7 @@ const Router = Backbone.Router.extend({
 
     }, ()=>{
       if (this.history.length > 0){
-        this.navigate(this.history[this.history.length-1]);
+        this.navigate(this.history[this.history.length-1], {replace:true});
       }
     });
   },
@@ -59,6 +59,10 @@ const Router = Backbone.Router.extend({
         setTimeout(()=>{
           $('body').animate({scrollTop:380}, 'slow');
         },1000);
+      }, ()=>{
+        if (this.history.length > 0){
+          this.navigate(this.history[this.history.length-1], {replace: true});
+        }
       });
     } else {
       this.foro(foro);

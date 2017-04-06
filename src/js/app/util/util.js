@@ -103,7 +103,9 @@ class Util{
         if (go){
           success();
         } else {
-          error();
+          if (error){
+            error();
+          }
         }
         check = false;
       }
