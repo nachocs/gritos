@@ -99,12 +99,16 @@ class Util{
     let check = true;
     $('.formularioTextArea').each((index, el)=>{
       if ($(el).html().length>0 && check){
+        const currentScrollTop = $('body').scrollTop();
         const go = confirm('Tienes un mensaje pendiente de enviar.\n ¿Continuar y descartar mensaje?');
         if (go){
           success();
         } else {
           if (error){
             error();
+            setTimeout(()=>{
+              $('body').scrollTop(currentScrollTop);
+            },0);
           }
         }
         check = false;
