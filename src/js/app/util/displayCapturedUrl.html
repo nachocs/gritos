@@ -1,7 +1,7 @@
-<div contenteditable="false" class="captured-url" style="width:100%;">
+<div contenteditable="false" class="captured-url">
   <% if (obj.image) { %>
-    <a href="<%= obj.url %>">
-      <img src="<%= obj.image %>" onerror="this.onerror=null; this.src='//gritos.com/imagenes/vacio.gif';"">
+    <a href="<%= obj.url %>" target="_blank">
+      <img src="<%= obj.image %>" title="<%= obj.title || obj.url %>" onerror="this.onerror=null; this.src='//gritos.com/imagenes/vacio.gif';"">
     </a>
   <% } %>
   <div class="captured-url-title"><a href="<%= obj.url %>"><%= obj.title %></a></div>

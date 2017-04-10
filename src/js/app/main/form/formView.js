@@ -343,32 +343,32 @@ export default ViewBase.extend({
     }
   },
   getCaptureUrls(){
-    let content = this.$('.formularioTextArea').clone();
-    content.find('.captured-url').remove();
-    content = content.html();
-    content = content.replace(/&nbsp;/ig,' ');
-    console.log('in', content);
-    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)[\s\n\t<]/igm);
-    if (urlMatch && urlMatch.length>0){
-      urlMatch.forEach((url)=>{
-        url = url.replace(/[\s\t\n<]+/ig,'');
-        if (!this.capturedUrls[url]){
-          vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
-            if (!this.capturedUrls[data.url]){
-              this.capturedUrls[data.url] = true;
-              console.log('recibido capture_url_reply ', data);
-              const capturedUrlDiv = Util.displayCapturedUrl(data.reply);
-              this.$('.formularioTextArea').append(capturedUrlDiv);
-            }
-          });
-          console.log('capture url request', url);
-          Ws.captureUrlRequest(this.userModel.get('ID'), url);
-        }
-      });
-    }
-    this.$('.formularioTextArea').find('img').on('error', (e)=>{
-      console.log('img error ',e);
-    });
+    setTimeout(()=>{
+      let content = this.$('.formularioTextArea').clone();
+      content.find('.captured-url').remove();
+      content = content.html();
+      content = content.replace(/&nbsp;/ig, ' ');
+      content = content.replace(/<[^>]*>/ig, '');
+      console.log('in', content);
+      const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/igm);
+      if (urlMatch && urlMatch.length>0){
+        urlMatch.forEach((url)=>{
+          url = url.replace(/[\s\t\n<]+/ig,'');
+          if (!this.capturedUrls[url]){
+            vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
+              if (!this.capturedUrls[data.url]){
+                this.capturedUrls[data.url] = true;
+                console.log('recibido capture_url_reply ', data);
+                const capturedUrlDiv = Util.displayCapturedUrl(data.reply);
+                this.$('.formularioTextArea').append(capturedUrlDiv);
+              }
+            });
+            console.log('capture url request', url);
+            Ws.captureUrlRequest(this.userModel.get('ID'), url);
+          }
+        });
+      }
+    },0);
 
   },
   getSelectedText(e) {
@@ -379,7 +379,7 @@ export default ViewBase.extend({
     if (e.keyCode == 32 || e.keyCode == 13){
       this.getCaptureUrls();
     }
-    console.log(e.keyCode);
+    // console.log(e.keyCode);
     //Get the selected stuff
     this.currentPosition = this.saveSelection();
 
