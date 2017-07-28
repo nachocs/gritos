@@ -60,6 +60,7 @@ export default ViewBase.extend({
    this.showEmojisModal = false;
    this.tagPlaceShown = false;
    this.capturedUrls = {};
+   this.removedCapturedUrls = {};
   //  if (this.globalModel){
   //    if (this.globalModel.get('ID') && this.globalModel.get('ID') !== 'foroscomun'){
   //      this.formModel.set('tags', this.globalModel.get('ID'));
@@ -97,6 +98,7 @@ export default ViewBase.extend({
     'click [data-delete-tag]':'deleteTag',
     'paste .formularioTextArea' : 'onPaste',
     'error': 'imgError',
+    'click .capture-url-close': 'removeCapturedUrl'
   },
   imgError(e){
     console.log(e);
@@ -348,18 +350,21 @@ export default ViewBase.extend({
       content.find('.captured-url').remove();
       content = content.html();
       content = content.replace(/&nbsp;/ig, ' ');
-      content = content.replace(/<[^>]*>/ig, '');
+      content = content.replace(/\n/ig, ' ');
+      content = content.replace(/<[^>]*>/ig, ' ');
       console.log('in', content);
       const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/igm);
       if (urlMatch && urlMatch.length>0){
         urlMatch.forEach((url)=>{
           url = url.replace(/[\s\t\n<]+/ig,'');
-          if (!this.capturedUrls[url]){
+          url = url.replace(/^https?\:\/\//, '');
+          if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5)){
             vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
-              if (!this.capturedUrls[data.url]){
-                this.capturedUrls[data.url] = true;
+              let dataurl = data.url.replace(/^https?\:\/\//, '');
+              if (!this.capturedUrls[dataurl]){
+                this.capturedUrls[dataurl] = true;
                 console.log('recibido capture_url_reply ', data);
-                const capturedUrlDiv = Util.displayCapturedUrl(data.reply);
+                const capturedUrlDiv = Util.displayCapturedUrl(Object.assign({},data.reply,{id:dataurl}));
                 this.$('.formularioTextArea').append(capturedUrlDiv);
               }
             });
@@ -370,6 +375,12 @@ export default ViewBase.extend({
       }
     },0);
 
+  },
+  removeCapturedUrl(e){
+    const url = this.$(e.target).data('capturedurl');
+    delete this.capturedUrls[url];
+    this.removedCapturedUrls[url] = true;
+    this.$('.formularioTextArea').find('div[data-capturedurlid="' + url + '"]').remove();
   },
   getSelectedText(e) {
     let selection;

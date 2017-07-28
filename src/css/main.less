@@ -1062,31 +1062,59 @@ h6.resumen-subheader{
 }
 ////////////////////////
 .captured-url{
+  position: relative;
   max-width: 100%;
+  min-width: 49%;
   display: inline-block;
   box-shadow: 0 0 0 1.5px rgba(0, 0, 0, .1) inset, 0 1px 1px rgba(0, 0, 0, .05);
   // border: 1px dashed #658e35;
-  padding: 5px 10px;
+  padding: 10px 10px;
   margin: 10px 0 5px;
+  max-height: 180px;
   a{
     text-decoration: none;
   }
   img{
     max-width: 100%;
-    max-height: 300px;
-    margin: 10px;
+    max-height: 150px;
+    margin: 0 10px 0 0;
+    float: left;
   }
   .captured-url-title{
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 1.1rem;
+    // white-space: nowrap;
+    font-size: 1rem;
+    color: #333333;
   }
   .captured-url-description{
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 100px;
+    color: #333333;
+    font-size: 0.85rem;
+    opacity: 0.65;
+  }
+  .capture-url-close{
+    position: absolute;
+    font-size: 15px;
+    font-weight: bold;
+    color: #b5b5b5;
+    top: -9px;
+    right: -7px;
+    background: white;
+    border-radius: 50%;
+    padding: 0px 0px 0px 4px;
+    border: 1px solid #c1c0c0;
+    width: 20px;
+    height: 20px;
+    line-height: 15px;
+    opacity: 0.5;
+    cursor: pointer;
+    &:hover{
+      opacity: 1;
+    }
   }
 
 }
