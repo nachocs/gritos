@@ -9,6 +9,9 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.6.0
+Added CaptureUrl
+
 ## 1.5.3
 Added manifest and phone icons.
 
