@@ -98,7 +98,7 @@ export default ViewBase.extend({
     'click [data-delete-tag]':'deleteTag',
     'paste .formularioTextArea' : 'onPaste',
     'error': 'imgError',
-    'click .capture-url-close': 'removeCapturedUrl'
+    'click .capture-url-close': 'removeCapturedUrl',
   },
   imgError(e){
     console.log(e);
@@ -360,7 +360,7 @@ export default ViewBase.extend({
           url = url.replace(/^https?\:\/\//, '');
           if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5)){
             vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
-              let dataurl = data.url.replace(/^https?\:\/\//, '');
+              const dataurl = data.url.replace(/^https?\:\/\//, '');
               if (!this.capturedUrls[dataurl]){
                 this.capturedUrls[dataurl] = true;
                 console.log('recibido capture_url_reply ', data);
@@ -388,7 +388,7 @@ export default ViewBase.extend({
       this.submitPost();
     }
     if (e.keyCode == 32 || e.keyCode == 13){
-      this.getCaptureUrls();
+      // this.getCaptureUrls(); // desactivado
     }
     // console.log(e.keyCode);
     //Get the selected stuff
