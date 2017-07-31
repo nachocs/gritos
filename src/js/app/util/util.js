@@ -17,7 +17,11 @@ class Util{
     return this.template2(Object.assign({}, obj, {image}));
   }
   displayCapturedUrl(obj){
-    return this.templateCapturedUrl(obj);
+    let tmpl = this.templateCapturedUrl(obj);
+    tmpl = tmpl.replace(/\n/g, '');
+    tmpl = tmpl.replace(/\r/g, '');
+    tmpl = tmpl.replace(/\cM/g, '');
+    return tmpl;
   }
   bookmarkthis(quin, href, title) {
     let url;

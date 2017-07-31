@@ -259,7 +259,7 @@ export default ViewBase.extend({
       processData: false,
       type: 'POST',
       success(data) {
-        console.log('UPLOAD RESPONSE: ', data);
+        // console.log('UPLOAD RESPONSE: ', data);
         self.setComments();
         if (data.response && data.response.Ficheros && self.formModel.get('Ficheros')){
           data.response.Ficheros = self.formModel.get('Ficheros') + ',' + data.response.Ficheros;
@@ -352,7 +352,7 @@ export default ViewBase.extend({
       content = content.replace(/&nbsp;/ig, ' ');
       content = content.replace(/\n/ig, ' ');
       content = content.replace(/<[^>]*>/ig, ' ');
-      console.log('in', content);
+
       const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/igm);
       if (urlMatch && urlMatch.length>0){
         urlMatch.forEach((url)=>{
@@ -363,12 +363,12 @@ export default ViewBase.extend({
               const dataurl = data.url.replace(/^https?\:\/\//, '');
               if (!this.capturedUrls[dataurl]){
                 this.capturedUrls[dataurl] = true;
-                console.log('recibido capture_url_reply ', data);
+                // console.log('recibido capture_url_reply ', data);
                 const capturedUrlDiv = Util.displayCapturedUrl(Object.assign({},data.reply,{id:dataurl}));
                 this.$('.formularioTextArea').append(capturedUrlDiv);
               }
             });
-            console.log('capture url request', url);
+            // console.log('capture url request', url);
             Ws.captureUrlRequest(this.userModel.get('ID'), url);
           }
         });
@@ -388,7 +388,7 @@ export default ViewBase.extend({
       this.submitPost();
     }
     if (e.keyCode == 32 || e.keyCode == 13){
-      // this.getCaptureUrls(); // desactivado
+      this.getCaptureUrls(); // desactivado
     }
     // console.log(e.keyCode);
     //Get the selected stuff
@@ -423,13 +423,16 @@ export default ViewBase.extend({
     this.showEmojisIn(false);
     this.toggleTagsIn(false);
     const self = this;
-    let titulo;
+    let titulo, comments;
     // tinyMCE.triggerSave();
-    let comments = this.$('.formularioTextArea').html();
-    comments = comments.replace(/\n/ig, '<br>');
-    comments = comments.replace(/\r/ig, '<br>');
+    comments = this.$('.formularioTextArea').clone();
+    comments.find('.captured-url .capture-url-close').remove();
+    comments = comments.html();
+    // comments = comments.replace(/\n/ig, '<br>');
+    // comments = comments.replace(/\r/ig, '<br>');
     comments = comments.replace(/\&nbsp\;/ig, ' ');
     comments = comments.replace(/\&amp\;/ig, '&');
+
     if (comments.length < 1 ){
       return;
     }
@@ -497,10 +500,10 @@ export default ViewBase.extend({
           }
           // self.collection.reset();
           // self.collection.fetch();
-          console.log('success', data);
+          // console.log('success', data);
         },
         error(data) {
-          console.log('error', data);
+          // console.log('error', data);
         },
       });
   },
