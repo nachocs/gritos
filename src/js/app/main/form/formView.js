@@ -423,7 +423,8 @@ export default ViewBase.extend({
     this.showEmojisIn(false);
     this.toggleTagsIn(false);
     const self = this;
-    let titulo, comments;
+    let titulo, comments,
+    esUnForo = false;
     // tinyMCE.triggerSave();
     comments = this.$('.formularioTextArea').clone();
     comments.find('.captured-url .capture-url-close').remove();
@@ -457,6 +458,7 @@ export default ViewBase.extend({
         });
     }
     if (this.type==='foro' && this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun'){
+      esUnForo = true;
       Object.assign(saveObj,
         {
           foro: this.collection.id.replace(/\/$/,''),
@@ -489,7 +491,7 @@ export default ViewBase.extend({
           self.isClear = false;
           if (!self.isHead){
             self.render();
-            if (!data.mensaje.num){data.mensaje.num = data.mensaje.ID;}
+            if (!data.mensaje.num || esUnForo){data.mensaje.num = data.mensaje.ID;}
             self.collection.add(data.mensaje, {merge:true, individual:true});
           } else {
             if (self.headModel){
