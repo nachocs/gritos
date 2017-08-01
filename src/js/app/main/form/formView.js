@@ -12,6 +12,7 @@ import router from '../../router';
 import Ws from '../../util/Ws';
 import vent from '../../util/vent';
 import Util from '../../util/util';
+import MsgModel from '../../models/msgModel';
 
 function isOrContains(node, container) {
   while (node) {
@@ -514,7 +515,8 @@ export default ViewBase.extend({
           if (!self.isHead){
             self.render();
             if (!data.mensaje.num || esUnForo){data.mensaje.num = data.mensaje.ID;}
-            self.collection.add(data.mensaje, {merge:true, individual:true});
+            const msgModel = new MsgModel();
+            self.collection.add(msgModel.parse(data.mensaje), {merge:true, individual:true});
           } else {
             if (self.headModel){
               GlobalModel.changeForo(self.headModel.get('Name'));

@@ -48,7 +48,6 @@ const Router = Backbone.Router.extend({
   },
 
   mensaje(foro, mensajeId) {
-    console.log(foro, mensajeId);
     if (foro === 'ciudadanos'){
       return this.foro(foro + '/' + mensajeId + '/');
     }

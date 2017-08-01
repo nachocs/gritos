@@ -61,7 +61,8 @@ export default Backbone.Collection.extend({
     this.subscriptions[room] = true;
     Ws.subscribe('collection:' + room);
     vent.on('updated_' + 'collection:' + room, data => {
-      this.add(data.entry, {fromSocket:true});
+      const newMsgModel = new model();
+      this.add(newMsgModel.parse(data.entry), {fromSocket:true});
       vent.trigger('avisos', data);
       const tipo = this.msgModel ? 'minis' : 'foro';
       NotificacionesUserModel.update(tipo, this.id.replace(/\/$/,''), data.entry.ID);

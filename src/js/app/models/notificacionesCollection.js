@@ -8,7 +8,7 @@ const NotificacionesCollection = Backbone.Collection.extend({
     this.listenTo(userModel, 'change:ID', (user)=>{
       Ws.prepararNotificaciones(user.id); // llama a que se preparen las notificaciones
       vent.on('notificaciones_' + user.id, data => { // recibe una lista de notificaciones
-        console.log('recibida notificacion', data);
+        // console.log('recibida notificacion', data);
         data.forEach((not)=>{
           if (not.entry){
             if(not.entry.ciudadano !== userModel.get('ID') || (not.tipo === 'msg' && not.subtipo)){
