@@ -19,7 +19,7 @@ export default Backbone.View.extend({
     e.stopPropagation();
     e.preventDefault();
     router.navigate('/' + this.model.get('indice').replace(/^gritos\//,'').replace(/\/(\d+)\/\d+$/, '/$1'), {trigger:true});
-    
+
   },
   serializer(){
     let indiceBasic = '# ' + this.model.get('indice').replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/.*$/,'');
@@ -30,8 +30,18 @@ export default Backbone.View.extend({
         indiceBasic = 'el muro de @' + this.model.get('head').alias_principal.replace(/\s/g, '_');
       }
     }
+    let entry = this.model.get('entry');
+    if (entry && entry['emocion']){
+      entry['emocion'] = entry['emocion'].replace(/https?/, '');
+    }
+    let citizen = this.model.get('citizen');
+    if (citizen && citizen['dreamy_principal']){
+      citizen['dreamy_principal'] = citizen['dreamy_principal'].replace(/https?/, '');
+    }
+
     return Object.assign({},
       this.model.toJSON(), {
+        entry,
         user: userModel.toJSON(),
         indiceBasic,
         date: moment.unix(this.model.toJSON().entry.FECHA).fromNow(),

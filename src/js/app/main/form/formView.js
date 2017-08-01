@@ -345,7 +345,7 @@ export default ViewBase.extend({
     }
   },
   getCaptureUrls(){
-    setTimeout(()=>{
+    // setTimeout(()=>{
       let content = this.$('.formularioTextArea').clone();
       content.find('.captured-url').remove();
       content = content.html();
@@ -359,6 +359,7 @@ export default ViewBase.extend({
           url = url.replace(/[\s\t\n<]+/ig,'');
           url = url.replace(/^https?\:\/\//, '');
           if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5)){
+            this.capturingUrls = true;
             vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
               const dataurl = data.url.replace(/^https?\:\/\//, '');
               if (!this.capturedUrls[dataurl]){
@@ -367,13 +368,14 @@ export default ViewBase.extend({
                 const capturedUrlDiv = Util.displayCapturedUrl(Object.assign({},data.reply,{id:dataurl}));
                 this.$('.formularioTextArea').append(capturedUrlDiv);
               }
+              this.capturingUrls = false;
             });
             // console.log('capture url request', url);
             Ws.captureUrlRequest(this.userModel.get('ID'), url);
           }
         });
       }
-    },0);
+    // },0);
 
   },
   removeCapturedUrl(e){
@@ -385,10 +387,11 @@ export default ViewBase.extend({
   getSelectedText(e) {
     let selection;
     if (this.type === 'msg' && e.keyCode == 13){
+      this.getCaptureUrls();
       this.submitPost();
-    }
-    if (e.keyCode == 32 || e.keyCode == 13){
-      this.getCaptureUrls(); // desactivado
+      return;
+    } else if (e.keyCode == 32 || e.keyCode == 13){
+      this.getCaptureUrls();
     }
     // console.log(e.keyCode);
     //Get the selected stuff
@@ -415,7 +418,24 @@ export default ViewBase.extend({
     }
   },
   submitPost(){
-    return _.throttle(this.submitPostThrottle.bind(this), 1000)();
+    let wait = 0;
+    let countWait = 0;
+    let runPost = _.throttle(this.submitPostThrottle.bind(this), 1000);
+    let waiting = (callback, wait) => {
+      setTimeout(() => {
+        console.log('countWait', countWait, wait);
+        if (!this.capturingUrls || (countWait > 4)){
+          callback();
+        } else {
+          waiting(callback, wait);
+        }
+        countWait++;
+      }, wait);
+    }
+    if (this.capturingUrls){
+      wait = 1000;
+    }
+    waiting(runPost, wait);
   },
   submitPostThrottle() {
     if (!this.userModel.get('uid')){ return; }
@@ -489,6 +509,8 @@ export default ViewBase.extend({
           self.isSaving = false;
           self.formModel.clear();
           self.isClear = false;
+          self.capturedUrls = {};
+          self.removedCapturedUrls = {};
           if (!self.isHead){
             self.render();
             if (!data.mensaje.num || esUnForo){data.mensaje.num = data.mensaje.ID;}
