@@ -44,28 +44,28 @@ function elementContainsSelection(el) {
 
 export default ViewBase.extend({
   template: _.template(template),
- 	initialize(options) {
-   this.globalModel = options.globalModel;
-   this.userModel = options.userModel;
-   this.parentModel = options.parentModel;
-   this.isHead = options.isHead;
-   this.type = options.type; // foro / msg
-   this.formModel = new formModel();
-   this.headModel = options.headModel;
-   if(options.msg){
-     this.formModel.set(options.msg.toJSON());
-   }
-   if (this.isHead){
-     this.headModel = options.msg;
-   }
-   this.showEmojisModal = false;
-   this.tagPlaceShown = false;
-   this.capturedUrls = {};
-   this.removedCapturedUrls = {};
-  //  if (this.globalModel){
-  //    if (this.globalModel.get('ID') && this.globalModel.get('ID') !== 'foroscomun'){
-  //      this.formModel.set('tags', this.globalModel.get('ID'));
-  //    }
+  initialize(options) {
+    this.globalModel = options.globalModel;
+    this.userModel = options.userModel;
+    this.parentModel = options.parentModel;
+    this.isHead = options.isHead;
+    this.type = options.type; // foro / msg
+    this.formModel = new formModel();
+    this.headModel = options.headModel;
+    if(options.msg){
+      this.formModel.set(options.msg.toJSON());
+    }
+    if (this.isHead){
+      this.headModel = options.msg;
+    }
+    this.showEmojisModal = false;
+    this.tagPlaceShown = false;
+    this.capturedUrls = {};
+    this.removedCapturedUrls = {};
+    //  if (this.globalModel){
+    //    if (this.globalModel.get('ID') && this.globalModel.get('ID') !== 'foroscomun'){
+    //      this.formModel.set('tags', this.globalModel.get('ID'));
+    //    }
     //  this.listenTo(this.globalModel, 'change:ID', ()=>{
     //    if(this.globalModel.get('ID') !== 'foroscomun'){
     //      this.formModel.set('tags', '#' + this.globalModel.get('ID'));
@@ -73,17 +73,17 @@ export default ViewBase.extend({
     //      this.formModel.set('tags', '');
     //    }
     //  });
-  //  }
-   this.wysiwyg = new Wysiwyg();
-   this.listenTo(this.userModel, 'change', this.render.bind(this));
-   this.listenTo(this, 'remove', this.clean.bind(this));
-   this.listenTo(this.formModel, 'change', this.render.bind(this));
-   $(window).on('beforeunload', ()=>{
-     if (this.$('.formularioTextArea').html().length>0){
-       return 'tienes un mensaje pendiente de enviar';
-     }
-   });
- },
+    //  }
+    this.wysiwyg = new Wysiwyg();
+    this.listenTo(this.userModel, 'change', this.render.bind(this));
+    this.listenTo(this, 'remove', this.clean.bind(this));
+    this.listenTo(this.formModel, 'change', this.render.bind(this));
+    $(window).on('beforeunload', ()=>{
+      if (this.$('.formularioTextArea').html().length>0){
+        return 'tienes un mensaje pendiente de enviar';
+      }
+    });
+  },
   className: 'formulario',
   events: {
     'click .formularioTextArea': 'clearArea',
@@ -304,8 +304,8 @@ export default ViewBase.extend({
           range = sel.getRangeAt(0);
           range.deleteContents();
           // Range.createContextualFragment() would be useful here but is
-           // only relatively recently standardized and is not supported in
-           // some browsers (IE9, for one)
+          // only relatively recently standardized and is not supported in
+          // some browsers (IE9, for one)
           const el = document.createElement('div');
           el.innerHTML = element;
           const frag = document.createDocumentFragment();
@@ -316,7 +316,7 @@ export default ViewBase.extend({
           }
           range.insertNode(frag);
 
-         // Preserve the selection
+          // Preserve the selection
           if (lastNode) {
             range = range.cloneRange();
             range.setStartAfter(lastNode);
@@ -326,7 +326,7 @@ export default ViewBase.extend({
           }
         }
       } else if (document.selection && document.selection.type != 'Control') {
-          // IE < 9
+        // IE < 9
         document.selection.createRange().pasteHTML(element);
       }
     }
@@ -347,35 +347,35 @@ export default ViewBase.extend({
   },
   getCaptureUrls(){
     // setTimeout(()=>{
-      let content = this.$('.formularioTextArea').clone();
-      content.find('.captured-url').remove();
-      content = content.html();
-      content = content.replace(/&nbsp;/ig, ' ');
-      content = content.replace(/\n/ig, ' ');
-      content = content.replace(/<[^>]*>/ig, ' ');
+    let content = this.$('.formularioTextArea').clone();
+    content.find('.captured-url').remove();
+    content = content.html();
+    content = content.replace(/&nbsp;/ig, ' ');
+    content = content.replace(/\n/ig, ' ');
+    content = content.replace(/<[^>]*>/ig, ' ');
 
-      const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/igm);
-      if (urlMatch && urlMatch.length>0){
-        urlMatch.forEach((url)=>{
-          url = url.replace(/[\s\t\n<]+/ig,'');
-          url = url.replace(/^https?\:\/\//, '');
-          if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5)){
-            this.capturingUrls = true;
-            vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
-              const dataurl = data.url.replace(/^https?\:\/\//, '');
-              if (!this.capturedUrls[dataurl]){
-                this.capturedUrls[dataurl] = true;
-                // console.log('recibido capture_url_reply ', data);
-                const capturedUrlDiv = Util.displayCapturedUrl(Object.assign({},data.reply,{id:dataurl}));
-                this.$('.formularioTextArea').append(capturedUrlDiv);
-              }
-              this.capturingUrls = false;
-            });
-            // console.log('capture url request', url);
-            Ws.captureUrlRequest(this.userModel.get('ID'), url);
-          }
-        });
-      }
+    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/igm);
+    if (urlMatch && urlMatch.length>0){
+      urlMatch.forEach((url)=>{
+        url = url.replace(/[\s\t\n<]+/ig,'');
+        url = url.replace(/^https?\:\/\//, '');
+        if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5)){
+          this.capturingUrls = true;
+          vent.on('capture_url_reply_' + this.userModel.get('ID'), (data)=>{
+            const dataurl = data.url.replace(/^https?\:\/\//, '');
+            if (!this.capturedUrls[dataurl]){
+              this.capturedUrls[dataurl] = true;
+              // console.log('recibido capture_url_reply ', data);
+              const capturedUrlDiv = Util.displayCapturedUrl(Object.assign({},data.reply,{id:dataurl}));
+              this.$('.formularioTextArea').append(capturedUrlDiv);
+            }
+            this.capturingUrls = false;
+          });
+          // console.log('capture url request', url);
+          Ws.captureUrlRequest(this.userModel.get('ID'), url);
+        }
+      });
+    }
     // },0);
 
   },
@@ -398,10 +398,12 @@ export default ViewBase.extend({
     //Get the selected stuff
     this.currentPosition = this.saveSelection();
 
-    if(window.getSelection)
+    if(window.getSelection){
       selection = window.getSelection();
-    else if(typeof document.selection != 'undefined')
+    }
+    else if(typeof document.selection != 'undefined'){
       selection = document.selection;
+    }
     if ((typeof selection === 'undefined') || (selection.toString().length < 1) ){
       this.$('.wysiwyg').hide();
       return;
@@ -421,8 +423,8 @@ export default ViewBase.extend({
   submitPost(){
     let wait = 0;
     let countWait = 0;
-    let runPost = _.throttle(this.submitPostThrottle.bind(this), 1000);
-    let waiting = (callback, wait) => {
+    const runPost = _.throttle(this.submitPostThrottle.bind(this), 1000);
+    const waiting = (callback, wait) => {
       setTimeout(() => {
         console.log('countWait', countWait, wait);
         if (!this.capturingUrls || (countWait > 4)){
@@ -432,7 +434,7 @@ export default ViewBase.extend({
         }
         countWait++;
       }, wait);
-    }
+    };
     if (this.capturingUrls){
       wait = 1000;
     }
@@ -440,12 +442,13 @@ export default ViewBase.extend({
   },
   submitPostThrottle() {
     if (!this.userModel.get('uid')){ return; }
-    if (this.isSaving){return;}
+    if (this.isSaving){ return; }
     this.showEmojisIn(false);
     this.toggleTagsIn(false);
     const self = this;
-    let titulo, comments,
-    esUnForo = false;
+    let titulo;
+    let comments;
+    let esUnForo = false;
     // tinyMCE.triggerSave();
     comments = this.$('.formularioTextArea').clone();
     comments.find('.captured-url .capture-url-close').remove();
@@ -476,7 +479,8 @@ export default ViewBase.extend({
             indice: this.parentModel.get('INDICE'),
             entrada: this.parentModel.get('ID'),
           },
-        });
+        }
+      );
     }
     if (this.type==='foro' && this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun'){
       esUnForo = true;
@@ -528,10 +532,11 @@ export default ViewBase.extend({
           // self.collection.fetch();
           // console.log('success', data);
         },
-        error(data) {
+        error() {
           // console.log('error', data);
         },
-      });
+      }
+    );
   },
   clearArea(focus) {
     // if (this.isClear){return;}

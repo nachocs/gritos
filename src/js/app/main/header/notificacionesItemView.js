@@ -30,11 +30,11 @@ export default Backbone.View.extend({
         indiceBasic = 'el muro de @' + this.model.get('head').alias_principal.replace(/\s/g, '_');
       }
     }
-    let entry = this.model.get('entry');
+    const entry = this.model.get('entry');
     if (entry && entry['emocion']){
       entry['emocion'] = entry['emocion'].replace(/https?/, '');
     }
-    let citizen = this.model.get('citizen');
+    const citizen = this.model.get('citizen');
     if (citizen && citizen['dreamy_principal']){
       citizen['dreamy_principal'] = citizen['dreamy_principal'].replace(/https?/, '');
     }
