@@ -32,7 +32,7 @@ export default Backbone.View.extend({
     }
     const entry = this.model.get('entry');
     if (entry && entry['emocion']){
-      entry['emocion'] = entry['emocion'].replace(/https?/, '');
+      entry['emocion'] = entry['emocion'].replace(/https?:/, '');
     }
     const citizen = this.model.get('citizen');
     if (citizen && citizen['dreamy_principal']){
