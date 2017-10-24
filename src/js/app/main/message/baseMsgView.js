@@ -327,7 +327,7 @@ export default ViewBase.extend({
     }
 
     return _.extend({}, this.model.toJSON(), {
-      date: moment.unix(this.model.get('FECHA')).fromNow(),
+      date: moment.unix(this.model.get('FECHA')).fromNow(true),
       comments: this.formatComments(this.model.get('comments')),
       tagsShown,
       showForm: this.showForm,
