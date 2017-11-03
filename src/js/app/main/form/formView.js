@@ -354,7 +354,7 @@ export default ViewBase.extend({
     content = content.replace(/\n/ig, ' ');
     content = content.replace(/<[^>]*>/ig, ' ');
 
-    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/igm);
+    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9:%_\+.~#?&//=]*)/igm);
     if (urlMatch && urlMatch.length>0){
       urlMatch.forEach((url)=>{
         url = url.replace(/[\s\t\n<]+/ig,'');
