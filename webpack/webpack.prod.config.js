@@ -99,6 +99,7 @@ const config = {
       output: 'manifest.json',
       assets: {
         'name': 'Gritos.com',
+        'short_name': 'Gritos.com',
         'start_url': 'https://gritos.com',
         'theme_color': 'white',
         'display': 'standalone',
@@ -141,6 +142,21 @@ const config = {
             'sizes': '192x192',
             'type': 'image/png',
             'density': '4.0',
+          },
+          {
+            'src': '/assets/android-icon-256x256.png',
+            'sizes': '256x256',
+            'type': 'image/png',
+          },
+          {
+            'src': '/assets/android-icon-384x384.png',
+            'sizes': '384x384',
+            'type': 'image/png',
+          },
+          {
+            'src': '/assets/android-icon-512x512.png',
+            'sizes': '512x512',
+            'type': 'image/png',
           },
         ],
       },
