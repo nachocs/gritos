@@ -7,6 +7,7 @@ const autoprefixer = require('autoprefixer');
 const Dashboard = require('webpack-dashboard');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const dashboard = new Dashboard();
+const OfflinePlugin = require('offline-plugin');
 
 const config = {
   devtool: 'source-map',
@@ -74,6 +75,19 @@ const config = {
       },
     }),
     new DashboardPlugin(dashboard.setData),
+    new OfflinePlugin({
+      externals: [
+        '/',
+      ].filter(i => i !== false),
+      rewrites: asset => asset,
+      ServiceWorker: {
+        navigateFallbackURL: '/',
+        publicPath: '/sw.js',
+      },
+      AppCache: false,
+      caches: 'all',
+    }),
+
   ],
 };
 

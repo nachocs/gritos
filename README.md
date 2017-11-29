@@ -9,6 +9,9 @@ Gritos.com
 - npm start
 
 # Changelog
+## 1.7.0
+Added WebWorkers for Offline
+
 ## 1.6.0
 Added CaptureUrl
 
