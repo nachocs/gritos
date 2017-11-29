@@ -166,7 +166,7 @@ const config = {
       rewrites: asset => asset,
       ServiceWorker: {
         navigateFallbackURL: '/',
-        publicPath: '/dist/sw.js',
+        publicPath: '/sw.js',
       },
       AppCache: false,
       caches: 'all',
