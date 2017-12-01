@@ -4,72 +4,84 @@ const webpack = require('webpack');
 
 const autoprefixer = require('autoprefixer');
 
-const Dashboard = require('webpack-dashboard');
-const DashboardPlugin = require('webpack-dashboard/plugin');
-const dashboard = new Dashboard();
+// const Dashboard = require('webpack-dashboard');
+// const DashboardPlugin = require('webpack-dashboard/plugin');
+// const dashboard = new Dashboard();
 // const OfflinePlugin = require('offline-plugin');
-
+function packageSort(packages) {
+  // packages = ['polyfills', 'vendor', 'app']
+  const len = packages.length - 1;
+  const first = packages[0];
+  const last = packages[len];
+  return function sort(a, b) {
+    // polyfills always first
+    if (a.names[0] === first) {
+      return -1;
+    }
+    // app always last
+    if (a.names[0] === last) {
+      return 1;
+    }
+    // vendor before app
+    if (a.names[0] !== first && b.names[0] === last) {
+      return -1;
+    } else {
+      return 1;
+    }
+  };
+}
 const config = {
   devtool: 'source-map',
-  entry: [
-    'webpack-dev-server/client?http://0.0.0.0:3001/', // Needed for hot reloading
-    'webpack/hot/only-dev-server',
-    __dirname + '/../src/js/app/index.js',
-    __dirname + '/../src/css/main.less',
-  ],
+  entry: {
+    vendor: [
+      'material-design-lite/material',
+    ],
+    app: [
+      // 'webpack-dev-server/client?http://0.0.0.0:3001/', // Needed for hot reloading
+      // 'webpack/hot/only-dev-server',
+      __dirname + '/../src/js/app/index.js',
+      __dirname + '/../src/css/main.less',
+    ],
+
+  },
   output: {
     path: __dirname + '/../dist',
-    filename: 'bundle.js',
+    filename: '[name].js',
+    sourceMapFilename: '[file].map',
+    chunkFilename: '[id].js',
     publicPath: '/',
   },
-
   module: {
-    loaders: [{
+    loaders: [
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader!postcss-loader!less-loader',
-        }),
+        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader!less-loader'}),
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader!postcss-loader',
-        }),
+        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader'}),
       },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/,
-        loader: 'url-loader?limit=10000&minetype=application/font-woff',
-      },
-      {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/,
-        loader: 'file-loader',
-      },
-      {
-        test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/,
-        loader: 'html-loader',
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        loader: 'file-loader',
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader' },
+      { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
+      { test: /\.(png|jpg|gif)$/, loader: 'file-loader' },
+      { test: /\.json$/, loader: 'json-loader' },
+      // {
+      //   test: require.resolve('../node_modules/material-design-lite/material.js'),
+      //   use: 'exports-loader?file,parse=helpers.parse',
+      // },
     ],
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
-        postcss: [autoprefixer],
+        postcss: [ autoprefixer ],
         debug: true,
         progress: true,
         colors: true,
@@ -84,7 +96,8 @@ const config = {
       minify: false,
       appMountId: 'root',
       title: 'Gritos.com',
-      unsupportedBrowser: true,
+      unsupportedBrowser: false,
+      chunksSortMode: packageSort(['vendor', 'app']),
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -95,7 +108,7 @@ const config = {
         ENDPOINTS_ROOT_DOMAIN: JSON.stringify('gritos.com'),
       },
     }),
-    new DashboardPlugin(dashboard.setData),
+    // new DashboardPlugin(dashboard.setData),
     // new OfflinePlugin({
     //   externals: [
     //     '/',

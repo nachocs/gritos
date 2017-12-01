@@ -57,12 +57,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="google-site-verification" content="nhdMmpC7s40gPS_GMTE69340pG2sWpYlaKYBeT2f9UU" />
 
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
-  <!-- Add the slick-theme.css if you want default styling -->
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick-theme.css"/>
-  <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
-  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.2.1/material.light_green-red.min.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
   <% for (var css in htmlWebpackPlugin.files.css) { %>
   <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
   <% } %>
@@ -75,7 +70,6 @@
   <script src="<%= htmlWebpackPlugin.options.messagesPath%>"></script>
   <% } %>
 
-  <script src="https://storage.googleapis.com/code.getmdl.io/1.2.1/material.min.js"></script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108283891-1"></script>
   <script>
@@ -122,6 +116,8 @@
   <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
   <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>" crossorigin="anonymous"></script>
   <% } %>
+
+
 
   <% if (htmlWebpackPlugin.options.devServer) { %>
   <script src="<%= htmlWebpackPlugin.options.devServer%>/webpack-dev-server.js" crossorigin="anonymous"></script>

@@ -4,7 +4,7 @@ const webpackDevServer = require('webpack-dev-server');
 const chalk = require('chalk');
 const config = require('./webpack.dev.config');
 
-const PORT = 3001;
+const PORT = 3003;
 const HOST = '0.0.0.0';
 
 console.log(
@@ -20,12 +20,20 @@ new webpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
   hot: true, // With hot reloading
   inline: true,
-  quiet: true, // lets WebpackDashboard do its thing
   historyApiFallback: true,
   watchOptions: {
     poll: 1000,
     aggregateTimeout: 1000,
   },
+  port: PORT,
+  open: false,
+  proxy: {
+    '/indices': {
+      target: 'http://gritos.com/indices',
+      // changeOrigin: true,
+    },
+  },
+  stats: 'verbose',
 })
 .listen(PORT, HOST, err => {
   if (err) {

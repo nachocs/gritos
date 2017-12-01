@@ -48,6 +48,10 @@ const config = {
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
       { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=10000' },
       { test: /\.json$/, loader: 'json-loader' },
+      {
+        test: require.resolve('../node_modules/material-design-lite/material.js'),
+        use: 'exports-loader?file,parse=helpers.parse',
+      },
     ],
   },
   plugins: [
