@@ -10,6 +10,7 @@ import ModalView from '../modalView';
 import PreviousMsgView from './previousMsgView';
 import rabito from '../../../../img/rabito.gif';
 import ViewBase from '../base/ViewBase';
+import lazyImages from '../../util/lazyImages';
 
 const youtube_parser = url => {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/,
@@ -21,7 +22,7 @@ const autolinker = new Autolinker({
     if (match.getType() === 'url') {
       if ((match.getUrl().indexOf('youtube.com') > 0) || (match.getUrl().indexOf('youtu.be') > 0)) {
         const youtubeId = youtube_parser(match.getUrl());
-        return `<div class="videodelimitador"><div class="videocontenedor"><iframe src="//www.youtube.com/embed/${youtubeId}" frameborder="0" allowfullscreen=""></iframe></div></div>`;
+        return `<div class="videodelimitador"><div class="videocontenedor"><iframe title="youtube" src="//www.youtube.com/embed/${youtubeId}" frameborder="0" allowfullscreen=""></iframe></div></div>`;
       }
     } else {
       return;
@@ -277,6 +278,13 @@ export default ViewBase.extend({
             ],
           });
       }, 200);
+    }
+    this.loadLazyImages();
+  },
+  loadLazyImages() {
+    const images = this.$('.js-lazy-image');
+    if (images.length > 0) {
+      lazyImages.apply(images.get());
     }
   },
   serializer() {

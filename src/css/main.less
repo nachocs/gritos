@@ -1124,3 +1124,29 @@ h6.resumen-subheader{
  -webkit-animation: fa-spin 0.6s infinite linear !important;
  animation: fa-spin 0.6s infinite linear !important;
 }
+
+
+// img{
+//   opacity: 1;
+//   transition: opacity 0.3s;
+//   &.js-lazy-image{
+//     opacity: 0;
+//   }
+//   &.js-lazy-image--handled{
+//     opacity: 1;
+//   }
+// }
+.fade-in {
+  animation-name: fadeIn;
+  animation-duration: 1.3s;
+  animation-timing-function: cubic-bezier(0, 0, 0.4, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

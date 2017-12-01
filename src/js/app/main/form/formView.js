@@ -79,7 +79,7 @@ export default ViewBase.extend({
     this.listenTo(this, 'remove', this.clean.bind(this));
     this.listenTo(this.formModel, 'change', this.render.bind(this));
     $(window).on('beforeunload', ()=>{
-      if (this.$('.formularioTextArea').html().length>0){
+      if (this.$('.formularioTextArea') && this.$('.formularioTextArea').html() && this.$('.formularioTextArea').html().length > 0){
         return 'tienes un mensaje pendiente de enviar';
       }
     });
