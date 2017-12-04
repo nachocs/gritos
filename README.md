@@ -9,6 +9,10 @@ Gritos.com
 - npm start
 
 # Changelog
+
+## 1.7.1
+Added Lazy Load images
+
 ## 1.7.0
 Added WebWorkers for Offline
 
