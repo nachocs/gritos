@@ -1,5 +1,5 @@
-<% if(Number(obj.firstEntry) > 1){ %>
-<div class="previous-minimsgs load-previous">
-  <i class="fa fa-ellipsis-v <%= obj.loading ? 'fa-spin-fast' : '' %>" aria-hidden="true" title="¡no se vayan todavia aún hay más!"></i>
-</div>
-<% } %>
+<% if(Number(obj.firstEntry) > 1 && !obj.noMoreEntries){ %>
+  <div class="previous-minimsgs load-previous">
+    <i class="fa fa-ellipsis-v <%= obj.loading ? 'fa-spin-fast' : '' %>" aria-hidden="true" title="¡no se vayan todavia aún hay más!"></i>
+  </div>
+  <% } %>

@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.7.2
+Img vacio, ciudadanos Title
+
 ## 1.7.1
 Added Lazy Load images
 

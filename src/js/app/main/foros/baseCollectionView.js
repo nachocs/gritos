@@ -20,19 +20,19 @@ export default Backbone.View.extend({
     return this;
   },
   renderOne(model, collection, options) {
-    if (!model.id){return;}
+    if (!model.id) { return; }
     const msgView = new this.MsgView({
       model,
       userModel: this.userModel,
       headModel: this.headModel,
     });
     let reverse = this.reverse || false;
-    if (options && (options.fromSocket || options.individual)){
+    if (options && (options.fromSocket || options.individual)) {
       reverse = !reverse;
     }
     this.views[model.id] = msgView;
     const view = $(msgView.render().el).hide();
-    if (reverse){
+    if (reverse) {
       view.prependTo(this.$el).slideDown('slow');
       // this.$el.prepend(msgView.render().el);
     } else {
@@ -40,8 +40,8 @@ export default Backbone.View.extend({
       // this.$el.append(msgView.render().el);
     }
   },
-  removeOne(model){
-    if (this.views[model.id]){
+  removeOne(model) {
+    if (this.views[model.id]) {
       this.views[model.id].trigger('remove');
       delete this.views[model.id];
     }

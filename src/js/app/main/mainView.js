@@ -42,34 +42,32 @@ export default ViewBase.extend({
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
     this.images = {
-      logo:require('../../../img/logo50x50.gif'),
+      logo: require('../../../img/logo50x50.gif'),
     };
   },
-  events:{
+  events: {
     'click .new-msg': 'newMsg',
     'click .foro-admin': 'openForoAdmin',
-    'click [data-link]':'goToLink',
+    'click [data-link]': 'goToLink',
   },
-  openForoAdmin(){
+  openForoAdmin() {
     ModalView.update({
-      model:
-      {
+      model: {
         show: true,
         header: this.model.get('INDICE') === 'ciudadanos' ? 'EDITA TU MURO' : 'EDITAR FORO',
       },
-      editForm:{
+      editForm: {
         userModel: this.userModel,
         msg: this.model,
         isHead: true,
       },
-    },
-    );
+    }, );
   },
-  newMsg(){
-    if (this.userModel && this.userModel.get('ID')){
+  newMsg() {
+    if (this.userModel && this.userModel.get('ID')) {
       this.$el.find('main').scrollTop(0);
       this.formView.clearArea(true);
-    } else{
+    } else {
       this.loginView.openMenu();
     }
   },
@@ -114,9 +112,8 @@ export default ViewBase.extend({
   },
   serializer() {
     return Object.assign({},
-      this.model.toJSON(),
-      {
-        imgLogo:this.images.logo,
+      this.model.toJSON(), {
+        imgLogo: this.images.logo,
         Titulo: this.model.get('Titulo'),
         userModel: this.userModel.toJSON(),
       });

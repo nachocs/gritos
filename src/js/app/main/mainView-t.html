@@ -2,11 +2,11 @@
 <div class='modal-view'></div>
 <div class='avisos-view'></div>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header <%= (obj.INDICE === 'ciudadanos')?'ciudadano':'' %>"  >
+  <header class="mdl-layout__header <%= (obj.INDICE === 'ciudadanos')?'ciudadano':'' %>">
     <div class="mdl-layout-icon"></div>
     <div class="mdl-layout__header-row">
       <div data-link="/" class="logomask pseudo mdl-layout--large-screen-only">
-        <img src="<%= obj.imgLogo %>" alt="Gritos.com" title="home de gritos.com"/>
+        <img src="<%= obj.imgLogo %>" alt="Gritos.com" title="home de gritos.com" />
       </div>
       <svg height="0" style="display: none;">
         <!-- THE mask -->
@@ -23,20 +23,21 @@
       <!-- Title -->
       <div class="mdl-layout-title titulo mdl-layout--large-screen-only" title="<%= obj.Titulo %>">
         <% if (obj.Titulo && obj.Name){ %>
-          <span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo.toLowerCase().replace(/\s+/g, '_') : obj.Titulo %></span>
-        <% } %>
+          <span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= obj.Titulo %></span>
+          <% } %>
       </div>
       <div class="mdl-layout-title titulo mdl-layout--small-screen-only	" title="<%= obj.Titulo %>">
         <% if (obj.Titulo && obj.Name){ %>
-          <span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? '@' + obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></span>
-        <% } %>
+          <span data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>"><%= (obj.INDICE === 'ciudadanos') ? obj.Titulo : obj.Name !== 'foroscomun' ? '#' + obj.Name : 'gritos.com' %></span>
+          <% } %>
       </div>
       <!-- Add spacer, to align navigation to the right -->
       <!-- <div class="mdl-layout-spacer"></div> -->
       <!-- Navigation. We hide it in small screens. -->
       <nav class="mdl-navigation">
         <div class="mdl-navigation__link notificaciones-view"></div>
-        <div class="mdl-navigation__link login-view">Log in.</a></div>
+        <div class="mdl-navigation__link login-view">Log in.</a>
+        </div>
       </nav>
     </div>
   </header>
@@ -45,46 +46,56 @@
     <nav class="resumen-collection"></nav>
   </div>
   <main class="mdl-layout__content">
-  	<div class="content">
+    <div class="content">
       <% if (obj.INDICE === 'ciudadanos' ){ %>
-        <div class="foro-description mdl-card mdl-shadow--4dp conimagen ciudadano <%= obj.IMAGEN0_URL?'':'sinimagen'%>" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
-          <div class="dreamy"><img src="<%=obj.dreamy_principal%>"></div>
+        <div class="foro-description mdl-card mdl-shadow--4dp conimagen ciudadano <%= obj.IMAGEN0_URL ? '' : 'sinimagen'%>" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
+          <div class="dreamy">
+            <% if(obj.dreamy_principal && obj.dreamy_principal.length > 0){ %>
+              <img src="<%= obj.dreamy_principal %>">
+              <% } %>
+          </div>
           <div class="description">
             <div class="table">
               <div></div>
               <div class="bottom-row">
-                <div class="mdl-card--border mdl-card__supporting-text texto-introduccion"><%= obj.comments || obj.INTRODUCCION || 'Bienvenid@ a mi muro!'%></div>
+                <div class="mdl-card--border mdl-card__supporting-text texto-introduccion">
+                  <%= obj.comments || obj.INTRODUCCION || 'Bienvenid@ a mi muro!'%>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      <% } else { %>
-        <% if (obj.INTRODUCCION || obj.comments) { %>
-          <% if (obj.IMAGEN0_URL){ %>
-    	  	<div class="foro-description mdl-card mdl-shadow--4dp conimagen" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
-            <div></div>
-            <div class="bottom-row">
-      	  		<div class="mdl-card--border mdl-card__supporting-text texto-introduccion"><%= obj.comments || obj.INTRODUCCION %></div>
-            </div>
-    	  	</div>
-          <% } else { %>
-            <div class="foro-description mdl-card mdl-shadow--4dp">
-      	  		<div class="mdl-card--border mdl-card__supporting-text"><%= obj.comments || obj.INTRODUCCION %></div>
-      	  	</div>
-          <% } %>
-        <% } %>
-      <% } %>
-      <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>7){ %>
-        <% if (obj.INDICE && obj.INDICE !== 'foroscomun'){ %>
-          <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
-        <% } %>
-      <% } %>
-      <div class="form-view"></div>
-  		<div class="msg-list">
-  		</div>
-      <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg">
+        <% } else { %>
+          <% if (obj.INTRODUCCION || obj.comments) { %>
+            <% if (obj.IMAGEN0_URL){ %>
+              <div class="foro-description mdl-card mdl-shadow--4dp conimagen" style="background-image:url('<%=obj.IMAGEN0_URL%>');">
+                <div></div>
+                <div class="bottom-row">
+                  <div class="mdl-card--border mdl-card__supporting-text texto-introduccion">
+                    <%= obj.comments || obj.INTRODUCCION %>
+                  </div>
+                </div>
+              </div>
+              <% } else { %>
+                <div class="foro-description mdl-card mdl-shadow--4dp">
+                  <div class="mdl-card--border mdl-card__supporting-text">
+                    <%= obj.comments || obj.INTRODUCCION %>
+                  </div>
+                </div>
+                <% } %>
+                  <% } %>
+                    <% } %>
+                      <% if ((obj.Userid && obj.Userid.split(/\|/).includes(userModel.ID)) || (obj.INDICE==='ciudadanos' && userModel.ID === obj.ID) || userModel.nivel>7){ %>
+                        <% if (obj.INDICE && obj.INDICE !== 'foroscomun'){ %>
+                          <div class="foro-admin"><i class="fa fa-cog fa-lg" aria-hidden="true"></i></div>
+                          <% } %>
+                            <% } %>
+                              <div class="form-view"></div>
+                              <div class="msg-list">
+                              </div>
+                              <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg">
         <i class="material-icons">add</i>
       </button>
-  	</div>
+    </div>
   </main>
 </div>

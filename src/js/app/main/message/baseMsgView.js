@@ -8,7 +8,6 @@ import FormView from '../form/formView';
 import Util from '../../util/util';
 import ModalView from '../modalView';
 import PreviousMsgView from './previousMsgView';
-import rabito from '../../../../img/rabito.gif';
 import ViewBase from '../base/ViewBase';
 import lazyImages from '../../util/lazyImages';
 
@@ -18,7 +17,7 @@ const youtube_parser = url => {
   return (match && match[7].length === 11) ? match[7] : false;
 };
 const autolinker = new Autolinker({
-  replaceFn (match) {
+  replaceFn(match) {
     if (match.getType() === 'url') {
       if ((match.getUrl().indexOf('youtube.com') > 0) || (match.getUrl().indexOf('youtu.be') > 0)) {
         const youtubeId = youtube_parser(match.getUrl());
@@ -49,7 +48,7 @@ export default ViewBase.extend({
         userModel: this.userModel,
         headModel: this.headModel,
       });
-      this.previousMsgView = new PreviousMsgView({collection:this.minimsgsCollection});
+      this.previousMsgView = new PreviousMsgView({ collection: this.minimsgsCollection });
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'add', this.renderMiniMsgs.bind(this));
@@ -58,7 +57,7 @@ export default ViewBase.extend({
       model: this.model,
       userModel: this.userModel,
     });
-    if (this.showForm){
+    if (this.showForm) {
       this.formView = new FormView({
         userModel: this.userModel,
         collection: this.minimsgsCollection,
@@ -68,14 +67,14 @@ export default ViewBase.extend({
     }
     this.listenTo(this.model, 'destroy', this.remove.bind(this));
     this.listenTo(this, 'remove', this.clean.bind(this));
-    this.listenTo(this.userModel, 'change:ID', ()=>{
-      if (this.$el){
-        this.miniMsgsAlreadyRendered=false;
+    this.listenTo(this.userModel, 'change:ID', () => {
+      if (this.$el) {
+        this.miniMsgsAlreadyRendered = false;
         this.render();
       }
     });
-    this.listenTo(this.model, 'change:comments', ()=>{
-      this.miniMsgsAlreadyRendered=false;
+    this.listenTo(this.model, 'change:comments', () => {
+      this.miniMsgsAlreadyRendered = false;
       this.render();
     });
   },
@@ -85,68 +84,62 @@ export default ViewBase.extend({
     'click .js-ban': 'showBanModal',
     'click .js-delete': 'showDeleteModal',
     'click .js-edit': 'editThis',
-    'click .share':'openShare',
-    'click .fa-facebook-official':'shareFb',
-    'click .fa-twitter-square':'shareTw',
+    'click .share': 'openShare',
+    'click .fa-facebook-official': 'shareFb',
+    'click .fa-twitter-square': 'shareTw',
   },
-  shareFb(){
-    Util.bookmarkthis('facebook', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//,'') + '/' + this.model.get('ID'), this.headModel.get('Title'));
+  shareFb() {
+    Util.bookmarkthis('facebook', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//, '') + '/' + this.model.get('ID'), this.headModel.get('Title'));
   },
-  shareTw(){
-    Util.bookmarkthis('twitter', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//,'') + '/' + this.model.get('ID'), this.headModel.get('Title'));
+  shareTw() {
+    Util.bookmarkthis('twitter', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//, '') + '/' + this.model.get('ID'), this.headModel.get('Title'));
   },
-  openShare(e){
+  openShare(e) {
     e.preventDefault();
     e.stopPropagation();
     this.$(e.currentTarget).find('.share-menu').toggleClass('active');
   },
-  editThis(){
+  editThis() {
     ModalView.update({
-      model:
-      {
+      model: {
         show: true,
         header: 'EDITAR GRITO',
       },
-      editForm:{
+      editForm: {
         userModel: this.userModel,
         collection: this.model.collection,
         msg: this.model,
       },
-    },
-    );
+    }, );
   },
-  showBanModal(){
+  showBanModal() {
     ModalView.update({
-      model:
-      {
+      model: {
         show: true,
         header: '&iquest;ESTE GRITO APESTA?',
         body: '&iquest;Seguro que quieres denunciar este mensaje como basura?',
       },
       action: this.banThis.bind(this),
-    },
-    );
+    }, );
   },
-  showDeleteModal(){
+  showDeleteModal() {
     ModalView.update({
-      model:
-      {
+      model: {
         show: true,
-        header:'&iquest;BORRAR GRITO?',
+        header: '&iquest;BORRAR GRITO?',
         body: '&iquest;Seguro que quieres borrar este mensaje?',
       },
       action: this.deleteThis.bind(this),
-    },
-    );
+    }, );
   },
-  deleteThis(){
+  deleteThis() {
     console.log('delete run');
     this.model.destroy();
   },
-  banThis(){
+  banThis() {
     console.log('ban run');
   },
-  toggleAdminMenu(e){
+  toggleAdminMenu(e) {
     e.preventDefault();
     e.stopPropagation();
     this.$(e.currentTarget).find('.admin-menu').toggleClass('active');
@@ -172,7 +165,7 @@ export default ViewBase.extend({
       w_e = this.$(e.currentTarget).width();
       m_l = (w_e / 2) - (w_t / 2);
       // if (-m_l > this.$(e.currentTarget).position().left) {
-        // m_l = m_l + this.$(e.currentTarget).position().left;
+      // m_l = m_l + this.$(e.currentTarget).position().left;
       // }
       h_t = -this.$(e.currentTarget).find(tipr_cont).height() - this.$(e.currentTarget).height() - 12;
 
@@ -206,7 +199,7 @@ export default ViewBase.extend({
   },
 
   renderMiniMsgs() {
-    if (this.minimsgsCollectionView && !this.miniMsgsAlreadyRendered){
+    if (this.minimsgsCollectionView && !this.miniMsgsAlreadyRendered) {
       this.$('.previous-msgs-view').html(this.previousMsgView.render().el);
       this.$('.minimsgs').replaceWith(this.minimsgsCollectionView.render().el);
       this.minimsgsCollection.fetch();
@@ -216,7 +209,7 @@ export default ViewBase.extend({
   },
   render() {
     this.$el.html(this.template(this.serializer()));
-    if (this.showForm){
+    if (this.showForm) {
       this.$('.mini-form').html(this.formView.render().el);
     }
     if (this.model.get('minimsgs')) {
@@ -231,52 +224,50 @@ export default ViewBase.extend({
   },
   afterRender() {
     const self = this;
-    if (self.$el.find('.icon').length>0){
+    if (self.$el.find('.icon').length > 0) {
       setTimeout(() => {
         componentHandler.upgradeElement(self.$el.find('.icon')[0]);
       }, 100);
     }
     this.materialDesignUpdate();
-    if (this.isCarousel){
+    if (this.isCarousel) {
       setTimeout(() => {
-        this.$('.images-place').slick(
-          {
-            dots: true,
-            infinite: true,
-            speed: 300,
-            slidesToShow: this.isCarousel < 3 ? this.isCarousel:3,
-            slidesToScroll: this.isCarousel < 3 ? this.isCarousel:3,
-            arrows: true,
-            adaptiveHeight: true,
-            responsive: [
-              {
-                breakpoint: 1024,
-                settings: {
-                  slidesToShow: this.isCarousel < 3 ? this.isCarousel:3,
-                  slidesToScroll: this.isCarousel < 3 ? this.isCarousel:3,
-                  infinite: true,
-                  dots: true,
-                },
+        this.$('.images-place').slick({
+          dots: true,
+          infinite: true,
+          speed: 300,
+          slidesToShow: this.isCarousel < 3 ? this.isCarousel : 3,
+          slidesToScroll: this.isCarousel < 3 ? this.isCarousel : 3,
+          arrows: true,
+          adaptiveHeight: true,
+          responsive: [{
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: this.isCarousel < 3 ? this.isCarousel : 3,
+                slidesToScroll: this.isCarousel < 3 ? this.isCarousel : 3,
+                infinite: true,
+                dots: true,
               },
-              {
-                breakpoint: 600,
-                settings: {
-                  slidesToShow: 2,
-                  slidesToScroll: 2,
-                },
+            },
+            {
+              breakpoint: 600,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2,
               },
-              {
-                breakpoint: 480,
-                settings: {
-                  slidesToShow: 1,
-                  slidesToScroll: 1,
-                },
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
               },
-              // You can unslick at a given breakpoint now by adding:
-              // settings: "unslick"
-              // instead of a settings object
-            ],
-          });
+            },
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+          ],
+        });
       }, 200);
     }
     this.loadLazyImages();
@@ -288,11 +279,12 @@ export default ViewBase.extend({
     }
   },
   serializer() {
-    let tagsShown = [], value, mainName;
-    if (this.model.get('publicados')){
-      _.each(this.model.get('publicados').split(/\|/), (pub)=>{
+    let tagsShown = [],
+      value, mainName;
+    if (this.model.get('publicados')) {
+      _.each(this.model.get('publicados').split(/\|/), (pub) => {
         value = pub.split(/\,/)[1];
-        if (value){
+        if (value) {
           value = value.replace(/^gritos\//, '');
           tagsShown.push({
             name: pub.split(/\,/)[0],
@@ -301,7 +293,7 @@ export default ViewBase.extend({
         }
       });
     }
-    if (!this.model.get('INDICE').match(/^ciudadanos\//)){
+    if (!this.model.get('INDICE').match(/^ciudadanos\//)) {
       mainName = this.model.get('INDICE');
       mainName = mainName.replace(/^gritos\//, '').replace(/^foros\//, '');
       tagsShown.push({
@@ -309,7 +301,7 @@ export default ViewBase.extend({
         value: mainName,
       });
     }
-    if (this.model.get('INDICE').match(/^ciudadanos\//) && this.model.get('indice_ciudadano_alias')){
+    if (this.model.get('INDICE').match(/^ciudadanos\//) && this.model.get('indice_ciudadano_alias')) {
       mainName = this.model.get('INDICE');
       tagsShown.push({
         name: this.model.get('indice_ciudadano_alias').replace(/\s/g, '_'),
@@ -318,16 +310,18 @@ export default ViewBase.extend({
     }
     tagsShown = _.uniqBy(tagsShown, 'value');
     let images = [];
-    Object.keys(this.model.toJSON()).forEach((key)=> {
-      if ((/IMAGEN(\d+)_URL/).exec(key)){ const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
+    Object.keys(this.model.toJSON()).forEach((key) => {
+      if ((/IMAGEN(\d+)_URL/).exec(key)) {
+        const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
         images.push(Util.displayImage(this.model.toJSON(), image));
       }
     });
     this.isCarousel = (images.length > 1) ? images.length : null;
-    if (this.isCarousel){
+    if (this.isCarousel) {
       images = [];
-      Object.keys(this.model.toJSON()).forEach((key)=> {
-        if ((/IMAGEN(\d+)_URL/).exec(key)){ const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
+      Object.keys(this.model.toJSON()).forEach((key) => {
+        if ((/IMAGEN(\d+)_URL/).exec(key)) {
+          const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
           images.push(Util.displayImage2(this.model.toJSON(), image));
         }
       });
@@ -342,13 +336,12 @@ export default ViewBase.extend({
       images,
       userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
-      rabito,
-      emocion: this.model.get('emocion') && this.model.get('emocion').replace('http:',''),
+      emocion: this.model.get('emocion') && this.model.get('emocion').replace('http:', ''),
     });
   },
-  clean(){
+  clean() {
     this.formView && this.formView.trigger('remove');
-    if (this.minimsgsCollectionView){
+    if (this.minimsgsCollectionView) {
       this.minimsgsCollectionView.remove();
       delete this.minimsgsCollectionView;
     }

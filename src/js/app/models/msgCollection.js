@@ -14,6 +14,7 @@ export default Backbone.Collection.extend({
     this.globalModel = options.globalModel;
     this.msgModel = options.msgModel;
     this.subscriptions = {};
+    this.noMoreEntries = false;
     if (options && options.id) {
       this.id = options.id;
     }
@@ -29,54 +30,58 @@ export default Backbone.Collection.extend({
       this.loading = true;
     });
 
-    if (this.id){
+    if (this.id) {
       this.subscribe(this.id);
     }
-    if (this.globalModel){
+    if (this.globalModel) {
       this.listenTo(this.globalModel, 'change', () => {
         this.clean();
         this.id = this.globalModel.get('ID'); // para cuando se cambia de foro principal
-        if (this.globalModel.get('msg') || this.globalModel._previousAttributes.msg){
+        if (this.globalModel.get('msg') || this.globalModel._previousAttributes.msg) {
           this.trigger('reset');
         }
         this.subscribe(this.id);
         this.fetch();
       });
     }
-    if (this.msgModel){ // para mini collections
+    if (this.msgModel) { // para mini collections
       this.listenTo(this.msgModel, 'remove', this.clean.bind(this));
     }
   },
-  clean(){
-    if (this.id){
+  clean() {
+    if (this.id) {
       this.unsubscribe(this.id);
     }
-    if (this.models.length>0){
+    if (this.models.length > 0) {
       this.remove(this.models);
     }
   },
-  subscribe(room){
-    room = room.replace(/\/$/,'');
-    if (this.subscriptions[room]){return;}
+  subscribe(room) {
+    room = room.replace(/\/$/, '');
+    if (this.subscriptions[room]) {
+      return;
+    }
     this.subscriptions[room] = true;
     Ws.subscribe('collection:' + room);
     vent.on('updated_' + 'collection:' + room, data => {
       const newMsgModel = new model();
-      this.add(newMsgModel.parse(data.entry), {fromSocket:true});
+      this.add(newMsgModel.parse(data.entry), {
+        fromSocket: true,
+      });
       vent.trigger('avisos', data);
       const tipo = this.msgModel ? 'minis' : 'foro';
-      NotificacionesUserModel.update(tipo, this.id.replace(/\/$/,''), data.entry.ID);
+      NotificacionesUserModel.update(tipo, this.id.replace(/\/$/, ''), data.entry.ID);
 
       console.log('updated', data.room, data.entry);
     });
   },
-  unsubscribe(room){
+  unsubscribe(room) {
     delete this.subscriptions[room];
     Ws.unsubscribe(room);
     vent.off('updated_' + room);
   },
-  fetch(){ // mockup
-    if (mockup.active){
+  fetch() { // mockup
+    if (mockup.active) {
       this.set([...mockup.msgCollectionMockup]);
     } else {
       return Backbone.Collection.prototype.fetch.apply(this, arguments);
@@ -84,9 +89,9 @@ export default Backbone.Collection.extend({
   },
   url() {
     let route = '';
-    if (this.globalModel && this.globalModel.get('msg')){
+    if (this.globalModel && this.globalModel.get('msg')) {
       route = this.id + '/' + this.globalModel.get('msg');
-    } else{
+    } else {
       route = this.id;
     }
     return endpoints.apiUrl + 'index.cgi?' + route;
@@ -102,14 +107,16 @@ export default Backbone.Collection.extend({
     }
   },
   parse(resp) {
-    if (this.globalModel && this.globalModel.get('msg')){
+    if (this.globalModel && this.globalModel.get('msg')) {
       resp = [resp];
     }
-    if (resp.length>0){
+    if (resp.length > 0) {
       const lastReadEntry = Math.max.apply(null, _.map(resp, 'num'));
       const tipo = this.msgModel ? 'minis' : 'foro';
-      NotificacionesUserModel.update(tipo, this.id.replace(/\/$/,''), lastReadEntry);
+      NotificacionesUserModel.update(tipo, this.id.replace(/\/$/, ''), lastReadEntry);
       this.firstEntry = Math.min.apply(null, _.map(resp, 'num'));
+    } else {
+      this.noMoreEntries = true;
     }
     return resp;
   },
