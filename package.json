@@ -1,12 +1,12 @@
 {
   "name": "gritos",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "Gritos.com",
   "main": "js/app/app.js",
   "scripts": {
     "lint": "eslint .",
     "cleanup": "rm -rf dist",
-    "build": "npm run cleanup && cross-env NODE_ENV=production webpack --config ./webpack/webpack.prod.config.js",
+    "build": "cross-env NODE_ENV=production webpack --config ./webpack/webpack.prod.config.js",
     "start": "npm run cleanup && cross-env NODE_ENV=development webpack-dev-server --progress --color --config ./webpack/webpack.dev.server.js",
     "deploy": "s3-deploy './dist/**' --cwd './dist/' --region $AWS_REGION --bucket $BUCKET_NAME/$CIRCLE_BUILD_NUM --gzip",
     "tag": "ci/tag.sh",

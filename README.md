@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.0
+New Webpack, all scripts inline, lazy load avatars
+
 ## 1.7.2
 Img vacio, ciudadanos Title
 
