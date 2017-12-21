@@ -12,7 +12,6 @@ class Util {
     this.templateCapturedUrl = _.template(templateCapturedUrl);
   }
   displayImage(obj, image) {
-    console.log(vacio);
     return this.template(Object.assign({}, obj, { image, vacio }));
   }
   displayImage2(obj, image) {

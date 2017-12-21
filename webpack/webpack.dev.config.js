@@ -3,6 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
 const autoprefixer = require('autoprefixer');
+const HttpsProxyAgent = require('https-proxy-agent');
+
+// corporate proxy to connect to
+const proxyServer = process.env.npm_config_https_proxy;
 
 // const Dashboard = require('webpack-dashboard');
 // const DashboardPlugin = require('webpack-dashboard/plugin');
@@ -51,20 +55,42 @@ const config = {
     chunkFilename: '[id].js',
     publicPath: '/',
   },
+  devServer: {
+    publicPath: '/',
+    hot: true, // With hot reloading
+    inline: true,
+    historyApiFallback: true,
+    watchOptions: {
+      poll: 1000,
+      aggregateTimeout: 1000,
+    },
+    port: 3001,
+    open: false,
+    proxy: {
+      '/indices': {
+        target: 'https://gritos.com',
+        changeOrigin: true,
+        secure: false,
+        // logLevel: 'debug',
+        toProxy: true,
+        agent: new HttpsProxyAgent(proxyServer),
+      },
+    },
+    stats: 'verbose',
+  },
   module: {
-    loaders: [
-      {
+    loaders: [{
         test: /\.js$/,
         exclude: /node_modules/,
         loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader!less-loader'}),
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!postcss-loader!less-loader' }),
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader'}),
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!postcss-loader' }),
       },
       { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader' },
@@ -81,7 +107,7 @@ const config = {
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
-        postcss: [ autoprefixer ],
+        postcss: [autoprefixer],
         debug: true,
         progress: true,
         colors: true,

@@ -11,17 +11,46 @@ const BUILD_NUM = require('../package.json').version;
 var CDN_BASE_URL = '/'; // eslint-disable-line no-var
 
 // if(STATIC_DOMAIN && BUILD_NUM) {
-  // CDN_BASE_URL = `${STATIC_DOMAIN}/${BUILD_NUM}/`;
+// CDN_BASE_URL = `${STATIC_DOMAIN}/${BUILD_NUM}/`;
 // } else if(STATIC_DOMAIN) {
 CDN_BASE_URL = `${STATIC_DOMAIN}/`;
 // }
 // const __dirname = '';
 
+function packageSort(packages) {
+  // packages = ['polyfills', 'vendor', 'app']
+  const len = packages.length - 1;
+  const first = packages[0];
+  const last = packages[len];
+  return function sort(a, b) {
+    // polyfills always first
+    if (a.names[0] === first) {
+      return -1;
+    }
+    // app always last
+    if (a.names[0] === last) {
+      return 1;
+    }
+    // vendor before app
+    if (a.names[0] !== first && b.names[0] === last) {
+      return -1;
+    } else {
+      return 1;
+    }
+  };
+}
+
 const config = {
-  entry: [
-    __dirname + '/../src/js/app/index.js',
-    __dirname + '/../src/css/main.less',
-  ],
+  entry: {
+    vendor: [
+      'material-design-lite/material',
+    ],
+    app: [
+      __dirname + '/../src/js/app/index.js',
+      __dirname + '/../src/css/main.less',
+    ],
+
+  },
   output: {
     path: __dirname + '/../dist',
     filename: 'dist/' + BUILD_NUM + '/[name].[chunkhash].js',
@@ -29,36 +58,35 @@ const config = {
     publicPath: CDN_BASE_URL,
   },
   module: {
-    loaders: [
-      {
+    loaders: [{
         test: /\.js$/,
         exclude: /node_modules/,
         loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader!less-loader'}),
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!postcss-loader!less-loader' }),
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({fallback:'style-loader', use:'css-loader!postcss-loader'}),
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!postcss-loader' }),
       },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff&name=dist/'+ BUILD_NUM +'/fonts/[name].[ext]' },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader?name=dist/'+ BUILD_NUM +'/fonts/[name].[ext]' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff&name=dist/' + BUILD_NUM + '/fonts/[name].[ext]' },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'file-loader?name=dist/' + BUILD_NUM + '/fonts/[name].[ext]' },
       { test: /\.(html)(\?v=[0-9]\.[0-9]\.[0-9])?(\?[0-9]*)?$/, loader: 'html-loader' },
       { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=10000' },
       { test: /\.json$/, loader: 'json-loader' },
-      {
-        test: require.resolve('../node_modules/material-design-lite/material.js'),
-        use: 'exports-loader?file,parse=helpers.parse',
-      },
+      // {
+      //   test: require.resolve('../node_modules/material-design-lite/material.js'),
+      //   use: 'exports-loader?file,parse=helpers.parse',
+      // },
     ],
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
-        postcss: [ autoprefixer ],
+        postcss: [autoprefixer],
         debug: true,
         progress: true,
         colors: true,
@@ -70,10 +98,11 @@ const config = {
       compress: {
         warnings: false, // ...but do not show warnings in the console (there is a lot of them)
         drop_console: true,
-        drop_debugger: true      },
+        drop_debugger: true,
+      },
     }),
     new ExtractTextPlugin({
-      filename:'dist/' + BUILD_NUM + '/[name].[contenthash].css',
+      filename: 'dist/' + BUILD_NUM + '/[name].[contenthash].css',
       disable: false,
       allChunks: true,
     }),
@@ -98,6 +127,7 @@ const config = {
       appMountId: 'root',
       title: 'Gritos.com',
       unsupportedBrowser: false,
+      chunksSortMode: packageSort(['vendor', 'app']),
     }),
     new WebpackAssetsManifest({
       output: 'manifest.json',
@@ -110,8 +140,7 @@ const config = {
         'background_color': 'white',
         'description': 'Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.',
         'version': JSON.stringify(require('../package.json').version),
-        'icons': [
-          {
+        'icons': [{
             'src': '/assets/android-icon-36x36.png',
             'sizes': '36x36',
             'type': 'image/png',

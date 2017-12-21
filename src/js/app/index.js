@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 import App from './app';
 import loadFBSDK from 'facebook-sdk-promise';
+import 'material-design-lite';
 
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 if (process.env.NODE_ENV === 'production') {
