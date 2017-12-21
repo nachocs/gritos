@@ -84,6 +84,6 @@
     "webpack": "^3.9.1",
     "webpack-assets-manifest": "^0.6.2",
     "webpack-dashboard": "^0.3.0",
-    "webpack-dev-server": "^2.4.1"
+    "webpack-dev-server": "^2.9.7"
   }
 }
