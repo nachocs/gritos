@@ -14,7 +14,7 @@ export default Backbone.View.extend({
     this.listenTo(this.model, 'change:love', this.render.bind(this));
   },
   events: {
-    'click i': 'molaAction',
+    'click .action': 'molaAction',
   },
   molaAction(e) {
     e.stopPropagation();
@@ -24,18 +24,18 @@ export default Backbone.View.extend({
     const array = this.model.get(mola + 'log') ? this.model.get(mola + 'log').split('|') : [];
     const newarray = [];
     let yaEstaba = false;
-    array.forEach((ele)=>{
-      if (ele !== this.userModel.get('ID')){
+    array.forEach((ele) => {
+      if (ele !== this.userModel.get('ID')) {
         newarray.push(ele);
       } else {
         yaEstaba = true; // si ya estaba lo quita
       }
     });
-    if (!yaEstaba){ // si no estaba lo pone
+    if (!yaEstaba) { // si no estaba lo pone
       newarray.push(this.userModel.get('ID'));
     }
     modelObj[mola + 'log'] = newarray.join('|');
-      // userObj[molaTag] = (!this.userModel.get(molaTag)) ? 1 : null;
+    // userObj[molaTag] = (!this.userModel.get(molaTag)) ? 1 : null;
     // this.userModel.save(userObj);
     modelObj[mola] = newarray.length;
     this.model.save(modelObj);

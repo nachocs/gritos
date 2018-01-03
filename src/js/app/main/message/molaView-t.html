@@ -1,23 +1,9 @@
-<span class="mdl-badge mdl-badge--no-background	mdl-badge--overlap" <% if (Number(obj.love)>0){ %>data-badge="<%= obj.love %>"<%}%> >
-  <% if(obj.currentLove){ %>
-    <i class="fa fa-heart love active faa-pulse animated-hover" aria-hidden="true" title="te encanta ésto"></i>
-  <% } else { %>
-    <i class="fa fa-heart-o love faa-pulse animated-hover" aria-hidden="true" title="¿te encanta?"></i>
-  <% } %>
+<span class="action love mdl-badge mdl-badge--no-background	mdl-badge--overlap faa-parent animated-hover <%= obj.currentLove ? 'active' : '' %> " <% if (Number(obj.love)> 0){ %>data-badge="<%= obj.love %>"<% } %> >
+  <i class="fa <%= obj.currentLove ? 'fa-heart faa-slow' : 'fa-heart-o' %> faa-pulses faa-fast" aria-hidden="true" title="<%= obj.currentLove ? 'te encanta ésto' : '¿te encanta?' %>"></i>
 </span>
-
-<span class="mdl-badge mdl-badge--no-background	mdl-badge--overlap" <% if (Number(obj.mola)>0){ %>data-badge="<%= obj.mola %>"<%}%> >
-  <% if(obj.currentMola){ %>
-    <i class="fa fa-thumbs-up mola active faa-bounce animated-hover" aria-hidden="true" title="te mola ésto"></i>
-  <% } else { %>
-    <i class="fa fa-thumbs-o-up mola faa-bounce animated-hover" aria-hidden="true" title="¿a que mola?"></i>
-  <% } %>
+<span class="action mola mdl-badge mdl-badge--no-background	mdl-badge--overlap faa-parent animated-hover <%= obj.currentMola ? 'active' : '' %> " <% if (Number(obj.mola)> 0){ %>data-badge="<%= obj.mola %>"<% } %> >
+  <i class="fa <%= obj.currentMola ? 'fa-thumbs-up faa-slow' : 'fa-thumbs-o-up' %> faa-bounce" aria-hidden="true" title="<%= obj.currentMola ? 'te mola ésto' : '¿a que mola?' %>"></i>
 </span>
-
-<span class="mdl-badge mdl-badge--no-background	mdl-badge--overlap" <% if (Number(obj.nomola)>0){ %>data-badge="<%= obj.nomola %>"<%}%> >
-  <% if(obj.currentNomola){ %>
-    <i class="fa fa-thumbs-down nomola active faa-bounce animated-hover" aria-hidden="true" title="ésto no te mola"></i>
-  <% } else { %>
-    <i class="fa fa-thumbs-o-down nomola faa-bounce animated-hover" aria-hidden="true" title="¿ésto no mola para nada?"></i>
-  <% } %>
+<span class="action nomola mdl-badge mdl-badge--no-background	mdl-badge--overlap faa-parent animated-hover <%= obj.currentNomola ? 'active' : '' %> " <% if (Number(obj.nomola)> 0){ %>data-badge="<%= obj.nomola %>"<% } %> >
+  <i class="fa <%= obj.currentNomola ? 'fa-thumbs-down faa-slow' : 'fa-thumbs-o-down' %> faa-bounce" aria-hidden="true" title="<%= obj.currentNomola ? 'ésto no te mola' : '¿ésto no mola para nada?' %>"></i>
 </span>

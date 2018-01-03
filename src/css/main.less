@@ -342,22 +342,27 @@ div.titulo{
       .mola-view{
         text-align: right;
         margin: 0px 10px;
-        color: rgb(119, 122, 153);
-        opacity: 0.5;
+        color: hsl(211, 15%, 53%);
+        white-space: nowrap;
+        // opacity: 0.5;
         font-size: 10px;
-        i.mola, i.nomola, i.love{
-          margin: 5px 5px;
+        span.action{
+          margin:0;
+          padding: 5px;
           cursor: pointer;
           font-size: 18px;
           &:hover{
-            opacity: .8;
+            color: hsl(211, 15%, 35%);
           }
           &.active{
-            color: #2e791d;
-            opacity: 1;
+            color: rgba(46, 121, 29, 0.6);
+            &:hover{
+              color: rgba(46, 121, 29, 0.9);
+            }
+            // opacity: 1;
           }
           &.inactive{
-            opacity: 0.5;
+            // opacity: 0.5;
           }
         }
         span{
