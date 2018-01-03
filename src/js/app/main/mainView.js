@@ -49,6 +49,12 @@ export default ViewBase.extend({
     'click .new-msg': 'newMsg',
     'click .foro-admin': 'openForoAdmin',
     'click [data-link]': 'goToLink',
+    'click .js-home': 'goToHome',
+  },
+  goToHome() {
+    $(window).scrollTop(0);
+    this.goToRoute('/');
+    this.collection.fetch();
   },
   openForoAdmin() {
     ModalView.update({
