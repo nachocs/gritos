@@ -54,7 +54,6 @@ export default ViewBase.extend({
   goToHome() {
     $(window).scrollTop(0);
     this.goToRoute('/');
-    this.collection.fetch();
   },
   openForoAdmin() {
     ModalView.update({
