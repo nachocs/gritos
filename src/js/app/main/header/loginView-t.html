@@ -5,7 +5,7 @@
 		<% } else if (obj.FB_picture){ %>
 			<img src="<%= obj.FB_picture %>" style="height:48px">
 		<% } else { %>
-	    <i class="material-icons" style="font-size:48px">face</i>
+			<img src="<%= obj.images.default_dreamy %>" style="height:48px"/>
 	  <% } %>
 		<span class="mdl-layout--large-screen-only alias-principal">
 			<%= obj.alias_principal %>
@@ -14,44 +14,52 @@
 	<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon desplegable">
 		<i class="material-icons">keyboard_arrow_down</i>
 	</button>
-  <ul class="login-menu hidden short mdl-card mdl-shadow--4dp">
+	<ul class="login-menu hidden short mdl-card mdl-shadow--4dp">
 		<li class="mdl-layout--small-screen-only">
 			<span class="alias-principal">
 				<%= obj.alias_principal %>
 			</span>
 		</li>
-    <li>
-      <button class="js-logout logout mdl-button mdl-js-button mdl-button--icon">
+		<li>
+			<% if(!obj.FB_id){ %>
+				<div class='fb-login'><i class="fa fa-facebook-official fa-2x" aria-hidden="true"></i><span>Facebook Connect</span></div>
+			<% } %>
+			<button class="js-logout logout mdl-button mdl-js-button mdl-button--icon">
         <i class="material-icons">exit_to_app</i>
       </button>
-    <span>Log Out</span>
-    </li>
-  </ul>
+			<span>Log Out</span>
+		</li>
+	</ul>
 
-<%} else {%>
-	<span class="mdl-layout--large-screen-only">
+	<%} else {%>
+		<span class="mdl-layout--large-screen-only">
 		Log In
 	</span>
-	<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon">
+		<button class="login-menu-button mdl-button mdl-js-button mdl-button--icon">
 	  <i class="material-icons">power_settings_new</i>
 	</button>
 
-	<ul class="login-menu hidden mdl-card mdl-shadow--4dp">
-		<form id='login-form'>
-			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-				<input class="mdl-textfield__input" type="text" id="loginAlias">
-				<label class="mdl-textfield__label" for="loginAlias">Alias/email</label>
+		<ul class="login-menu hidden mdl-card mdl-shadow--4dp">
+			<form id='login-form'>
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" id="loginAlias">
+					<label class="mdl-textfield__label" for="loginAlias">Alias/email</label>
+				</div>
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="password" id="loginPassword">
+					<label class="mdl-textfield__label" for="loginPassword">Password</label>
+				</div>
+				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id='loginSubmit'>
+					entrar
+				</button>
+			</form>
+			<div class="error-login"></div>
+			<div class="sign-up">
+				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+					<i class="fa fa-sign-in fa-lg" aria-hidden="true"></i><span>Reg&iacute;strate / Sign Up</span>
+				</button>
 			</div>
-			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-				<input class="mdl-textfield__input" type="password" id="loginPassword">
-				<label class="mdl-textfield__label" for="loginPassword">Password</label>
-			</div>
-			<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id='loginSubmit'>
-				entrar
-			</button>
-		</form>
-		<div class="error-login"></div>
-		<div class='fb-login'><i class="fa fa-facebook-official fa-2x" aria-hidden="true"></i><span>facebook log in/sign up</span></div>
-	</ul>
+			<div class='fb-login'><i class="fa fa-facebook-official fa-2x" aria-hidden="true"></i><span>Facebook Log In/Sign Up</span></div>
+		</ul>
 
-<% } %>
+		<% } %>

@@ -2,57 +2,69 @@ import Backbone from 'backbone';
 import _ from 'lodash';
 import template from './modalView-t.html';
 import FormView from './form/formView';
+import SignUpView from './header/signUp';
 
 const Model = Backbone.Model.extend({
-  defaults:{
+  defaults: {
     show: false,
   },
 });
 const ModalView = Backbone.View.extend({
   model: new Model(),
   template: _.template(template),
-  initialize(){
+  initialize() {
     this.listenTo(this.model, 'change', this.render.bind(this));
   },
-  events:{
+  events: {
     'click .js-close': 'close',
     'click .js-action': 'runAction',
   },
-  runAction(){
-    if (this.action){
+  runAction() {
+    if (this.action) {
       this.action();
     }
     this.close();
   },
-  update(obj){
-    if (obj.model){
+  update(obj) {
+    if (obj.model) {
       this.model.set(obj.model);
     }
-    if (obj.action){
+    if (obj.action) {
       this.action = obj.action;
     }
-    if(obj.editForm){
+    this.model.set('lite', true);
+    if (obj.editForm) {
+      this.model.set('lite', false);
       const EditForm = new FormView({
         userModel: obj.editForm.userModel,
         collection: obj.editForm.collection,
         msg: obj.editForm.msg,
-        isHead:obj.editForm.isHead,
+        isHead: obj.editForm.isHead,
       });
       this.$('.modal-body').html(EditForm.render().el);
       this.action = EditForm.submitPost.bind(EditForm);
     }
+    if (obj.signUp) {
+      this.model.set('hideFooter', true);
+      const SignUpForm = new SignUpView({
+        close: this.close.bind(this),
+      });
+      this.$('.modal-body').html(SignUpForm.render().el);
+      this.action = SignUpForm.submitPost.bind(SignUpForm);
+
+    }
     this.undelegateEvents();
     this.delegateEvents();
   },
-  close(){
+  close() {
     this.model.set('show', false);
   },
-  render(){
+  render() {
     this.$el.html(this.template(this.serializer()));
     this.delegateEvents();
     return this;
   },
-  serializer(){
+  serializer() {
     return this.model.toJSON();
   },
 });

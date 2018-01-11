@@ -110,7 +110,7 @@ export default ViewBase.extend({
         collection: this.model.collection,
         msg: this.model,
       },
-    }, );
+    });
   },
   showBanModal() {
     ModalView.update({
@@ -120,7 +120,7 @@ export default ViewBase.extend({
         body: '&iquest;Seguro que quieres denunciar este mensaje como basura?',
       },
       action: this.banThis.bind(this),
-    }, );
+    });
   },
   showDeleteModal() {
     ModalView.update({
@@ -130,7 +130,7 @@ export default ViewBase.extend({
         body: '&iquest;Seguro que quieres borrar este mensaje?',
       },
       action: this.deleteThis.bind(this),
-    }, );
+    });
   },
   deleteThis() {
     console.log('delete run');

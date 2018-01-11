@@ -14,7 +14,7 @@
     <% if (obj.dreamy_principal ){ %>
       <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
     <% } else { %>
-      <div class="dreamy"><i class="material-icons" style="font-size:48px">face</i></div>
+      <div class="dreamy"><img src="<%= obj.default_dreamy %>" width="50" height="50"/></div>
     <% } %>
   <%}%>
   <div contenteditable=true placeholder="<%= obj.isHead ? 'Introduccion' : !obj.parentModel ? (obj.titulo_head ? obj.titulo_head : 'Sueltalo!') : 'hmmm...' %>" class='formularioTextArea <%= active && 'on' %>' name="comments"><%= obj.formModel.comments || obj.formModel.INTRODUCCION %></div>

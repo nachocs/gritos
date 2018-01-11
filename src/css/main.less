@@ -434,6 +434,17 @@ iframe {
     li{
       list-style: none;
     }
+    .sign-up{
+      display: block;
+      margin-top: 20px;
+      button{
+        width: 100%;
+        text-align: left;
+        .fa{
+          margin-right: 10px;
+        }
+      }
+    }
     .error-login{
       border: 1px solid red;
       color: red;
@@ -455,7 +466,7 @@ iframe {
     background-color: #3a5795;
     border-radius: 5px;
     padding: 0px 0 0 0;
-    margin: 20px 0 0;
+    margin: 20px 0 10px;
     line-height: 40px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
     cursor: pointer;
@@ -468,7 +479,7 @@ iframe {
     }
     span{
       vertical-align: top;
-      margin-left: 50px;
+      margin: 0 10px;
     }
   }
 }
@@ -929,10 +940,13 @@ div[contenteditable = true]:empty:before{
   .modal-modal{
     color: slategray;
     position: relative;
-    width: 50%;
     min-height: 200px;
     margin: 100px auto;
     background-color: white;
+    max-width: 600px;
+    &.lite{
+      max-width: 400px;
+    }
     .modal-header{
       width: 100%;
       height: 60px;
@@ -1160,5 +1174,55 @@ h6.resumen-subheader{
   }
   to {
     opacity: 1;
+  }
+}
+.error-form{
+  color: red;
+  border: 1px dashed red;
+  border-radius: 10px;
+  margin-top: -10px;
+  background-color: #f9f3f3;
+  font-size: small;
+  display: none;
+  max-width: 300px;
+  margin-left: 34px;
+  padding: 2px 8px;
+  &.active{
+    display: block;
+  }
+}
+.valid-alias, .valid-email, .valid-password{
+  color: green;
+  border: 1px dashed green;
+  border-radius: 10px;
+  margin-top: -10px;
+  background-color: #f9f3f3;
+  font-size: small;
+  display: none;
+  max-width: 300px;
+  margin-left: 34px;
+  padding: 2px 8px;
+  &.active{
+    display: block;
+  }
+}
+.valid-alias-load, .valid-email-load, .valid-submit-load{
+  color: green;
+  border: 1px dashed green;
+  border-radius: 10px;
+  margin-top: -10px;
+  background-color: #f9f3f3;
+  font-size: small;
+  display: none;
+  max-width: 300px;
+  margin-left: 34px;
+  padding: 2px 8px;
+  &.active{
+    display: block;
+  }
+}
+.sign-up-modal{
+  button{
+    margin: 20px 0;
   }
 }

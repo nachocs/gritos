@@ -1,5 +1,5 @@
-<div class="modal-back <%= obj.show?'':'hide'%>">
-  <div class="modal-modal">
+<div class="modal-back <%= obj.show ? '' : 'hide' %>">
+  <div class="modal-modal <%= obj.lite ? 'lite':'' %> ">
     <div class="modal-header">
       <h3><%= obj.header %></h3>
       <div class="modal-close js-close">
@@ -9,7 +9,7 @@
     <div class="modal-body">
       <span><%= obj.body %></span>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer <%= obj.hideFooter ? 'hide' : '' %>">
       <div class="btn-group" role="group" aria-label="...">
         <button type="button" class="btn btn-default js-close">Cancel</button>
         <button type="button" class="btn btn-default js-action">OK</button>

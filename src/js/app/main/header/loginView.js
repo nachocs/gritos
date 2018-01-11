@@ -6,6 +6,7 @@ import FbView from './fbView';
 import endpoints from '../../util/endpoints';
 import mockup from '../../util/mockups';
 import Cookies from 'js-cookie';
+import ModalView from '../modalView';
 
 export default ViewBase.extend({
   template: _.template(template),
@@ -15,18 +16,31 @@ export default ViewBase.extend({
     this.fbView.initialize();
     this.listenTo(this.model, 'change', this.render.bind(this));
     this.checkCookie();
+    this.images = {
+      default_dreamy: require('../../../../img/dreamy4.gif'),
+    };
   },
   events: {
     'click #loginSubmit': 'submit',
-    'click input'(e) {
+    'click input' (e) {
       e.preventDefault();
       e.stopPropagation();
     },
     'click .login-menu-button': 'openMenu',
     'click .fb-login': 'fBlogin',
     'click .js-logout': 'logOut',
+    'click .sign-up': 'signUp',
   },
-  logOut(){
+  signUp() {
+    ModalView.update({
+      model: {
+        show: true,
+        header: 'Reg&iacute;strate',
+      },
+      signUp: true,
+    });
+  },
+  logOut() {
     Cookies.set('city', null);
     this.model.clear();
     FB.logout();
@@ -44,16 +58,15 @@ export default ViewBase.extend({
     this.materialDesignUpdate();
 
   },
-  checkCookie(){
+  checkCookie() {
     let obj = {};
     const cookie = Cookies.get('city');
-    if (cookie){
-      try{
+    if (cookie) {
+      try {
         obj = JSON.parse(cookie);
-      }
-      catch(e){
+      } catch (e) {
         console.log('cookie', cookie);
-        if (cookie.match(/^uid\:\:(.+)/)){
+        if (cookie.match(/^uid\:\:(.+)/)) {
           obj = {
             uid: cookie.match(/^uid\:\:(.*)/)[1],
           };
@@ -61,12 +74,12 @@ export default ViewBase.extend({
           return;
         }
       }
-      if (obj && obj.uid){
+      if (obj && obj.uid) {
         this.loginCall(obj);
       }
     }
   },
-  loginCall(data){
+  loginCall(data) {
     const self = this;
     $.ajax({
       type: 'POST',
@@ -94,7 +107,7 @@ export default ViewBase.extend({
       console.log('te olvidaste de poner algo'); // TODO
     } else {
       // mockup
-      if (mockup.active){
+      if (mockup.active) {
         const data = mockup.loginMockup;
         this.model.set(data.user);
         return;
@@ -106,13 +119,20 @@ export default ViewBase.extend({
       }
     }
   },
-  showError(error){
+  showError(error) {
     this.$('.error-login').html(error).addClass('active');
   },
   render() {
-    this.$el.html(this.template(this.model.toJSON()));
+    this.$el.html(this.template(this.serializer()));
     this.materialDesignUpdate();
     this.delegateEvents();
     return this;
+  },
+  serializer() {
+    return Object.assign({},
+      this.model.toJSON(), {
+        images: this.images,
+      }
+    );
   },
 });

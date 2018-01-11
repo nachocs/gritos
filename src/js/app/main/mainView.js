@@ -41,6 +41,7 @@ export default ViewBase.extend({
     });
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
+    this.listenTo(this.userModel, 'change', this.render.bind(this));
     this.images = {
       logo: require('../../../img/logo50x50.gif'),
     };
@@ -54,6 +55,7 @@ export default ViewBase.extend({
   goToHome() {
     $(window).scrollTop(0);
     this.goToRoute('/');
+    // this.collection.fetch(); // this breaks everything. DONT DO IT
   },
   openForoAdmin() {
     ModalView.update({

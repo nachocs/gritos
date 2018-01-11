@@ -1,0 +1,27 @@
+<form class="sign-up-modal">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <label class="mdl-textfield__label" for="signupAlias">Alias</label>
+    <input class="mdl-textfield__input" type="text" id="signupAlias" value="<%= obj.alias %>">
+  </div>
+  <div class="error-form error-alias"></div>
+  <div class="valid-alias"><i class="fa fa-check-circle fa-lg" aria-hidden="true"></i> Alias disponible! Yuhuu!</div>
+  <div class="valid-alias-load"><i class="fa fa-refresh fa-spin fa-lg fa-fw"></i></div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <label class="mdl-textfield__label" for="signupEmail">email</label>
+    <input class="mdl-textfield__input" type="text" id="signupEmail">
+  </div>
+  <div class="error-form error-email"></div>
+  <div class="valid-email"><i class="fa fa-check-circle fa-lg" aria-hidden="true"></i> Email no registrado! Yuhuu!</div>
+  <div class="valid-email-load"><i class="fa fa-refresh fa-spin fa-lg fa-fw"></i></div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <label class="mdl-textfield__label" for="signupPassword">Password</label>
+    <input class="mdl-textfield__input" type="password" id="signupPassword">
+  </div>
+  <div class="error-form error-password"></div>
+  <div class="valid-password"><i class="fa fa-check-circle fa-lg" aria-hidden="true"></i> Password v&aacute;lida!</div>
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id='signupSubmit' disabled>
+    registrarse
+  </button>
+  <div class="error-form error-submit"></div>
+  <div class="valid-submit-load"><i class="fa fa-refresh fa-spin fa-lg fa-fw"></i></div>
+</form>

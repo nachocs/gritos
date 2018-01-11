@@ -1,8 +1,8 @@
 const endpoints = {
-  get apiUrl(){
+  get apiUrl() {
     return 'https://gritos.com/jsgritos/api/';
   },
-  get socket(){
+  get socket() {
     // return 'http://localhost:8081/indices';
     return 'https://gritos.com';
   },

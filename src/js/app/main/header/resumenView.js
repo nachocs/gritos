@@ -22,54 +22,52 @@ export default ViewBase.extend({
     this.listenTo(this.collection, 'remove', this.removeOne.bind(this));
     this.listenTo(UserModel, 'change:ID', this.render.bind(this));
   },
-  events:{
-    'submit #nuevotema':'searchNuevoTema',
+  events: {
+    'submit #nuevotema': 'searchNuevoTema',
   },
-  searchNuevoTema(e){
+  searchNuevoTema(e) {
     e.preventDefault();
     e.stopPropagation();
     let nuevoTema = this.$('#nuevo-tema').val();
     const newHead = new HeadModel();
     const self = this;
-    if (!nuevoTema){return;}
-    nuevoTema = nuevoTema.replace(/\s/ig,'_').replace(/\W/ig,'');
+    if (!nuevoTema) { return; }
+    nuevoTema = nuevoTema.replace(/\s/ig, '_').replace(/\W/ig, '');
     newHead.set('Name', nuevoTema);
     newHead.fetch({
-      success(model){
-        if (model.get('ID')){
+      success(model) {
+        if (model.get('ID')) {
           self.showNuevoTemaError(nuevoTema);
-        } else{
+        } else {
           self.openNuevoTemaModal(newHead);
         }
       },
-      error(data){
+      error(data) {
         console.log('error', data);
         self.showNuevoTemaError(nuevoTema);
       },
     });
     console.log(nuevoTema);
   },
-  showNuevoTemaError(){
-    this.$('.mdl-textfield__error').css({'visibility':'visible'}).show();
+  showNuevoTemaError() {
+    this.$('.mdl-textfield__error').css({ 'visibility': 'visible' }).show();
   },
-  openNuevoTemaModal(model){
+  openNuevoTemaModal(model) {
     model.set({
       Userid: UserModel.ID,
       INDICE: 'gritosdb',
     });
     ModalView.update({
-      model:
-      {
+      model: {
         show: true,
         header: 'NUEVO TEMA/FORO',
       },
-      editForm:{
+      editForm: {
         userModel: UserModel,
         msg: model,
         isHead: true,
       },
-    },
-    );
+    }, );
   },
   render() {
     this.$el.html(this.template(this.serializer()));
@@ -83,25 +81,24 @@ export default ViewBase.extend({
   renderOne(model) {
     const msgView = new ResumenItemView({
       model,
-      attributes:()=> {
-        return{
-          'data-link': '/' + model.get('name').replace(/gritos\//,'').replace(/foros\//,''),
+      attributes: () => {
+        return {
+          'data-link': '/' + model.get('name').replace(/gritos\//, '').replace(/foros\//, ''),
         };
       },
     });
     this.views[model.id] = msgView;
     this.$('.resumen-collection-view').append(msgView.render().el);
   },
-  removeOne(model){
-    if (this.views[model.id]){
+  removeOne(model) {
+    if (this.views[model.id]) {
       this.views[model.id].trigger('remove');
       delete this.views[model.id];
     }
   },
-  serializer(){
+  serializer() {
     return Object.assign(
-      this.model.toJSON(),
-      {
+      this.model.toJSON(), {
         userModel: UserModel.toJSON(),
       }
     );

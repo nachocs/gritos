@@ -15,8 +15,8 @@ const App = Backbone.View.extend({
     this.initialSetup();
     this.slick = Slick;
 
-    this.headModel = new HeadModel({},{globalModel});
-    this.msgCollection = new MsgCollection([],{globalModel});
+    this.headModel = new HeadModel({}, { globalModel });
+    this.msgCollection = new MsgCollection([], { globalModel });
     this.resumenCollection = new ResumenCollection();
     this.resumenCollection.fetch();
 
@@ -29,13 +29,13 @@ const App = Backbone.View.extend({
     });
     $('#root').html(this.mainView.render().el);
     this.router = Router;
-    Backbone.history.start({pushState: true, root:'/'});
-    $('body').on('click', 'a', (e)=>{
+    Backbone.history.start({ pushState: true, root: '/' });
+    $('body').on('click', 'a', (e) => {
       const route = e.currentTarget.getAttribute('href');
-      if (!route.match(/^http/) && !route.match(/^\/\//) && !route.match(/^mailto/) && !route.match(/^tel\:/)){
+      if (!route.match(/^http/) && !route.match(/^\/\//) && !route.match(/^mailto/) && !route.match(/^tel\:/)) {
         e.preventDefault();
         e.stopPropagation();
-        this.router.navigate(route, {trigger: true});
+        this.router.navigate(route, { trigger: true });
       }
     });
   },

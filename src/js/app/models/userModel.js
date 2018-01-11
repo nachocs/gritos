@@ -24,8 +24,8 @@ const UserModel = Backbone.Model.extend({
   url() {
     return endpoints.apiUrl + 'index.cgi?' + this.get('INDICE') + '/' + this.get('ID');
   },
-  subscribe(){
-    if (this.get('INDICE') && this.get('ID')){
+  subscribe() {
+    if (this.get('INDICE') && this.get('ID')) {
       Ws.update(this.get('INDICE') + '/' + this.get('ID'));
     }
   },

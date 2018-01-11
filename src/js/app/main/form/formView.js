@@ -36,7 +36,7 @@ function elementContainsSelection(el) {
       }
       return true;
     }
-  } else if ( (sel = document.selection) && sel.type != 'Control') {
+  } else if ((sel = document.selection) && sel.type != 'Control') {
     return isOrContains(sel.createRange().parentElement(), el);
   }
   return false;
@@ -52,10 +52,10 @@ export default ViewBase.extend({
     this.type = options.type; // foro / msg
     this.formModel = new formModel();
     this.headModel = options.headModel;
-    if(options.msg){
+    if (options.msg) {
       this.formModel.set(options.msg.toJSON());
     }
-    if (this.isHead){
+    if (this.isHead) {
       this.headModel = options.msg;
     }
     this.showEmojisModal = false;
@@ -78,11 +78,14 @@ export default ViewBase.extend({
     this.listenTo(this.userModel, 'change', this.render.bind(this));
     this.listenTo(this, 'remove', this.clean.bind(this));
     this.listenTo(this.formModel, 'change', this.render.bind(this));
-    $(window).on('beforeunload', ()=>{
-      if (this.$('.formularioTextArea') && this.$('.formularioTextArea').html() && this.$('.formularioTextArea').html().length > 0){
+    $(window).on('beforeunload', () => {
+      if (this.$('.formularioTextArea') && this.$('.formularioTextArea').html() && this.$('.formularioTextArea').html().length > 0) {
         return 'tienes un mensaje pendiente de enviar';
       }
     });
+    this.images = {
+      default_dreamy: require('../../../../img/dreamy4.gif'),
+    };
   },
   className: 'formulario',
   events: {
@@ -96,22 +99,22 @@ export default ViewBase.extend({
     'click .emojis': 'showEmojis',
     'click .show-tags': 'toggleTags',
     'keyup .input-tag': 'inputTag',
-    'click [data-delete-tag]':'deleteTag',
-    'paste .formularioTextArea' : 'onPaste',
+    'click [data-delete-tag]': 'deleteTag',
+    'paste .formularioTextArea': 'onPaste',
     'error': 'imgError',
     'click .capture-url-close': 'removeCapturedUrl',
   },
-  imgError(e){
+  imgError(e) {
     console.log(e);
   },
   onPaste(e) {
-    function replaceStyleAttr (str) {
+    function replaceStyleAttr(str) {
       return str.replace(/(<[\w\W]*?)(style)([\w\W]*?>)/g, function (a, b, c, d) {
         return b + 'style_replace' + d;
       });
     }
 
-    function removeTagsExcludeA (str) {
+    function removeTagsExcludeA(str) {
       return str.replace(/<\/?((?!a)(\w+))\s*[\w\W]*?>/g, '');
     }
 
@@ -129,64 +132,64 @@ export default ViewBase.extend({
       document.execCommand('paste', false, text);
     }
   },
-  deleteTag(e){
+  deleteTag(e) {
     const tag = this.$(e.currentTarget).data('delete-tag');
     const tags = this.formModel.get('tags').split(',');
-    if (this.globalModel.get('ID') === tags[tag]){
+    if (this.globalModel.get('ID') === tags[tag]) {
       return;
     }
     let newTags = '';
     for (let i = 0; i < tags.length; ++i) {
-      if (i != tag){
-        if (newTags.length > 0){
+      if (i != tag) {
+        if (newTags.length > 0) {
           newTags = newTags + ',';
         }
         newTags = newTags + tags[i];
       }
     }
     this.setComments();
-    this.formModel.set({tags: newTags});
+    this.formModel.set({ tags: newTags });
   },
-  inputTag(e){
+  inputTag(e) {
     e.preventDefault();
-    if (e.target.value && e.target.value.length > 10){
-      e.target.value = e.target.value.substring(0,10);
+    if (e.target.value && e.target.value.length > 10) {
+      e.target.value = e.target.value.substring(0, 10);
     }
-    if (e.keyCode === 13 || e.keyCode === 188){
-      e.target.value = e.target.value.replace(/\W/ig,'');
-      let newTag = e.target.value.replace(/\W/ig,'');
-      if (newTag && newTag.length > 2 ){
+    if (e.keyCode === 13 || e.keyCode === 188) {
+      e.target.value = e.target.value.replace(/\W/ig, '');
+      let newTag = e.target.value.replace(/\W/ig, '');
+      if (newTag && newTag.length > 2) {
         newTag = '#' + newTag;
         let tags = this.formModel.get('tags') ? this.formModel.get('tags').split(',') : [];
         tags.push(newTag);
         tags = _.uniq(tags);
         this.setComments();
-        this.formModel.set({tags:_.join(tags, ',')});
+        this.formModel.set({ tags: _.join(tags, ',') });
         this.$('.input-tag').focus();
       }
     } else {
-      e.target.value = e.target.value.replace(/\W/ig,'');
+      e.target.value = e.target.value.replace(/\W/ig, '');
     }
   },
-  toggleTags(){
+  toggleTags() {
     this.showEmojisIn(false);
     this.tagPlaceShown = !this.tagPlaceShown;
     this.toggleTagsIn(this.tagPlaceShown);
   },
-  toggleTagsIn(prev){
-    if (prev){
+  toggleTagsIn(prev) {
+    if (prev) {
       this.$el.find('.tags-place ul').show('slow');
     } else {
       this.$el.find('.tags-place ul').hide('slow');
     }
-    if (prev){
+    if (prev) {
       this.materialDesignUpdate();
       // componentHandler.upgradeElement(this.$el.find('.mdl-js-textfield')[0]);
     }
     this.tagPlaceShown = prev;
   },
-  showEmojisIn(prev){
-    if (prev){
+  showEmojisIn(prev) {
+    if (prev) {
       this.$('.emojis-modal-place').show('slow');
       EmojisModal.setParent(this);
       this.$('.emojis-modal-place').html(EmojisModal.render().el);
@@ -195,17 +198,17 @@ export default ViewBase.extend({
     }
     this.showEmojisModal = prev;
   },
-  showEmojis(){
+  showEmojis() {
     this.toggleTagsIn(false);
-    if (EmojisModal.parent && EmojisModal.parent.cid !== this.cid){
+    if (EmojisModal.parent && EmojisModal.parent.cid !== this.cid) {
       this.showEmojisModal = false;
     }
     this.showEmojisModal = !this.showEmojisModal;
     this.showEmojisIn(this.showEmojisModal);
   },
-  getEmoji(string){
+  getEmoji(string) {
     this.clearArea();
-    if (this.currentPosition){
+    if (this.currentPosition) {
       this.restoreSelection(this.currentPosition);
       this.insertTextAtCursor(string);
     } else {
@@ -221,8 +224,8 @@ export default ViewBase.extend({
   },
   addImages() {
     const jsonModel = this.formModel.toJSON();
-    for (const prop in jsonModel){
-      if ((/IMAGEN\d+\_THUMB$/).test(prop)){
+    for (const prop in jsonModel) {
+      if ((/IMAGEN\d+\_THUMB$/).test(prop)) {
         const thisThumb = jsonModel[prop];
         this.$('.thumbs-place').append('<img src=\'' + thisThumb + '\'>');
       }
@@ -230,23 +233,23 @@ export default ViewBase.extend({
   },
 
   upload() {
-    if (!this.userModel.get('uid')){ return; }
+    if (!this.userModel.get('uid')) { return; }
     this.clearArea();
     this.showEmojisIn(false);
     const self = this;
     const data = new FormData();
     let imagenes_jump = 0;
 
-    Object.keys(this.formModel.toJSON()).forEach((key)=> {
-      if ((/IMAGEN(\d+)_URL/).exec(key)){
+    Object.keys(this.formModel.toJSON()).forEach((key) => {
+      if ((/IMAGEN(\d+)_URL/).exec(key)) {
         const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
-        if ((Number(image)+1)>imagenes_jump){
-          imagenes_jump = Number(image)+1;
+        if ((Number(image) + 1) > imagenes_jump) {
+          imagenes_jump = Number(image) + 1;
         }
       }
     });
-    if (this.isHead){
-      imagenes_jump=0;
+    if (this.isHead) {
+      imagenes_jump = 0;
     }
     $.each(this.$('input[type="file"]')[0].files, (i, file) => {
       const numero = imagenes_jump + i;
@@ -262,7 +265,7 @@ export default ViewBase.extend({
       success(data) {
         // console.log('UPLOAD RESPONSE: ', data);
         self.setComments();
-        if (data.response && data.response.Ficheros && self.formModel.get('Ficheros')){
+        if (data.response && data.response.Ficheros && self.formModel.get('Ficheros')) {
           data.response.Ficheros = self.formModel.get('Ficheros') + ',' + data.response.Ficheros;
         }
         self.formModel.set(data.response);
@@ -270,7 +273,7 @@ export default ViewBase.extend({
       },
     });
   },
-  setComments(){
+  setComments() {
     this.formModel.set('comments', this.$('.formularioTextArea').html());
   },
   saveSelection() {
@@ -284,10 +287,10 @@ export default ViewBase.extend({
       res = document.selection.createRange();
     }
 
-    if (res && res.commonAncestorContainer.className && !res.commonAncestorContainer.className.match(/formularioTextArea/)){
+    if (res && res.commonAncestorContainer.className && !res.commonAncestorContainer.className.match(/formularioTextArea/)) {
       res = null;
     }
-    if (res && !res.commonAncestorContainer.className && res.commonAncestorContainer.parentNode && !res.commonAncestorContainer.parentNode.className.match(/formularioTextArea/)){
+    if (res && !res.commonAncestorContainer.className && res.commonAncestorContainer.parentNode && !res.commonAncestorContainer.parentNode.className.match(/formularioTextArea/)) {
       res = null;
     }
     return res;
@@ -295,7 +298,7 @@ export default ViewBase.extend({
   },
   insertTextAtCursor(element) {
     let sel, range;
-    if (!elementContainsSelection(this.$('.formularioTextArea')[0])){
+    if (!elementContainsSelection(this.$('.formularioTextArea')[0])) {
       this.$('.formularioTextArea').append(element);
     } else {
       if (window.getSelection) {
@@ -311,7 +314,7 @@ export default ViewBase.extend({
           const frag = document.createDocumentFragment();
           let node;
           let lastNode;
-          while ( (node = el.firstChild) ) {
+          while ((node = el.firstChild)) {
             lastNode = frag.appendChild(node);
           }
           range.insertNode(frag);
@@ -345,7 +348,7 @@ export default ViewBase.extend({
       }
     }
   },
-  getCaptureUrls(){
+  getCaptureUrls() {
     // setTimeout(()=>{
     let content = this.$('.formularioTextArea').clone();
     content.find('.captured-url').remove();
@@ -381,7 +384,7 @@ export default ViewBase.extend({
     // },0);
 
   },
-  removeCapturedUrl(e){
+  removeCapturedUrl(e) {
     const url = this.$(e.target).data('capturedurl');
     delete this.capturedUrls[url];
     this.removedCapturedUrls[url] = true;
@@ -389,24 +392,23 @@ export default ViewBase.extend({
   },
   getSelectedText(e) {
     let selection;
-    if (this.type === 'msg' && e.keyCode == 13){
+    if (this.type === 'msg' && e.keyCode == 13) {
       this.getCaptureUrls();
       this.submitPost();
       return;
-    } else if (e.keyCode == 32 || e.keyCode == 13){
+    } else if (e.keyCode == 32 || e.keyCode == 13) {
       this.getCaptureUrls();
     }
     // console.log(e.keyCode);
     //Get the selected stuff
     this.currentPosition = this.saveSelection();
 
-    if(window.getSelection){
+    if (window.getSelection) {
       selection = window.getSelection();
-    }
-    else if(typeof document.selection != 'undefined'){
+    } else if (typeof document.selection != 'undefined') {
       selection = document.selection;
     }
-    if ((typeof selection === 'undefined') || (selection.toString().length < 1) ){
+    if ((typeof selection === 'undefined') || (selection.toString().length < 1)) {
       this.$('.wysiwyg').hide();
       return;
     }
@@ -415,21 +417,20 @@ export default ViewBase.extend({
     const range = selection.getRangeAt(0);
 
     //If the range spans some text, and inside a tag, set its css class.
-    if(range && !selection.isCollapsed)
-    { // range da la posicion sin contar el scroll
-      this.$('.wysiwyg').show().css({top: (range.getBoundingClientRect().top+$(window).scrollTop()-this.$('.mdl-card').first().offset().top-22)+'px', left: (range.getBoundingClientRect().left-this.$('.mdl-card').first().offset().left)+'px'});
-    } else if (selection.isCollapsed){
+    if (range && !selection.isCollapsed) { // range da la posicion sin contar el scroll
+      this.$('.wysiwyg').show().css({ top: (range.getBoundingClientRect().top + $(window).scrollTop() - this.$('.mdl-card').first().offset().top - 22) + 'px', left: (range.getBoundingClientRect().left - this.$('.mdl-card').first().offset().left) + 'px' });
+    } else if (selection.isCollapsed) {
       this.$('.wysiwyg').hide();
     }
   },
-  submitPost(){
+  submitPost() {
     let wait = 0;
     let countWait = 0;
     const runPost = _.throttle(this.submitPostThrottle.bind(this), 1000);
     const waiting = (callback, wait) => {
       setTimeout(() => {
         console.log('countWait', countWait, wait);
-        if (!this.capturingUrls || (countWait > 4)){
+        if (!this.capturingUrls || (countWait > 4)) {
           callback();
         } else {
           waiting(callback, wait);
@@ -437,14 +438,14 @@ export default ViewBase.extend({
         countWait++;
       }, wait);
     };
-    if (this.capturingUrls){
+    if (this.capturingUrls) {
       wait = 1000;
     }
     waiting(runPost, wait);
   },
   submitPostThrottle() {
-    if (!this.userModel.get('uid')){ return; }
-    if (this.isSaving){ return; }
+    if (!this.userModel.get('uid')) { return; }
+    if (this.isSaving) { return; }
     this.showEmojisIn(false);
     this.toggleTagsIn(false);
     const self = this;
@@ -460,12 +461,12 @@ export default ViewBase.extend({
     comments = comments.replace(/\&nbsp\;/ig, ' ');
     comments = comments.replace(/\&amp\;/ig, '&');
 
-    if (comments.length < 1 ){
+    if (comments.length < 1) {
       return;
     }
-    if (this.isHead && this.formModel.get('INDICE') === 'gritosdb'){
+    if (this.isHead && this.formModel.get('INDICE') === 'gritosdb') {
       titulo = this.$('#titulo').val();
-      if (titulo.length < 1){
+      if (titulo.length < 1) {
         return;
       }
     }
@@ -474,60 +475,51 @@ export default ViewBase.extend({
       uid: this.userModel.get('uid'),
       tags: this.formModel.get('tags'),
     };
-    if (this.type === 'msg' && this.parentModel && this.parentModel.get('ID')){
-      Object.assign(saveObj,
-        {
-          minigrito: {
-            indice: this.parentModel.get('INDICE'),
-            entrada: this.parentModel.get('ID'),
-          },
-        }
-      );
+    if (this.type === 'msg' && this.parentModel && this.parentModel.get('ID')) {
+      Object.assign(saveObj, {
+        minigrito: {
+          indice: this.parentModel.get('INDICE'),
+          entrada: this.parentModel.get('ID'),
+        },
+      });
     }
-    if (this.type==='foro' && this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun'){
+    if (this.type === 'foro' && this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun') {
       esUnForo = true;
-      Object.assign(saveObj,
-        {
-          foro: this.collection.id.replace(/\/$/,''),
-        },
-      );
+      Object.assign(saveObj, {
+        foro: this.collection.id.replace(/\/$/, ''),
+      }, );
     }
-    if (this.isHead){
-      Object.assign(saveObj,
-        {
-          foro: this.formModel.get('INDICE'),
-          isHead: 1,
-        },
-      );
-      if (this.formModel.get('INDICE') === 'gritosdb'){
-        Object.assign(saveObj,
-          {
-            Titulo: titulo,
-            Name: this.formModel.get('Name'),
-          },
-        );
+    if (this.isHead) {
+      Object.assign(saveObj, {
+        foro: this.formModel.get('INDICE'),
+        isHead: 1,
+      }, );
+      if (this.formModel.get('INDICE') === 'gritosdb') {
+        Object.assign(saveObj, {
+          Titulo: titulo,
+          Name: this.formModel.get('Name'),
+        }, );
       }
     }
     this.isSaving = true;
     this.formModel.save(
-      saveObj,
-      {
+      saveObj, {
         success(model, data) {
           self.isSaving = false;
           self.formModel.clear();
           self.isClear = false;
           self.capturedUrls = {};
           self.removedCapturedUrls = {};
-          if (!self.isHead){
+          if (!self.isHead) {
             self.render();
-            if (!data.mensaje.num || esUnForo){data.mensaje.num = data.mensaje.ID;}
+            if (!data.mensaje.num || esUnForo) { data.mensaje.num = data.mensaje.ID; }
             const msgModel = new MsgModel();
-            self.collection.add(msgModel.parse(data.mensaje), {merge:true, individual:true});
+            self.collection.add(msgModel.parse(data.mensaje), { merge: true, individual: true });
           } else {
-            if (self.headModel){
+            if (self.headModel) {
               GlobalModel.changeForo(self.headModel.get('Name'));
               self.headModel.fetch();
-              router.navigate('/' + self.headModel.get('Name'), {trigger: true});
+              router.navigate('/' + self.headModel.get('Name'), { trigger: true });
             }
           }
           // self.collection.reset();
@@ -545,13 +537,13 @@ export default ViewBase.extend({
     // this.$('.formularioTextArea').html(this.formModel.get('comments')).addClass('on');
     this.active = true;
     this.$('.formularioTextArea').addClass('on');
-    if (focus){
+    if (focus) {
       this.$('.formularioTextArea').focus();
     }
     // this.isClear =  true;
   },
   render() {
-    if (this.userModel.get('uid')){
+    if (this.userModel && this.userModel.get('uid')) {
       this.$el.html(this.template(this.serializer()));
       this.$el.addClass('active');
       this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
@@ -581,19 +573,19 @@ export default ViewBase.extend({
     //   $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));
     // });
   },
-  serializer(){
+  serializer() {
     const obj = this.userModel.toJSON();
     let titulo_head;
-    if (this.parentModel && this.parentModel.get('ID')){
+    if (this.parentModel && this.parentModel.get('ID')) {
       Object.assign(obj, { parentModel: this.parentModel.toJSON() });
     }
-    if (this.msg && this.msg.get('ID')){
+    if (this.msg && this.msg.get('ID')) {
       Object.assign(obj, { msg: this.msg.toJSON() });
     }
-    if (this.headModel){
-      if (this.headModel.get('INDICE') && this.headModel.get('INDICE').match(/^ciudadanos/)){
+    if (this.headModel) {
+      if (this.headModel.get('INDICE') && this.headModel.get('INDICE').match(/^ciudadanos/)) {
         titulo_head = 'Escribe en el muro de ' + this.headModel.get('Titulo');
-      } else if (this.headModel.get('INDICE')){
+      } else if (this.headModel.get('INDICE')) {
         titulo_head = 'Explayate a tu gusto en el foro de ' + this.headModel.get('Titulo');
       } else {
         titulo_head = 'Sueltate! Grita! (en tu muro).';
@@ -607,14 +599,15 @@ export default ViewBase.extend({
       active: this.active,
       isHead: this.isHead,
       titulo_head,
+      default_dreamy: this.images.default_dreamy,
     });
     return obj;
   },
-  clean(){
-    if (this.wysiwyg){
+  clean() {
+    if (this.wysiwyg) {
       this.wysiwyg.remove();
     }
-    if (this.emojisModal){
+    if (this.emojisModal) {
       this.emojisModal.remove();
     }
     delete this.wysiwyg;

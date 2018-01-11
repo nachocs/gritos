@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.1
+Register feature
+
 ## 1.8.0
 New Webpack, all scripts inline, lazy load avatars
 
