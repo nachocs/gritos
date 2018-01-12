@@ -3,6 +3,8 @@ import _ from 'lodash';
 import template from './modalView-t.html';
 import FormView from './form/formView';
 import SignUpView from './header/signUp';
+import ProfileView from './header/profileView';
+import userModel from '../models/userModel';
 
 const Model = Backbone.Model.extend({
   defaults: {
@@ -43,15 +45,22 @@ const ModalView = Backbone.View.extend({
       });
       this.$('.modal-body').html(EditForm.render().el);
       this.action = EditForm.submitPost.bind(EditForm);
-    }
-    if (obj.signUp) {
+    } else if (obj.signUp) {
       this.model.set('hideFooter', true);
       const SignUpForm = new SignUpView({
         close: this.close.bind(this),
       });
       this.$('.modal-body').html(SignUpForm.render().el);
       this.action = SignUpForm.submitPost.bind(SignUpForm);
-
+    } else if (obj.profile) {
+      if (userModel.get('uid')) {
+        this.model.set('lite', false);
+        const profileView = new ProfileView({
+          close: this.close.bind(this),
+        });
+        this.$('.modal-body').html(profileView.render().el);
+        this.action = profileView.submitPost.bind(profileView);
+      }
     }
     this.undelegateEvents();
     this.delegateEvents();

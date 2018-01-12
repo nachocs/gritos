@@ -30,6 +30,16 @@ export default ViewBase.extend({
     'click .fb-login': 'fBlogin',
     'click .js-logout': 'logOut',
     'click .sign-up': 'signUp',
+    'click .js-profile': 'profile',
+  },
+  profile() {
+    ModalView.update({
+      model: {
+        show: true,
+        header: 'Profile',
+      },
+      profile: true,
+    });
   },
   signUp() {
     ModalView.update({
