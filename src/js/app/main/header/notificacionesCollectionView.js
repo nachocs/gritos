@@ -5,8 +5,8 @@ import NotificacionesCollection from '../../models/notificacionesCollection';
 export default Backbone.View.extend({
   itemView: NotificacionesItemView,
   tagName: 'ul',
-  className:'mdl-shadow--4dp',
-  initialize(){
+  className: 'mdl-shadow--4dp',
+  initialize() {
     this.collection = NotificacionesCollection;
     this.views = {};
     this.listenTo(NotificacionesCollection, 'add', this.renderOne.bind(this));

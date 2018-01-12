@@ -8,34 +8,39 @@ import router from '../../router';
 export default Backbone.View.extend({
   template: _.template(template),
   tagName: 'li',
-  render(){
+  initialize() {
+    this.images = {
+      default_dreamy: require('../../../../img/dreamy4.gif'),
+    };
+  },
+  render() {
     this.$el.html(this.template(this.serializer()));
     return this;
   },
-  events:{
-    'click':'goTo',
+  events: {
+    'click': 'goTo',
   },
-  goTo(e){
+  goTo(e) {
     e.stopPropagation();
     e.preventDefault();
-    router.navigate('/' + this.model.get('indice').replace(/^gritos\//,'').replace(/\/(\d+)\/\d+$/, '/$1'), {trigger:true});
+    router.navigate('/' + this.model.get('indice').replace(/^gritos\//, '').replace(/\/(\d+)\/\d+$/, '/$1'), { trigger: true });
 
   },
-  serializer(){
-    let indiceBasic = '# ' + this.model.get('indice').replace(/^gritos\//,'').replace(/^foros\//,'').replace(/\/.*$/,'');
-    if (this.model.get('indice').match(/^ciudadanos/) && this.model.get('head')){
-      if (this.model.get('head').ID === userModel.get('ID')){
+  serializer() {
+    let indiceBasic = '# ' + this.model.get('indice').replace(/^gritos\//, '').replace(/^foros\//, '').replace(/\/.*$/, '');
+    if (this.model.get('indice').match(/^ciudadanos/) && this.model.get('head')) {
+      if (this.model.get('head').ID === userModel.get('ID')) {
         indiceBasic = 'tu muro';
       } else {
         indiceBasic = 'el muro de @' + this.model.get('head').alias_principal.replace(/\s/g, '_');
       }
     }
     const entry = this.model.get('entry');
-    if (entry && entry['emocion']){
+    if (entry && entry['emocion']) {
       entry['emocion'] = entry['emocion'].replace(/https?:/, '');
     }
     const citizen = this.model.get('citizen');
-    if (citizen && citizen['dreamy_principal']){
+    if (citizen && citizen['dreamy_principal']) {
       citizen['dreamy_principal'] = citizen['dreamy_principal'].replace(/https?/, '');
     }
 
@@ -45,6 +50,7 @@ export default Backbone.View.extend({
         user: userModel.toJSON(),
         indiceBasic,
         date: moment.unix(this.model.toJSON().entry.FECHA).fromNow(),
+        images: this.images,
       },
     );
   },

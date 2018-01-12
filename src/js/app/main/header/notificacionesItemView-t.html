@@ -1,9 +1,9 @@
-  <% if (obj.tipo === 'yo'){ %>
+<% if (obj.tipo === 'yo'){ %>
     <div style="width:40px; height:40px; float:left">
     <% if (obj.entry && obj.entry.emocion){ %>
       <img src="<%= obj.entry.emocion %>" style="height:40px">
     <% } else { %>
-      <i class="material-icons" style="height:40px">face</i>
+      <img src="<%= obj.images.default_dreamy %>" style="height:40px"/>
     <% } %>
     </div>
     <div class="nots-text">
@@ -22,7 +22,7 @@
     <% if (obj.entry && obj.entry.emocion){ %>
       <img src="<%= obj.entry.emocion %>" style="height:40px">
     <% } else { %>
-      <i class="material-icons" style="height:40px">face</i>
+      <img src="<%= obj.images.default_dreamy %>" style="height:40px"/>
     <% } %>
     </div>
     <div class="nots-text">
@@ -62,7 +62,7 @@
       <% if (obj.citizen && obj.citizen.dreamy_principal){ %>
         <img src="<%= obj.citizen.dreamy_principal %>" style="height:40px">
       <% } else { %>
-        <i class="material-icons" style="height:40px">face</i>
+        <img src="<%= obj.images.default_dreamy %>" style="height:40px"/>
       <% } %>
     </div>
     <div class="nots-text">
