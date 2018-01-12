@@ -429,7 +429,6 @@ export default ViewBase.extend({
     const runPost = _.throttle(this.submitPostThrottle.bind(this), 1000);
     const waiting = (callback, wait) => {
       setTimeout(() => {
-        console.log('countWait', countWait, wait);
         if (!this.capturingUrls || (countWait > 4)) {
           callback();
         } else {
