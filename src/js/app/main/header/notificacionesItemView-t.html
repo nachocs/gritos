@@ -49,11 +49,11 @@
         <% } else { %>
           el grito de <%= obj.parent.name %>
         <% } %>
-        de <%= obj.indiceBasic %>
+        de <span style="font-weight: bold;"><%= obj.indiceBasic %></span>
       <% } else if(obj.indice.match(/\/\d+$/)){ %>
-        un grito de <%= obj.indiceBasic %>
+        un grito de <span style="font-weight: bold;"><%= obj.indiceBasic %></span>
       <% } else {%>
-        <%= obj.indiceBasic %>
+        <span style="font-weight: bold;"><%= obj.indiceBasic %></span>
       <% } %>
       <div style="color:#90949c;"><%= obj.date %></div>
     </div>

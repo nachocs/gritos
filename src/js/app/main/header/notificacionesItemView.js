@@ -27,12 +27,12 @@ export default Backbone.View.extend({
 
   },
   serializer() {
-    let indiceBasic = '# ' + this.model.get('indice').replace(/^gritos\//, '').replace(/^foros\//, '').replace(/\/.*$/, '');
+    let indiceBasic = this.model.get('indice').replace(/^gritos\//, '').replace(/^foros\//, '').replace(/\/.*$/, '');
     if (this.model.get('indice').match(/^ciudadanos/) && this.model.get('head')) {
       if (this.model.get('head').ID === userModel.get('ID')) {
         indiceBasic = 'tu muro';
       } else {
-        indiceBasic = 'el muro de @' + this.model.get('head').alias_principal.replace(/\s/g, '_');
+        indiceBasic = 'el muro de ' + this.model.get('head').alias_principal.replace(/\s/g, '_');
       }
     }
     const entry = this.model.get('entry');

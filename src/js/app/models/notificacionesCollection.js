@@ -18,13 +18,13 @@ const NotificacionesCollection = Backbone.Collection.extend({
         });
       });
     });
+    // mockup
+    // this.set([{
+    //   tipo: 'yo',
+    //   indice: 'ciudadanos/1',
+    //   entry: { FECHA: '' },
+    // }]);
   },
-  // mockup
-  // this.set([{
-  //   tipo: 'yo',
-  //   indice: 'ciudadanos/1',
-  //   entry: { FECHA: '' },
-  // }]);
 
 });
 
