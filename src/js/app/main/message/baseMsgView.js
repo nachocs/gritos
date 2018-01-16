@@ -195,6 +195,7 @@ export default ViewBase.extend({
     };
 
     string = string.replace(/\-\:SPOILER\[([^\]\[]+)\]SPOILER\:\-/ig, replacer);
+    string = string.replace(/a href=/ig, 'a target="_blank" rel="noopener" href=');
     return autolinker.link(string);
   },
 
