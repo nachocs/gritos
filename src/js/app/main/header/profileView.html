@@ -1,1 +1,19 @@
-profile
+<div class="loader <%= personalLoader || publicLoader ? 'active' : '' %>">
+  <i class="fa fa-refresh fa-spin fa-5x fa-fw"></i>
+</div>
+<% if (personalDreamys.length > 0){ %>
+  <div class="personal-dreamys dreamys-container">
+    <h4>Dreamys Personales</h4>
+    <% for (var i=0; i < personalDreamys.length; i++){ var dreamy = personalDreamys[i] %>
+    <img src="<%= dreamy.IMAGEN1_URL %>" title="<%= dreamy.subject %>" width="100" height="100"/>
+  <% } %>
+  </div>
+<% } %>
+<% if (publicDreamys.length > 0){ %>
+  <div class="public-dreamys dreamys-container">
+    <h4>Dreamys P&uacute;blicos</h4>
+    <% for (var i=0; i< publicDreamys.length; i++){ var dreamy = publicDreamys[i] %>
+    <img src="<%= dreamy.IMAGEN1_URL %>" title="<%= dreamy.subject %>" width="100" height="100"/>
+  <% } %>
+  </div>
+<% } %>
