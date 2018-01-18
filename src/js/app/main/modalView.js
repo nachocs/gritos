@@ -55,11 +55,11 @@ const ModalView = Backbone.View.extend({
     } else if (obj.profile) {
       if (userModel.get('uid')) {
         this.model.set('lite', false);
-        const profileView = new ProfileView({
+        this.profileView = new ProfileView({
           close: this.close.bind(this),
         });
-        this.$('.modal-body').html(profileView.render().el);
-        this.action = profileView.submitPost.bind(profileView);
+        this.$('.modal-body').html(this.profileView.render().el);
+        this.action = this.profileView.submitPost.bind(this.profileView);
       }
     }
     this.undelegateEvents();
@@ -67,6 +67,9 @@ const ModalView = Backbone.View.extend({
   },
   close() {
     this.model.set('show', false);
+    if (this.profileView) {
+      this.profileView.remove();
+    }
   },
   render() {
     this.$el.html(this.template(this.serializer()));

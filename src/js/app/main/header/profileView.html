@@ -1,7 +1,7 @@
 <div class="loader <%= personalLoader || publicLoader ? 'active' : '' %>">
   <i class="fa fa-refresh fa-spin fa-5x fa-fw"></i>
 </div>
-<% if (personalDreamys.length > 0){ %>
+<% if (personalDreamys && personalDreamys.length > 0){ %>
   <div class="personal-dreamys dreamys-container">
     <h4>Dreamys Personales</h4>
     <% for (var i=0; i < personalDreamys.length; i++){ var dreamy = personalDreamys[i] %>
@@ -9,7 +9,7 @@
   <% } %>
   </div>
 <% } %>
-<% if (publicDreamys.length > 0){ %>
+<% if (publicDreamys && publicDreamys.length > 0){ %>
   <div class="public-dreamys dreamys-container">
     <h4>Dreamys P&uacute;blicos</h4>
     <% for (var i=0; i< publicDreamys.length; i++){ var dreamy = publicDreamys[i] %>

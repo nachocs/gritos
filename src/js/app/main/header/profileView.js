@@ -2,10 +2,7 @@ import ViewBase from '../base/ViewBase';
 import _ from 'lodash';
 import template from './profileView.html';
 import userModel from '../../models/userModel';
-import endpoints from '../../util/endpoints';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/dom/ajax';
-import 'rxjs/add/operator/map';
+import DreamysService from '../../util/dreamysService';
 
 export default ViewBase.extend({
   template: _.template(template),
@@ -13,40 +10,25 @@ export default ViewBase.extend({
   initialize(options) {
     this.close = options.close;
     this.model = userModel;
-    this.getDreamys();
+    // this.getDreamys();
     this.publicDreamys = [];
     this.personalDreamys = [];
     this.personalLoader = true;
     this.publicLoader = true;
-  },
-  getDreamys() {
-    this.publicLoader = true;
-    this.$('.loader').addClass('active');
-    const url = 'json.cgi?indice=dreamys&encontrar=public';
-    if (this.model.get('uid')) {
-      this.getPresonalDreamys();
-    }
-    const gets$ = Observable
-      .ajax(endpoints.apiUrl + url)
-      .map(e => e.response);
-    gets$.subscribe(data => {
+    DreamysService.getGeneralDreamys().subscribe((data => {
       this.publicLoader = false;
       this.publicDreamys = data;
       this.render();
-    });
-  },
-  getPresonalDreamys() {
-    this.personalLoader = true;
-    this.$('.loader').addClass('active');
-    const url = 'json.cgi?indice=dreamys&encontrar=ciudadano=' + this.model.get('NID');
-    const gets$ = Observable
-      .ajax(endpoints.apiUrl + url)
-      .map(e => e.response);
-    gets$.subscribe(data => {
-      this.personalLoader = false;
-      this.personalDreamys = data;
-      this.render();
-    });
+    }));
+    if (this.model.get('uid')) {
+      DreamysService.getPersonalDreamys().subscribe((data => {
+        this.personalLoader = false;
+        this.personalDreamys = data;
+        this.render();
+      }));
+      DreamysService.fetchGeneralDreamys();
+      DreamysService.fetchPersonalDreamys(this.model.get('NID'));
+    }
   },
   submitPost() {},
   render() {
