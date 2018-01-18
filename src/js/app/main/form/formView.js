@@ -552,8 +552,11 @@ export default ViewBase.extend({
       }
       this.showEmojisIn(this.showEmojisModal);
       this.toggleTagsIn(this.tagPlaceShown);
-    } else {
+    } else if (this.$el) {
       this.$el.removeClass('active');
+    } else if (!this.$el) { // TODO this is wrong somewhereg
+      this.clean();
+      return this;
     }
     this.delegateEvents();
     return this;

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import template from './modalView-t.html';
 import FormView from './form/formView';
 import SignUpView from './header/signUp';
-import ProfileView from './header/profileView';
+import DreamysView from './header/dreamysView';
 import userModel from '../models/userModel';
 
 const Model = Backbone.Model.extend({
@@ -52,14 +52,14 @@ const ModalView = Backbone.View.extend({
       });
       this.$('.modal-body').html(SignUpForm.render().el);
       this.action = SignUpForm.submitPost.bind(SignUpForm);
-    } else if (obj.profile) {
+    } else if (obj.dreamys) {
       if (userModel.get('uid')) {
         this.model.set('lite', false);
-        this.profileView = new ProfileView({
+        this.dreamysView = new DreamysView({
           close: this.close.bind(this),
         });
-        this.$('.modal-body').html(this.profileView.render().el);
-        this.action = this.profileView.submitPost.bind(this.profileView);
+        this.$('.modal-body').html(this.dreamysView.render().el);
+        this.action = this.dreamysView.submitPost.bind(this.dreamysView);
       }
     }
     this.undelegateEvents();
@@ -67,8 +67,8 @@ const ModalView = Backbone.View.extend({
   },
   close() {
     this.model.set('show', false);
-    if (this.profileView) {
-      this.profileView.remove();
+    if (this.dreamysView) {
+      this.dreamysView.borrar();
     }
   },
   render() {

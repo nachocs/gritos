@@ -7,10 +7,10 @@ import 'rxjs/add/operator/map';
 const Service = class DreamysService {
   constructor() {
     this.generalDreamysSubject = new ReplaySubject();
-    this.generalDreamys = this.generalDreamysSubject.asObservable();
+    this.gDreamys = this.generalDreamysSubject.asObservable();
     this.generalDreamysLoaded = false;
     this.personalDreamysSubject = new ReplaySubject();
-    this.personalDreamys = this.personalDreamysSubject.asObservable();
+    this.pDreamys = this.personalDreamysSubject.asObservable();
     this.personalDreamysLoaded = {};
   }
   fetchGeneralDreamys() {
@@ -26,7 +26,7 @@ const Service = class DreamysService {
       });
   }
   getGeneralDreamys() {
-    return this.generalDreamys;
+    return this.gDreamys;
   }
   fetchPersonalDreamys(id) {
     if (this.personalDreamysLoaded[id]) { return; }
@@ -41,7 +41,7 @@ const Service = class DreamysService {
       });
   }
   getPersonalDreamys() {
-    return this.personalDreamys;
+    return this.pDreamys;
   }
 };
 

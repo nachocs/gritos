@@ -30,15 +30,15 @@ export default ViewBase.extend({
     'click .fb-login': 'fBlogin',
     'click .js-logout': 'logOut',
     'click .sign-up': 'signUp',
-    'click .js-profile': 'profile',
+    'click .js-dreamys': 'dreamysModal',
   },
-  profile() {
+  dreamysModal() {
     ModalView.update({
       model: {
         show: true,
-        header: 'Profile',
+        header: 'Selecciona tu Dreamy',
       },
-      profile: true,
+      dreamys: true,
     });
   },
   signUp() {
