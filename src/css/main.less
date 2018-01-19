@@ -247,6 +247,10 @@ div.titulo{
       height: 50px;
       margin: 10px;
       color: white;
+      background-repeat: no-repeat;
+      background-size: cover;
+      box-shadow: none;
+      border-image-width: 0;
     }
     .mdl-card {
       // position: relative;
@@ -740,6 +744,7 @@ iframe {
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.14);
   }
 }
+
 .formularioTextArea{
   width: 100%;
   margin: 0;
@@ -1246,4 +1251,44 @@ h6.resumen-subheader{
   &:hover{
     box-shadow: #ffd600 0px 0px 5px 2px inset;
   }
+}
+
+.upload-dreamy{
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  box-sizing: border-box;
+  padding: 15px;
+  cursor: pointer;
+  overflow: hidden;
+  vertical-align: top;
+  box-shadow: #884949 0px 0px 11px 1px inset;
+  &:hover{
+    box-shadow: #ffd600 0px 0px 5px 2px inset;
+  }
+  i{
+    cursor: pointer;
+    &:hover{
+      text-shadow: 1px 1px 1px black;
+    }
+  }
+  input[type="file"]{
+    display: none;
+  }
+  .loading{
+    display: none;
+    width: 70px;
+    height: 70px;
+  }
+  &.loading{
+    .loading{
+      display: block;
+    }
+  }
+}
+.notificaciones-dreamy{
+  width: 40px;
+  height: 40px;
+  float: left;
+  margin-right: 10px;
 }

@@ -1,14 +1,25 @@
 <div class="loader <%= personalLoader || publicLoader ? 'active' : '' %>">
   <i class="fa fa-refresh fa-spin fa-5x fa-fw"></i>
 </div>
-<% if (personalDreamys && personalDreamys.length > 0){ %>
-  <div class="personal-dreamys dreamys-container">
-    <h4>Dreamys Personales</h4>
-    <% for (var i = 0; i < personalDreamys.length; i++){ var dreamy = personalDreamys[i] %>
-    <img src="<%= dreamy.IMAGEN1_URL %>" title="<%= dreamy.subject %>" width="100" height="100" alt="<%= dreamy.subject %>" class="select-dreamy"/>
+<div class="personal-dreamys dreamys-container">
+  <h4>Dreamys Personales</h4>
+  <% if(uploadAvailable){ %>
+    <div class="upload-dreamy" title="subir nuevo dreamy">
+      <div class="loading">
+        <i class="fa fa-refresh fa-spin fa-4x" aria-hidden="true"></i>
+      </div>
+      <form>
+        <label for="dreamy-submit" class="custom-file-upload"><i class="fa fa-cloud-upload fa-4x" aria-hidden="true"></i></label>
+        <input type="file" id="dreamy-submit" title="selecciona un fichero" name="FICHERO_IMAGEN1">
+      </form>
+    </div>
   <% } %>
-  </div>
-<% } %>
+  <% if (personalDreamys && personalDreamys.length > 0){ %>
+    <% for (var i = 0; i < personalDreamys.length; i++){ var dreamy = personalDreamys[i] %>
+      <img src="<%= dreamy.IMAGEN1_URL %>" title="<%= dreamy.subject %>" width="100" height="100" alt="<%= dreamy.subject %>" class="select-dreamy"/>
+    <% } %>
+  <% } %>
+</div>
 <% if (publicDreamys && publicDreamys.length > 0){ %>
   <div class="public-dreamys dreamys-container">
     <h4>Dreamys P&uacute;blicos</h4>

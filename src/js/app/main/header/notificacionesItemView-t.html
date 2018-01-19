@@ -1,5 +1,5 @@
 <% if (obj.tipo === 'yo'){ %>
-    <div style="width:40px; height:40px; float:left">
+    <div class="notificaciones-dreamy">
     <% if (obj.entry && obj.entry.emocion){ %>
       <img src="<%= obj.entry.emocion %>" style="height:40px">
     <% } else { %>
@@ -18,7 +18,7 @@
       <div style="color:#90949c;"><%= obj.date %></div>
     </div>
   <% } else if (obj.tipo !== 'msg'){ %>
-    <div style="width:40px; height:40px; float:left">
+    <div class="notificaciones-dreamy">
     <% if (obj.entry && obj.entry.emocion){ %>
       <img src="<%= obj.entry.emocion %>" style="height:40px">
     <% } else { %>
@@ -58,7 +58,7 @@
       <div style="color:#90949c;"><%= obj.date %></div>
     </div>
   <% } else if (obj.tipo === 'msg' && obj.subtipo){ %>
-    <div style="width:40px; height:40px; float:left">
+    <div class="notificaciones-dreamy">
       <% if (obj.citizen && obj.citizen.dreamy_principal){ %>
         <img src="<%= obj.citizen.dreamy_principal %>" style="height:40px">
       <% } else { %>

@@ -1,11 +1,11 @@
 <% if (obj.alias_principal){ %>
 	<span data-link="/ciudadanos/<%=obj.ID%>" class="mdl-layout--large-screen-only">
 		<% if (obj.dreamy_principal){ %>
-			<img src="<%= obj.dreamy_principal %>" style="height:48px">
+			<div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
 		<% } else if (obj.FB_picture){ %>
-			<img src="<%= obj.FB_picture %>" style="height:48px">
+			<div class="dreamy" style="background-image:url('<%= obj.FB_picture %>')"></div>
 		<% } else { %>
-			<img src="<%= obj.images.default_dreamy %>" style="height:48px"/>
+			<div class="dreamy" style="background-image:url('<%= obj.images.default_dreamy %>')"></div>
 	  <% } %>
 		<span class="mdl-layout--large-screen-only alias-principal">
 			<%= obj.alias_principal %>
