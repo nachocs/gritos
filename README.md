@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.2
+Dreamy + Dreamy upload
+
 ## 1.8.1
 Register feature
 
