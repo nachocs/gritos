@@ -13,6 +13,7 @@ import Ws from '../../util/Ws';
 import vent from '../../util/vent';
 import Util from '../../util/util';
 import MsgModel from '../../models/msgModel';
+import ModalView from '../modalView';
 
 function isOrContains(node, container) {
   while (node) {
@@ -103,6 +104,19 @@ export default ViewBase.extend({
     'paste .formularioTextArea': 'onPaste',
     'error': 'imgError',
     'click .capture-url-close': 'removeCapturedUrl',
+    'click .dreamy': 'selectDreamy',
+  },
+  selectDreamy() {
+    this.setComments();
+    ModalView.update({
+      model: {
+        show: true,
+        header: 'Selecciona tu dreamy para este grito',
+      },
+      dreamys: true,
+      formModel: this.formModel,
+    });
+
   },
   imgError(e) {
     console.log(e);

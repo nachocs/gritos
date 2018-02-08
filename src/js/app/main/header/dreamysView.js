@@ -16,10 +16,11 @@ export default ViewBase.extend({
   },
   initialize(options) {
     this.subscription = new Subscription();
-    this.uploadAvailable = true;
+    this.uploadAvailable = options.uploadAvailable;
     this.close = options.close;
     this.model = userModel;
     this.formModel = new formModel();
+    this.dreamyFormModel = options.dreamyFormModel;
 
     // this.getDreamys();
     this.publicDreamys = [];
@@ -119,7 +120,11 @@ export default ViewBase.extend({
     const img = e.target.src;
     if (this.model.get('uid')) {
       this.close();
-      this.model.save('dreamy_principal', img);
+      if (this.dreamyFormModel) {
+        this.dreamyFormModel.set('emocion', img);
+      } else {
+        this.model.save('dreamy_principal', img);
+      }
     }
   },
   submitPost() {},

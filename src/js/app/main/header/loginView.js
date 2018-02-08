@@ -39,6 +39,7 @@ export default ViewBase.extend({
         header: 'Selecciona tu Dreamy',
       },
       dreamys: true,
+      uploadAvailable: true,
     });
   },
   signUp() {

@@ -57,6 +57,8 @@ const ModalView = Backbone.View.extend({
         this.model.set('lite', false);
         this.dreamysView = new DreamysView({
           close: this.close.bind(this),
+          uploadAvailable: obj.uploadAvailable,
+          dreamyFormModel: obj.formModel,
         });
         this.$('.modal-body').html(this.dreamysView.render().el);
         this.action = this.dreamysView.submitPost.bind(this.dreamysView);

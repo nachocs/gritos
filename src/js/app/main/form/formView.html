@@ -11,7 +11,9 @@
 <div class="mdl-card mdl-shadow--4dp">
   <div class="wysiwyg-view"></div>
   <% if (!obj.isHead){ %>
-    <% if (obj.dreamy_principal ){ %>
+    <% if (obj.formModel.emocion ){ %>
+      <div class="dreamy" style="background-image:url('<%= obj.formModel.emocion %>')"></div>
+    <% } else if (obj.dreamy_principal ){ %>
       <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
     <% } else { %>
       <div class="dreamy"><img src="<%= obj.default_dreamy %>" width="50" height="50"/></div>
