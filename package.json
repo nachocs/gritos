@@ -1,6 +1,6 @@
 {
   "name": "gritos",
-  "version": "1.8.2",
+  "version": "1.8.2.1",
   "description": "Gritos.com",
   "main": "js/app/app.js",
   "scripts": {

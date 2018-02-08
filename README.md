@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.2.1
+Dreamy on forms
+
 ## 1.8.2
 Dreamy + Dreamy upload
 
