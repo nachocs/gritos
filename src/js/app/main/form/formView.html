@@ -12,11 +12,11 @@
   <div class="wysiwyg-view"></div>
   <% if (!obj.isHead){ %>
     <% if (obj.formModel.emocion ){ %>
-      <div class="dreamy" style="background-image:url('<%= obj.formModel.emocion %>')"></div>
+      <div class="dreamy" style="background-image:url('<%= obj.formModel.emocion %>')" title="selecciona tu dreamy para el grito"></div>
     <% } else if (obj.dreamy_principal ){ %>
-      <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
+      <div class="dreamy" style="background-image:url('<%= obj.dreamy_principal %>')" title="selecciona tu dreamy para el grito"></div>
     <% } else { %>
-      <div class="dreamy"><img src="<%= obj.default_dreamy %>" width="50" height="50"/></div>
+      <div class="dreamy"><img src="<%= obj.default_dreamy %>" width="50" height="50" title="selecciona tu dreamy para el grito"></div>
     <% } %>
   <%}%>
   <div contenteditable=true placeholder="<%= obj.isHead ? 'Introduccion' : !obj.parentModel ? (obj.titulo_head ? obj.titulo_head : 'Sueltalo!') : 'hmmm...' %>" class='formularioTextArea <%= active && 'on' %>' name="comments"><%= obj.formModel.comments || obj.formModel.INTRODUCCION %></div>
