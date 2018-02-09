@@ -10,6 +10,7 @@ import NotificacionesView from './header/notificacionesView';
 import ModalView from './modalView';
 import AvisosView from './header/avisosView';
 import ViewBase from './base/ViewBase';
+import RightView from './right/rightView';
 
 export default ViewBase.extend({
   className: 'main',
@@ -39,6 +40,7 @@ export default ViewBase.extend({
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,
     });
+    this.rightView = new RightView();
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
     this.listenTo(this.userModel, 'change', this.render.bind(this));
@@ -88,6 +90,7 @@ export default ViewBase.extend({
     this.$('.notificaciones-view').html(this.notificacionesView.render().el);
     this.$('.modal-view').html(ModalView.render().el);
     this.$('.avisos-view').html(AvisosView.render().el);
+    this.$('.right-side').html(this.rightView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {
