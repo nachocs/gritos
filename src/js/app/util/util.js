@@ -18,7 +18,7 @@ class Util {
     return this.template2(Object.assign({}, obj, { image, vacio }));
   }
   displayCapturedUrl(obj) {
-    let tmpl = this.templateCapturedUrl(obj);
+    let tmpl = this.templateCapturedUrl(Object.assign({}, obj, { vacio }));
     tmpl = tmpl.replace(/\n/g, '');
     tmpl = tmpl.replace(/\r/g, '');
     tmpl = tmpl.replace(/\cM/g, '');

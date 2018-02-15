@@ -71,7 +71,7 @@ export default ViewBase.extend({
   },
   render() {
     this.$el.html(this.template(this.serializer()));
-    this.collection.each(function (model) {
+    this.collection.each((model) => {
       this.renderOne(model);
     }, this);
     this.materialDesignUpdate();

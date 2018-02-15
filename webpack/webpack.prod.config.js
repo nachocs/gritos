@@ -4,6 +4,8 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const OfflinePlugin = require('offline-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const STATIC_DOMAIN = '';
 const BUILD_NUM = require('../package.json').version;
@@ -59,9 +61,15 @@ const config = {
   },
   module: {
     loaders: [{
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
+        'loader': 'babel-loader',
+        'test': /\.js$/,
+        'exclude': /node_modules/,
+        'query': {
+          'plugins': ['lodash'],
+          'presets': [
+            ['@babel/preset-env'],
+          ],
+        },
       },
       {
         test: /\.less$/,
@@ -83,6 +91,11 @@ const config = {
     ],
   },
   plugins: [
+    new webpack.HashedModuleIdsPlugin(),
+    // new BundleAnalyzerPlugin(),
+    new MomentLocalesPlugin({
+      localesToKeep: ['es'],
+    }),
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
@@ -220,8 +233,12 @@ const config = {
       AppCache: false,
       caches: 'all',
     }),
-
   ],
+  'resolve': {
+    'alias': {
+      'underscore': 'lodash',
+    },
+  },
 };
 
 module.exports = config;

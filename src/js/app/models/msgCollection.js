@@ -72,7 +72,7 @@ export default Backbone.Collection.extend({
       const tipo = this.msgModel ? 'minis' : 'foro';
       NotificacionesUserModel.update(tipo, this.id.replace(/\/$/, ''), data.entry.ID);
 
-      console.log('updated', data.room, data.entry);
+      // console.log('updated', data.room, data.entry);
     });
   },
   unsubscribe(room) {

@@ -13,9 +13,9 @@ export default Backbone.View.extend({
   },
   render() {
     this.$el.html('');
-    this.collection.each(function (model) {
+    this.collection.each((model) => {
       this.renderOne(model);
-    }, this);
+    });
     componentHandler.upgradeElement(this.el);
     return this;
   },

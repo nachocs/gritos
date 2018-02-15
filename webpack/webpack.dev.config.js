@@ -4,6 +4,7 @@ const webpack = require('webpack');
 
 const autoprefixer = require('autoprefixer');
 const HttpsProxyAgent = require('https-proxy-agent');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 // corporate proxy to connect to
 const proxyServer = process.env.npm_config_https_proxy;
@@ -80,10 +81,21 @@ const config = {
   },
   module: {
     loaders: [{
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
+        'loader': 'babel-loader',
+        'test': /\.js$/,
+        'exclude': /node_modules/,
+        'query': {
+          'plugins': ['lodash'],
+          'presets': [
+            ['@babel/preset-env'],
+          ],
+        },
       },
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   loaders: ['babel-loader?presets[]=es2015&presets[]=stage-0'],
+      // },
       {
         test: /\.less$/,
         loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!postcss-loader!less-loader' }),
@@ -104,6 +116,9 @@ const config = {
     ],
   },
   plugins: [
+    new MomentLocalesPlugin({
+      localesToKeep: ['es'],
+    }),
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
@@ -149,6 +164,11 @@ const config = {
     // }),
 
   ],
+  'resolve': {
+    'alias': {
+      'underscore': 'lodash',
+    },
+  },
 };
 
 module.exports = config;

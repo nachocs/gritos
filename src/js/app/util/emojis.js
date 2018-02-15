@@ -2,11 +2,11 @@ import emojiJson from '../../../assets/emoji_short.json';
 import _ from 'lodash';
 import emojione from 'emojione';
 
-class Emojis{
-  constructor(){
+class Emojis {
+  constructor() {
     this.emojiList = {};
     _.forOwn(emojiJson, (value, key) => {
-      if (!this.emojiList[value.category]){
+      if (!this.emojiList[value.category]) {
         this.emojiList[value.category] = [];
       }
       this.emojiList[value.category].push({
@@ -14,11 +14,11 @@ class Emojis{
         shortname: value.shortname,
         name: key,
         aliases_ascii: value.aliases_ascii,
-        img: emojione.toImage(value.shortname,),
+        img: emojione.toImage(value.shortname, ),
       });
     });
   }
-  get emojis(){
+  get emojis() {
     return this.emojiList;
   }
 }

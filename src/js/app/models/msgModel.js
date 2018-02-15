@@ -5,21 +5,20 @@ import Ws from '../util/Ws';
 import userModel from './userModel';
 
 export default Backbone.Model.extend({
-  initialize(){
+  initialize() {
     vent.on('msg_' + this.get('INDICE') + '/' + this.get('ID'), data => {
       this.set(data.entry);
-      console.log('updated msg', data.room, data.entry);
     });
     this.listenTo(this, 'sync', () => {
-      if (this.get('INDICE') && this.get('ID')){
+      if (this.get('INDICE') && this.get('ID')) {
         const subtipo = this.changed.mola ? 'mola' : this.changed.nomola ? 'nomola' : this.changed.love ? 'love' : null;
         Ws.update(this.get('INDICE') + '/' + this.get('ID'), subtipo, userModel.get('ID'));
       }
     });
-    this.listenTo(this, 'remove', ()=>{
+    this.listenTo(this, 'remove', () => {
       Ws.unsubscribe(this.get('INDICE') + '/' + this.get('ID'));
     });
-    if (this.get('INDICE') && this.get('ID')){
+    if (this.get('INDICE') && this.get('ID')) {
       Ws.subscribe(this.get('INDICE') + '/' + this.get('ID'));
     }
   },
@@ -27,11 +26,11 @@ export default Backbone.Model.extend({
   url() {
     return endpoints.apiUrl + 'index.cgi?' + this.get('INDICE') + '/' + this.get('ID');
   },
-  parse(resp){
-    if (resp.INDICE){
+  parse(resp) {
+    if (resp.INDICE) {
       resp.indice = resp.INDICE;
     }
-    if (resp.INDICE && resp.ID){
+    if (resp.INDICE && resp.ID) {
       resp.wId = resp.INDICE + '/' + resp.ID;
     }
     return resp;
