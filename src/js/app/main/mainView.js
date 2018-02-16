@@ -40,7 +40,7 @@ export default ViewBase.extend({
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,
     });
-    this.rightView = new RightView();
+    this.rightView = new RightView({});
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
     this.listenTo(this.userModel, 'change', this.render.bind(this));

@@ -1,15 +1,15 @@
 import ViewBase from '../base/ViewBase';
-import template from './rightView.html';
+import template from './galleryThumbnailView.html';
 import _ from 'lodash';
 import globalModel from '../../models/globalModel';
-import GalleryThumbnailView from './galleryThumbnailView';
+import GalleryThumbnailModel from './galleryThumbnailModel';
 
 //https://gritos.com/jsgritos/api/json.cgi?indice=gritos/avengers&encontrar=IMAGEN0_THUMB&max=1
 //https://gritos.com/jsgritos/api/json.cgi?indice=ciudadanos/35331&encontrar=IMAGEN0_THUMB&max=1
 export default ViewBase.extend({
+  model: new GalleryThumbnailModel(),
   template: _.template(template),
   initialize() {
-    this.galleryThumbnailView = new GalleryThumbnailView({});
     this.listenTo(globalModel, 'change', () => {
       let id = globalModel.get('ID');
       if (id.match(/foroscomun/)) {
@@ -19,16 +19,13 @@ export default ViewBase.extend({
       } else {
         id = 'gritos/' + id;
       }
-      if (id) {
-        this.$el.show();
-      } else {
-        this.$el.hide();
-      }
+      this.model.set('indice', id);
+      this.model.fetch();
     });
+    this.listenTo(this.model, 'change', this.render.bind(this));
   },
   render() {
-    this.$el.html(this.template());
-    this.$('.gallery-thumbnail').html(this.galleryThumbnailView.render().el);
+    this.$el.html(this.template(this.model.toJSON()));
     return this;
   },
 });
