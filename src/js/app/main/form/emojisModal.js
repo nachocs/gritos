@@ -7,20 +7,20 @@ const Model = Backbone.Model.extend({});
 const EmojisModal = Backbone.View.extend({
   className: 'emojis-modal',
   template: _.template(template),
-  events:{
-    'click .emojis-modal-tabs span[data-tab]':'selectTab',
-    'click .emojis-modal-content .emojione':'selectEmoji',
+  events: {
+    'click .emojis-modal-tabs span[data-tab]': 'selectTab',
+    'click .emojis-modal-content .emojione': 'selectEmoji',
   },
-  initialize(){
+  initialize() {
     this.model = new Model();
-    this.model.set('selectedCategory','people');
+    this.model.set('selectedCategory', 'people');
     this.emojiList = emojis.emojis;
     this.listenTo(this.model, 'change', this.render.bind(this));
   },
-  setParent(scope){
+  setParent(scope) {
     this.parent = scope;
   },
-  selectEmoji(e){
+  selectEmoji(e) {
     this.parent.getEmoji(this.$(e.currentTarget)[0].outerHTML);
     // let emoji = '';
     // if(this.parent.formModel.get('comments')){
@@ -29,20 +29,19 @@ const EmojisModal = Backbone.View.extend({
     // emoji = emoji + this.$(e.currentTarget)[0].outerHTML;
     // this.parent.formModel.set('comments', emoji);
   },
-  selectTab(e){
+  selectTab(e) {
     this.model.set('selectedCategory', this.$(e.currentTarget).data('tab'));
   },
-  render(){
+  render() {
     this.$el.html(this.template(this.serializer()));
-    setTimeout(()=>{
+    setTimeout(() => {
       this.delegateEvents();
     });
     return this;
   },
-  serializer(){
+  serializer() {
     // activity flags food modifier nature objects people regional symbols travel
-    return Object.assign({},
-      {list: this.emojiList},
+    return Object.assign({}, { list: this.emojiList },
       this.model.toJSON(),
     );
   },

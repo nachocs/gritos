@@ -1,1 +1,1 @@
-<div contenteditable="false"><img alt="imagen" src="<%= obj['IMAGEN' + image + '_URL'] %>" width="100%"></div>
+<div contenteditable="false"><img title="<%= (obj['IMAGEN' + image + '_alto'] > 364) ? 'click para zoom' : '' %>" class="<%= (obj['IMAGEN' + image + '_alto'] > 364) ? 'img-hover' : '' %>" alt="imagen" src="<%= obj['IMAGEN' + image + '_URL'] %>" width="100%"></div>

@@ -5,7 +5,7 @@ import $ from 'jquery';
 import Wysiwyg from './Wysiwyg';
 import template from './formView.html';
 import endpoints from '../../util/endpoints';
-import emojione from 'emojione';
+// import emojione from 'emojione';
 import EmojisModal from './emojisModal';
 import GlobalModel from '../../models/globalModel';
 import router from '../../router';
@@ -14,6 +14,7 @@ import vent from '../../util/vent';
 import Util from '../../util/util';
 import MsgModel from '../../models/msgModel';
 import ModalView from '../modalView';
+import smile from '../../../../img/smile.svg';
 
 function isOrContains(node, container) {
   while (node) {
@@ -608,7 +609,7 @@ export default ViewBase.extend({
       }
     }
     Object.assign(obj, {
-      emojis: emojione.toImage(':smile:'),
+      emojis: '<img class="emojione" alt="😁" title="emojis" src="' + smile + '">',
       formModel: this.formModel.toJSON(),
       tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
       tagPlaceShown: this.tagPlaceShown,

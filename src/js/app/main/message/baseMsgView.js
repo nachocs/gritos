@@ -87,6 +87,20 @@ export default ViewBase.extend({
     'click .share': 'openShare',
     'click .fa-facebook-official': 'shareFb',
     'click .fa-twitter-square': 'shareTw',
+    'click .img-hover': 'displayBigImage',
+    'mouseout .imagen-modal': 'hideBigImage',
+    'click .imagen-modal': 'hideBigImage',
+  },
+  hideBigImage() {
+    this.$('.imagen-modal').removeClass('active');
+    this.$('.imagen-modal img').attr('src', '');
+  },
+  displayBigImage(e) {
+    const src = $(e.target).attr('src');
+    if (src) {
+      this.$('.imagen-modal').addClass('active');
+      this.$('.imagen-modal img').attr('src', src);
+    }
   },
   shareFb() {
     Util.bookmarkthis('facebook', 'https://gritos.com/' + this.model.get('INDICE').replace(/^gritos\//, '') + '/' + this.model.get('ID'), this.headModel.get('Title'));

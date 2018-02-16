@@ -662,6 +662,21 @@ iframe {
     left: 121px;
     bottom: 50px;
     color: darkkhaki;
+    i{
+      cursor: pointer;
+      transform: rotate(180deg);
+      &:hover{
+        -webkit-transition: all 200ms ease-in;
+        -webkit-transform: scale(2);
+        -ms-transition: all 200ms ease-in;
+        -ms-transform: scale(2);
+        -moz-transition: all 200ms ease-in;
+        -moz-transform: scale(2);
+        transition: all 200ms ease-in;
+        transform: scale(2) rotate(180deg);
+        z-index: 2;
+      }
+    }
     .show-tags{
       position: absolute;
       right: -24px;
@@ -732,6 +747,17 @@ iframe {
     cursor: pointer;
     i{
       color:rgba(0, 100, 0, 0.51);
+      &:hover{
+        -webkit-transition: all 200ms ease-in;
+        -webkit-transform: scale(2);
+        -ms-transition: all 200ms ease-in;
+        -ms-transform: scale(2);
+        -moz-transition: all 200ms ease-in;
+        -moz-transform: scale(2);
+        transition: all 200ms ease-in;
+        transform: scale(2);
+        z-index: 2;
+      }
     }
   }
   .mdl-card{
@@ -836,7 +862,7 @@ iframe {
     }
   }
   .emojis-modal-content{
-    max-height: 62px;
+    max-height: 88px;
     overflow-y: scroll;
     border: 1px solid darkkhaki;
     padding: 10px;
@@ -845,6 +871,19 @@ iframe {
 img.emojione{
   width: 24px;
   height: 24px;
+  display: inline-block;
+  position: relative;
+  &:hover{
+    -webkit-transition: all 200ms ease-in;
+    -webkit-transform: scale(2);
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(2);
+    -moz-transition: all 200ms ease-in;
+    -moz-transform: scale(2);
+    transition: all 200ms ease-in;
+    transform: scale(2);
+    z-index: 2;
+  }
 }
 div[contenteditable = true]:empty:before{
   color:#ccc;
@@ -861,6 +900,7 @@ div[contenteditable = true]:empty:before{
     width: 100%;
   }
 }
+
 @media (max-width: 680px) {
   .msg-img{
     max-height: initial;
@@ -1308,4 +1348,20 @@ h6.resumen-subheader{
   height: 40px;
   float: left;
   margin-right: 10px;
+}
+.imagen-modal{
+  display: none;
+  position: absolute;
+  z-index: 2;
+  top: 1px;
+  padding: 10px;
+  background: white;
+  box-shadow: 10px 10px 50px -10px black;
+  margin: 70px 30px;
+  &.active{
+    display: block;
+  }
+}
+.img-hover{
+  cursor: pointer;
 }
