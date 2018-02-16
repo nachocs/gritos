@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.4
+Removed emojione library. Added img modal in carrousel
+
 ## 1.8.3
 Dreamy on forms
 
