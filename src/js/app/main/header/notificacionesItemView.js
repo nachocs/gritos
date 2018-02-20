@@ -41,7 +41,7 @@ export default Backbone.View.extend({
     }
     const citizen = this.model.get('citizen');
     if (citizen && citizen['dreamy_principal']) {
-      citizen['dreamy_principal'] = citizen['dreamy_principal'].replace(/https?/, '');
+      citizen['dreamy_principal'] = citizen['dreamy_principal'].replace(/https?\:/, '');
     }
 
     return Object.assign({},
