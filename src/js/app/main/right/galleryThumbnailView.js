@@ -10,6 +10,7 @@ export default ViewBase.extend({
   model: new GalleryThumbnailModel(),
   template: _.template(template),
   initialize() {
+    console.log('init galleryThumbnailView');
     this.listenTo(globalModel, 'change', () => {
       let id = globalModel.get('ID');
       if (id.match(/foroscomun/)) {
@@ -22,7 +23,7 @@ export default ViewBase.extend({
       this.model.set('indice', id);
       this.model.fetch();
     });
-    this.listenTo(this.model, 'change', this.render.bind(this));
+    this.listenTo(this.model, 'sync', this.render.bind(this));
   },
   render() {
     this.$el.html(this.template(this.model.toJSON()));
