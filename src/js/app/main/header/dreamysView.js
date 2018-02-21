@@ -96,6 +96,7 @@ export default ViewBase.extend({
     const saveObj = {
       comments,
       uid: this.model.get('uid'),
+      dreamy_anterior: this.model.get('dreamy_principal'),
     };
     this.isSaving = true;
     this.formModel.save(

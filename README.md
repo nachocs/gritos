@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.6
+Save previous dreamy when creating new dreamy, so we can remove it if msg is deleted.
+
 ## 1.8.5
 Mejor match de urls. Mejor ImgError
 
