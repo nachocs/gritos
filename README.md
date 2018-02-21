@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.8.5
+Mejor match de urls. Mejor ImgError
+
 ## 1.8.4
 Removed emojione library. Added img modal in carrousel
 

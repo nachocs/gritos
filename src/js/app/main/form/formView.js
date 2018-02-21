@@ -363,6 +363,21 @@ export default ViewBase.extend({
       }
     }
   },
+  isThisUrl(url) {
+    let check = true;
+    const puntos = url.match(/\./);
+    if (puntos && puntos.length === 1 && !url.match(/\//)) {
+      const partes = url.split('.');
+      const last = partes[partes.length - 1];
+      if (last === 'com' || last === 'co' || last === 'uk' || last === 'us' || last === 'es') {
+        check = true;
+      } else {
+        check = false;
+      }
+    }
+    console.log('check', check);
+    return check;
+  },
   getCaptureUrls() {
     // setTimeout(()=>{
     let content = this.$('.formularioTextArea').clone();
@@ -379,7 +394,7 @@ export default ViewBase.extend({
       urlMatch.forEach((url) => {
         url = url.replace(/[\s\t\n<]+/ig, '');
         url = url.replace(/^https?\:\/\//, '');
-        if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5)) {
+        if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5) && this.isThisUrl(url)) {
           this.capturingUrls = true;
           vent.on('capture_url_reply_' + this.userModel.get('ID'), (data) => {
             const dataurl = data.url.replace(/^https?\:\/\//, '');
@@ -399,6 +414,7 @@ export default ViewBase.extend({
     // },0);
 
   },
+
   removeCapturedUrl(e) {
     const url = this.$(e.target).data('capturedurl');
     delete this.capturedUrls[url];

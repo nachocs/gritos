@@ -14,35 +14,35 @@ const Model = Backbone.Model.extend({
 const AvisosView = ViewBase.extend({
   model: new Model(),
   template: _.template(template),
-  events:{
-    'click .avisos-main':'closeThis',
+  events: {
+    'click .avisos-main': 'closeThis',
   },
-  closeThis(){
-    this.model.set({nuevos:0});
+  closeThis() {
+    this.model.set({ nuevos: 0 });
     this.goToRoute(this.model.get('room'));
   },
-  initialize(){
+  initialize() {
     this.counters = {};
     this.listenTo(this.model, 'change', this.render.bind(this));
     vent.on('avisos', this.nuevoAviso.bind(this));
   },
-  nuevoAviso(data){
-    if (data.room.match(/\//ig)){return;}
-    if (!this.counters[data.room]){
+  nuevoAviso(data) {
+    if (data.room.match(/\//ig)) { return; }
+    if (!this.counters[data.room]) {
       this.counters[data.room] = Number(data.entry.ID) - 1;
     }
-    const diferencia = Number(data.entry.ID)-this.counters[data.room];
-    this.model.set({room:data.room.replace(/collection:/,''), nuevos: diferencia});
+    const diferencia = Number(data.entry.ID) - this.counters[data.room];
+    this.model.set({ room: data.room.replace(/collection:/, ''), nuevos: diferencia });
     // setTimeout(()=>{
     // this.model.set({nuevos:0});
     // }, 5000);
   },
-  render(){
+  render() {
     this.$el.html(this.template(this.serializer()));
     this.delegateEvents();
     return this;
   },
-  serializer(){
+  serializer() {
     return this.model.toJSON();
   },
 });

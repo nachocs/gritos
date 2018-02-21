@@ -2,7 +2,7 @@
   <div class="capture-url-close" data-capturedurl="<%= obj.id %>">x</div>
   <% if (obj.image) { %>
     <a href="<%= obj.url %>" target="_blank" rel="noopener">
-      <img src="<%= obj.image %>" title="<%= obj.title || obj.url %>" onerror="this.onerror=null; this.src='<%= vacio %>';">
+      <img src="<%= obj.image %>" title="<%= obj.title || obj.url %>" onerror="window.imgError(this); this.onerror=null;">
     </a>
   <% } %>
   <div class="captured-url-title"><a href="<%= obj.url %>" target="_blank" rel="noopener"><%= obj.title %></a></div>
