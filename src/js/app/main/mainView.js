@@ -11,6 +11,7 @@ import ModalView from './modalView';
 import AvisosView from './header/avisosView';
 import ViewBase from './base/ViewBase';
 import RightView from './right/rightView';
+import GalleryView from './gallery/galleryView';
 
 export default ViewBase.extend({
   className: 'main',
@@ -40,6 +41,7 @@ export default ViewBase.extend({
     this.resumenView = new ResumenView({
       collection: options.resumenCollection,
     });
+    this.galleryView = new GalleryView({});
     this.rightView = new RightView({});
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
@@ -82,7 +84,12 @@ export default ViewBase.extend({
   },
   render() {
     this.$el.html(this.template(this.serializer()));
-    this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
+    if (this.globalModel.get('isGallery')) {
+      console.log('gallery');
+      this.$('.gallery').html(this.galleryView.render().el);
+    } else {
+      this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
+    }
     this.$('.login-view').html(this.loginView.render().el);
     this.$('.spinner-view').html(this.spinnerView.render().el);
     this.$('.form-view').html(this.formView.render().el);

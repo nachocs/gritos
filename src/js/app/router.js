@@ -6,6 +6,7 @@ import $ from 'jquery';
 const Router = Backbone.Router.extend({
   routes: {
     ':foro(/)': 'foro',
+    ':foro/gallery': 'gallery',
     ':foro/:id(/)': 'mensaje',
     '*something': 'defaultRoute',
   },
@@ -28,7 +29,7 @@ const Router = Backbone.Router.extend({
     }
     return this.foro();
   },
-  foro(foro) {
+  foro(foro, isGallery = false) {
     if (!foro || foro === 'admin' || foro === 'ciudadanos' || foro === 'jsgritos') {
       foro = 'foroscomun';
     }
@@ -37,7 +38,7 @@ const Router = Backbone.Router.extend({
     }
     Util.checkForms(() => {
       this.history.push(foro !== 'foroscomun' ? foro : '/');
-      this.model.changeForo(foro, null);
+      this.model.changeForo(foro, null, isGallery);
       $('body').scrollTop(0);
 
     }, () => {
@@ -46,7 +47,9 @@ const Router = Backbone.Router.extend({
       }
     });
   },
-
+  gallery(foro) {
+    return this.foro(foro, true);
+  },
   mensaje(foro, mensajeId) {
     if (foro === 'ciudadanos') {
       return this.foro(foro + '/' + mensajeId + '/');
