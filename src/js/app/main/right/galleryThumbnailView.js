@@ -19,7 +19,6 @@ export default ViewBase.extend({
     router.navigate(ruta, { trigger: true });
   },
   initialize() {
-    console.log('init galleryThumbnailView');
     this.listenTo(globalModel, 'change', () => {
       let id = globalModel.get('ID');
       if (id.match(/foroscomun/)) {
