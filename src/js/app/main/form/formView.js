@@ -365,6 +365,7 @@ export default ViewBase.extend({
   },
   isThisUrl(url) {
     let check = true;
+    if (!url) { return false; }
     const puntos = url.match(/\./);
     if (puntos && puntos.length === 1 && !url.match(/\//)) {
       const partes = url.split('.');
@@ -375,7 +376,9 @@ export default ViewBase.extend({
         check = false;
       }
     }
-    console.log('check', check);
+    if (url.match(/facebook\.com/)) {
+      check = false;
+    }
     return check;
   },
   getCaptureUrls() {
