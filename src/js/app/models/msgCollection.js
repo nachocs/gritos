@@ -35,13 +35,15 @@ export default Backbone.Collection.extend({
     }
     if (this.globalModel) {
       this.listenTo(this.globalModel, 'change', () => {
-        this.clean();
-        this.id = this.globalModel.get('ID'); // para cuando se cambia de foro principal
-        if (this.globalModel.get('msg') || this.globalModel._previousAttributes.msg) {
-          this.trigger('reset');
+        if (!this.globalModel.get('isGallery')) {
+          this.clean();
+          this.id = this.globalModel.get('ID'); // para cuando se cambia de foro principal
+          if (this.globalModel.get('msg') || this.globalModel._previousAttributes.msg) {
+            this.trigger('reset');
+          }
+          this.subscribe(this.id);
+          this.fetch();
         }
-        this.subscribe(this.id);
-        this.fetch();
       });
     }
     if (this.msgModel) { // para mini collections

@@ -8,6 +8,7 @@ const Router = Backbone.Router.extend({
     ':foro(/)': 'foro',
     ':foro/gallery': 'gallery',
     ':foro/:id(/)': 'mensaje',
+    ':foro/:id/gallery': 'gallery2',
     '*something': 'defaultRoute',
   },
   initialize() {
@@ -49,6 +50,11 @@ const Router = Backbone.Router.extend({
   },
   gallery(foro) {
     return this.foro(foro, true);
+  },
+  gallery2(foro, mensajeId) {
+    if (foro === 'ciudadanos') {
+      return this.foro(foro + '/' + mensajeId + '/', true);
+    }
   },
   mensaje(foro, mensajeId) {
     if (foro === 'ciudadanos') {

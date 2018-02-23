@@ -5,6 +5,7 @@ import $ from 'jquery';
 import GalleryMsgView from './galleryMsgView';
 
 export default ViewBase.extend({
+  className: 'gallery',
   initialize() {
     this.collection = new GalleryCollection([]);
     this.views = {};
@@ -13,7 +14,9 @@ export default ViewBase.extend({
         this.collection.fetch();
       }
     });
+    this.listenTo(this.collection, 'sync', this.render.bind(this));
   },
+
   render() {
     this.$el.html('');
     this.collection.each((model) => {

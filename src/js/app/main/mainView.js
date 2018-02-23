@@ -46,6 +46,7 @@ export default ViewBase.extend({
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
     this.listenTo(this.userModel, 'change', this.render.bind(this));
+    this.listenTo(this.globalModel, 'change', this.render.bind(this));
     this.images = {
       logo: require('../../../img/logo50x50.gif'),
     };
@@ -85,19 +86,20 @@ export default ViewBase.extend({
   render() {
     this.$el.html(this.template(this.serializer()));
     if (this.globalModel.get('isGallery')) {
-      console.log('gallery');
-      this.$('.gallery').html(this.galleryView.render().el);
+      this.$('.content').first().addClass('content-gallery');
+      this.$('.gallery').replaceWith(this.galleryView.render().el);
     } else {
+      this.$('.content').first().removeClass('gallery');
       this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
+      this.$('.form-view').html(this.formView.render().el);
+      this.$('.right-side').html(this.rightView.render().el);
     }
     this.$('.login-view').html(this.loginView.render().el);
     this.$('.spinner-view').html(this.spinnerView.render().el);
-    this.$('.form-view').html(this.formView.render().el);
     this.$('.resumen-collection').replaceWith(this.resumenView.render().el);
     this.$('.notificaciones-view').html(this.notificacionesView.render().el);
     this.$('.modal-view').html(ModalView.render().el);
     this.$('.avisos-view').html(AvisosView.render().el);
-    this.$('.right-side').html(this.rightView.render().el);
     this.spinnerView.hideSpinner();
 
     if (this.afterRender && typeof this.afterRender === 'function') {
