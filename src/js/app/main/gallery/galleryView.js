@@ -33,7 +33,6 @@ export default ViewBase.extend({
     this.collection.nextPage();
   },
   renderOne(model) {
-    console.log('renderOne', this.collection.length);
     if (!model.id) { return; }
     const msgView = new GalleryMsgView({
       model,
