@@ -60,7 +60,7 @@ export default Backbone.Collection.extend({
       this.noMoreEntries = true;
     }
     if (_.isNaN(this.lastReadEntry)) {
-      debugger;
+      this.lastReadEntry = null;
     }
     return resp;
   },

@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.9.0
+Full Gallery View, working.
+
 ## 1.8.6
 Save previous dreamy when creating new dreamy, so we can remove it if msg is deleted.
 
