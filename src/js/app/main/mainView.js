@@ -28,9 +28,9 @@ export default ViewBase.extend({
     this.loginView = new LoginView({
       userModel: this.userModel,
     });
-    this.spinnerView = new SpinnerView({
-      collection: this.collection,
-    });
+    // this.spinnerView = new SpinnerView({
+    //   collection: this.collection,
+    // });
     this.formView = new FormView({
       userModel: this.userModel,
       collection: this.collection,
@@ -88,11 +88,18 @@ export default ViewBase.extend({
     if (this.globalModel.get('isGallery')) {
       this.$('.content').first().addClass('content-gallery');
       this.$('.gallery').replaceWith(this.galleryView.render().el);
+      this.spinnerView = new SpinnerView({
+        collection: this.galleryView.collection,
+      });
+      this.$('.right-side').remove();
     } else {
       this.$('.content').first().removeClass('gallery');
       this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
       this.$('.form-view').html(this.formView.render().el);
-      this.$('.right-side').html(this.rightView.render().el);
+      this.$('.right-side').replaceWith(this.rightView.render().el);
+      this.spinnerView = new SpinnerView({
+        collection: this.collection,
+      });
     }
     this.$('.login-view').html(this.loginView.render().el);
     this.$('.spinner-view').html(this.spinnerView.render().el);
@@ -125,8 +132,14 @@ export default ViewBase.extend({
     }, this));
   },
   detect_scroll(e) {
-    if (($(e.currentTarget).scrollTop() + window.innerHeight) > ($('.msg-list').height() - 200)) {
-      this.collection.nextPage();
+    if (this.globalModel.get('isGallery')) {
+      if (($(e.currentTarget).scrollTop() + window.innerHeight) > ($('.gallery').height() - 200)) {
+        this.galleryView.nextPage();
+      }
+    } else {
+      if (($(e.currentTarget).scrollTop() + window.innerHeight) > ($('.msg-list').height() - 200)) {
+        this.collection.nextPage();
+      }
     }
   },
   serializer() {

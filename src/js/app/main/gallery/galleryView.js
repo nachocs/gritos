@@ -14,7 +14,11 @@ export default ViewBase.extend({
         this.collection.fetch();
       }
     });
-    this.listenTo(this.collection, 'sync', this.render.bind(this));
+    // this.listenTo(this.collection, 'sync', this.render.bind(this));
+    this.listenTo(this.collection, 'reset', this.render.bind(this));
+    this.listenTo(this.collection, 'add', this.renderOne.bind(this));
+    this.listenTo(this.collection, 'remove', this.removeOne.bind(this));
+
   },
 
   render() {
@@ -25,7 +29,11 @@ export default ViewBase.extend({
     componentHandler.upgradeElement(this.el);
     return this;
   },
+  nextPage() {
+    this.collection.nextPage();
+  },
   renderOne(model) {
+    console.log('renderOne', this.collection.length);
     if (!model.id) { return; }
     const msgView = new GalleryMsgView({
       model,
@@ -34,5 +42,11 @@ export default ViewBase.extend({
     const view = $(msgView.render().el).hide();
     view.appendTo(this.$el).slideDown('slow');
     // this.$el.append(msgView.render().el);
+  },
+  removeOne(model) {
+    if (this.views[model.id]) {
+      this.views[model.id].trigger('remove');
+      delete this.views[model.id];
+    }
   },
 });

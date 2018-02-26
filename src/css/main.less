@@ -279,70 +279,6 @@ div.titulo{
           font-size: 10px;
         }
       }
-      .action-icons{
-        position: absolute;
-        top: 10px;
-        right: 0;
-        font-size: 14px;
-        line-height: 24px;
-        margin-right: 5px;
-        >div{
-          display: inline-block;
-          padding: 5px 6px;
-        }
-        i{
-          color: lightslategray;
-        }
-        .forward{
-          cursor: pointer;
-          &:hover{
-            background-color: #EEEEEE;
-          }
-        }
-        .share{
-          cursor: pointer;
-          &:hover{
-            background-color: #EEEEEE;
-          }
-        }
-        .show-admin{
-          cursor: pointer;
-          &:hover{
-            background-color: #EEEEEE;
-          }
-        }
-        .share-menu{
-          right: 28px;
-        }
-        .admin-menu{
-          right: 0;
-        }
-        .admin-menu,.share-menu{
-          display: none;
-          position: absolute;
-          width: 25px;
-          top: 29px;
-          z-index: 2;
-          &.active{
-            display: block;
-          }
-          ul{
-            padding: 0;
-            margin: 0;
-            li{
-              padding: 0;
-              list-style: none;
-              margin: 0;
-              text-align: center;
-              cursor: pointer;
-              background-color: white;
-              &:hover{
-                background-color: #EEEEEE;
-              }
-            }
-          }
-        }
-      }
     }
     .foot{
       display: table;
@@ -388,6 +324,70 @@ div.titulo{
         color: rgb(119, 122, 153);
         a{
           text-decoration: none;
+        }
+      }
+    }
+  }
+}
+.action-icons{
+  position: absolute;
+  top: 10px;
+  right: 0;
+  font-size: 14px;
+  line-height: 24px;
+  margin-right: 5px;
+  >div{
+    display: inline-block;
+    padding: 5px 6px;
+  }
+  i{
+    color: lightslategray;
+  }
+  .forward{
+    cursor: pointer;
+    &:hover{
+      background-color: #EEEEEE;
+    }
+  }
+  .share{
+    cursor: pointer;
+    &:hover{
+      background-color: #EEEEEE;
+    }
+  }
+  .show-admin{
+    cursor: pointer;
+    &:hover{
+      background-color: #EEEEEE;
+    }
+  }
+  .share-menu{
+    right: 28px;
+  }
+  .admin-menu{
+    right: 0;
+  }
+  .admin-menu,.share-menu{
+    display: none;
+    position: absolute;
+    width: 25px;
+    top: 29px;
+    z-index: 2;
+    &.active{
+      display: block;
+    }
+    ul{
+      padding: 0;
+      margin: 0;
+      li{
+        padding: 0;
+        list-style: none;
+        margin: 0;
+        text-align: center;
+        cursor: pointer;
+        background-color: white;
+        &:hover{
+          background-color: #EEEEEE;
         }
       }
     }
@@ -1365,18 +1365,37 @@ h6.resumen-subheader{
 .img-hover{
   cursor: pointer;
 }
-.right-side{
-  float: right;
-}
 
 .gallery{
   .gallery-entry{
+    position: relative;
     display: inline-block;
     width: 30%;
-    margin: 1%;
+    margin: 1.5%;
     background-color: white;
     padding: 1%;
     box-shadow: 1px 1px 3px -2px black;
+    &:hover{
+      .action-icons{
+        opacity: 1;
+      }
+    }
+
+    .action-icons{
+      opacity: 0;
+      transition: all 1s;
+      &:hover{
+        opacity: 1;
+        i{
+          color: #8edb70;
+        }
+      }
+      .forward{
+        &:hover {
+          background-color: initial;
+        }
+      }
+    }
     .img-gallery{
       display: block;
       background-repeat: no-repeat;
@@ -1384,11 +1403,57 @@ h6.resumen-subheader{
       width: 100%;
       padding-top: 100%;
       background-position: center;
+      cursor: pointer;
     }
   }
 }
-.gallery-thumbnail{
-  img{
-    cursor: pointer;
+@media (max-width: 1120px) {
+  .right-side{
+    position: absolute;
+    display: block;
+    right: 0;
+    z-index: 2;
+    width: 50px;
+    height: 30px;
+    overflow: hidden;
+  }
+}
+@media (min-width: 1120px) {
+  .right-side{
+    position: relative;
+    float: right;
+    display: block;
+  }
+}
+
+.right-side{
+  background: white;
+  box-shadow: 0px 0px 8px -3px black;
+  margin: 20px;
+  &.inactive{
+    display: none;
+  }
+  .right-side-head{
+    font-family: newdreamers, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    font-size: .9rem;
+    padding: 5px;
+    span{
+      cursor: pointer;
+    }
+  }
+  .gallery-thumbnail{
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    text-align: center;
+    img{
+      cursor: pointer;
+    }
+    .gotogallery{
+      max-width: 100px;
+      max-height: 100px;
+    }
   }
 }

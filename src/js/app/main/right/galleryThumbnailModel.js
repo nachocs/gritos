@@ -1,4 +1,5 @@
 import Backbone from 'backbone';
+import _ from 'lodash';
 
 export default Backbone.Model.extend({
   defaults: {},
@@ -6,11 +7,17 @@ export default Backbone.Model.extend({
     // this.listenTo(this, 'change:indice', this.fetch.bind(this));
   },
   url() {
-    return 'https://gritos.com/jsgritos/api/json.cgi?indice=' + this.get('indice') + '&encontrar=IMAGEN0_THUMB&max=1';
+    return 'https://gritos.com/jsgritos/api/json.cgi?indice=' + this.get('indice') + '&encontrar=Ficheros&max=1';
   },
   parse(response) {
-    return {
-      IMAGEN0_THUMB: response[0] ? response[0].IMAGEN0_THUMB : '',
-    };
+    if (_.isempty(response[0])) {
+      this.clear();
+    } else {
+      return response[0];
+    }
+    // {
+    //   IMAGEN0_THUMB: response[0] ? response[0].IMAGEN0_THUMB : '',
+    //   IMAGEN1_THUMB_URL: response[0] ? response[0].IMAGEN1_THUMB_URL : '',
+    // };
   },
 });
