@@ -20,6 +20,8 @@
     <% } %>
   <%}%>
   <div contenteditable=true placeholder="<%= obj.isHead ? 'Introduccion' : !obj.parentModel ? (obj.titulo_head ? obj.titulo_head : 'Sueltalo!') : 'hmmm...' %>" class='formularioTextArea <%= active && 'on' %>' name="comments"><%= obj.formModel.comments || obj.formModel.INTRODUCCION %></div>
+  <div class="encuesta-area">
+  </div>
   <div class="thumbs-place"></div>
   <div class="file-submit">
     <label for="file-submit<%= obj.parentModel ? "-" + obj.parentModel.INDICE + "-" + obj.parentModel.ID : '' %>" class="custom-file-upload" title="imagen"><i class="material-icons">photo_camera</i></label>
@@ -57,6 +59,9 @@
         </li>
         <% } %>
       </ul>
+    </div>
+    <div class="polls-place" title="encuesta">
+      <i class="fa fa-bar-chart" aria-hidden="true"></i>
     </div>
   <% } %>
 </div>

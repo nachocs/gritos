@@ -730,6 +730,34 @@ iframe {
       }
     }
   }
+  .polls-place{
+    display: block;
+    position: absolute;
+    left: 152px;
+    bottom: 28px;
+    color: #8ac34a;
+    cursor: pointer;
+    i{
+      &:hover{
+        -webkit-transition: all 200ms ease-in;
+        -webkit-transform: scale(2);
+        -ms-transition: all 200ms ease-in;
+        -ms-transform: scale(2);
+        -moz-transition: all 200ms ease-in;
+        -moz-transform: scale(2);
+        transition: all 200ms ease-in;
+        transform: scale(2);
+        z-index: 2;
+      }
+    }
+  }
+  .encuesta-area{
+    display: none;
+
+    &.active{
+      display: block;
+    }
+  }
   .emojis{
     display: block;
     position: absolute;

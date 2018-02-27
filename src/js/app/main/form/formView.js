@@ -15,6 +15,7 @@ import Util from '../../util/util';
 import MsgModel from '../../models/msgModel';
 import ModalView from '../modalView';
 import smile from '../../../../img/smile.svg';
+import EncuestasForm from '../encuestas/encuestasForm';
 
 function isOrContains(node, container) {
   while (node) {
@@ -106,6 +107,13 @@ export default ViewBase.extend({
     'error': 'imgError',
     'click .capture-url-close': 'removeCapturedUrl',
     'click .dreamy': 'selectDreamy',
+    'click .polls-place': 'abreEncuesta',
+  },
+  abreEncuesta() {
+    this.clearArea();
+    this.$('.encuesta-area').addClass('active');
+    const encuestasForm = new EncuestasForm();
+    this.$('.encuesta-area').html(encuestasForm.render().el);
   },
   selectDreamy() {
     this.setComments();
