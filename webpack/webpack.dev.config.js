@@ -124,7 +124,6 @@ const config = {
         progress: true,
         colors: true,
       },
-      debug: true,
     }),
     new ExtractTextPlugin('bundle.css'),
     new webpack.HotModuleReplacementPlugin(),
