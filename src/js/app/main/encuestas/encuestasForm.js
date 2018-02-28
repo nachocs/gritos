@@ -5,12 +5,50 @@ import template from './encuestasForm.html';
 export default Backbone.View.extend({
   template: _.template(template),
   initialize() {
-    this.model = new Backbone.Model({
-      options: [
-        { 0: '' },
-        { 1: '' },
-      ],
+    const encuestasModel = Backbone.Model.extend({
+      defaults: {
+        options: [{
+          id: 1,
+          value: '',
+        }],
+      },
     });
+    this.model = new encuestasModel({});
+  },
+  events: {
+    'keydown input': 'onKeyDown',
+    'click .encuesta-cierra-opcion': 'cierraOpcion',
+  },
+  cierraOpcion(e) {
+    const opc = this.$(e.currentTarget).data('opcion');
+    let options = this.model.get('options');
+    options = options.filter((option) => option.id !== opc);
+    this.model.set('options', options);
+    this.render();
+  },
+  onKeyDown(e) {
+    if (e.keyCode === 13) {
+      const targetOpt = Number(this.$(e.currentTarget).attr('name'));
+      const options = this.model.get('options');
+      let lastOption;
+      options.forEach((option) => {
+        option.value = this.$('[name=' + option.id + ']').val();
+        lastOption = option.id;
+      });
+      if (targetOpt === lastOption) {
+        const newId = Number(lastOption) + 1;
+        options.push({
+          id: newId,
+          value: '',
+        });
+        this.model.set('options', options);
+        this.render();
+        this.$('[name=' + newId + ']').focus();
+      } else {
+        const nextFocus = targetOpt + 1;
+        this.$('[name=' + nextFocus + ']').focus();
+      }
+    }
   },
   render() {
     this.$el.html(this.template(this.serializer()));

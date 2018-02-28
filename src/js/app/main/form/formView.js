@@ -111,9 +111,17 @@ export default ViewBase.extend({
   },
   abreEncuesta() {
     this.clearArea();
-    this.$('.encuesta-area').addClass('active');
-    const encuestasForm = new EncuestasForm();
-    this.$('.encuesta-area').html(encuestasForm.render().el);
+    if (this.$('.encuesta-area').hasClass('active')) {
+      this.$('.encuesta-area').removeClass('active');
+      if (this.encuestasForm) {
+        this.encuestasForm.model.clear();
+      }
+    } else {
+      this.$('.encuesta-area').addClass('active');
+      this.encuestasForm = new EncuestasForm();
+      this.$('.encuesta-area').html(this.encuestasForm.render().el);
+      this.$('.encuesta-area').find('[name=1]').focus();
+    }
   },
   selectDreamy() {
     this.setComments();
@@ -542,6 +550,13 @@ export default ViewBase.extend({
         }, );
       }
     }
+    if (this.encuestasForm && this.encuestasForm.model) {
+      Object.assign(saveObj, {
+        encuesta: JSON.stringify(this.encuestasForm.model.toJSON()),
+      });
+    }
+    console.log(saveObj);
+    return;
     this.isSaving = true;
     this.formModel.save(
       saveObj, {
@@ -656,6 +671,10 @@ export default ViewBase.extend({
     }
     delete this.wysiwyg;
     delete this.emojisModal;
+    if (this.encuestasForm) {
+      this.encuestasForm.remove();
+      delete this.encuestasForm;
+    }
     for (const prop of Object.keys(this)) {
       delete this[prop];
     }

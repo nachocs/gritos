@@ -1,3 +1,9 @@
+<span class="encuesta-header">Encuesta</span>
 <% for (var i=0; i < obj.options.length; i++){ %>
-<input type="text" name="<%= i %>" />
+  <div style="position: relative;">
+    <input type="text" name="<%= obj.options[i].id %>" placeholder="opci&oacute;n <%= obj.options[i].id %>" value="<%= obj.options[i].value %>"/>
+    <div class="encuesta-cierra-opcion" data-opcion="<%= obj.options[i].id %>" title="borrar esta opci&oacute;n">
+      <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+    </div>
+  </div>
 <% } %>

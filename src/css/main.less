@@ -753,8 +753,33 @@ iframe {
   }
   .encuesta-area{
     display: none;
+    position: relative;
 
     &.active{
+      display: block;
+    }
+    ::placeholder{
+      color: hsla(208, 75%, 75%, 0.5);
+    }
+    input{
+      position: relative;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid lightblue;
+      font-size: .9rem;
+      padding: 5px 40px 5px 10px;
+    }
+    .encuesta-cierra-opcion{
+      cursor: pointer;
+      position: absolute;
+      right: 6px;
+      top: 4px;
+      color: hsla(208, 75%, 75%, 0.5);
+    }
+    .encuesta-header{
+      font-family: newdreamers, sans-serif;
+      font-size: .9rem;
+      padding: 5px 10px 2px;
       display: block;
     }
   }
