@@ -5,7 +5,7 @@ const autoprefixer = require('autoprefixer');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const OfflinePlugin = require('offline-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+// const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const STATIC_DOMAIN = '';
 const BUILD_NUM = require('../package.json').version;
@@ -93,9 +93,6 @@ const config = {
   plugins: [
     new webpack.HashedModuleIdsPlugin(),
     // new BundleAnalyzerPlugin(),
-    new MomentLocalesPlugin({
-      localesToKeep: ['es'],
-    }),
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
@@ -233,6 +230,10 @@ const config = {
       AppCache: false,
       caches: 'all',
     }),
+    new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en|es)$/),
+    // new MomentLocalesPlugin({
+    //   localesToKeep: ['es'],
+    // }),
   ],
   'resolve': {
     'alias': {

@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 const autoprefixer = require('autoprefixer');
 const HttpsProxyAgent = require('https-proxy-agent');
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+// const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 // corporate proxy to connect to
 const proxyServer = process.env.npm_config_https_proxy;
@@ -116,9 +116,6 @@ const config = {
     ],
   },
   plugins: [
-    new MomentLocalesPlugin({
-      localesToKeep: ['es'],
-    }),
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
@@ -127,6 +124,7 @@ const config = {
         progress: true,
         colors: true,
       },
+      debug: true,
     }),
     new ExtractTextPlugin('bundle.css'),
     new webpack.HotModuleReplacementPlugin(),
@@ -149,6 +147,11 @@ const config = {
         ENDPOINTS_ROOT_DOMAIN: JSON.stringify('gritos.com'),
       },
     }),
+    new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en|es)$/),
+
+    // new MomentLocalesPlugin({
+    //   localesToKeep: ['es'],
+    // }),
     // new DashboardPlugin(dashboard.setData),
     // new OfflinePlugin({
     //   externals: [

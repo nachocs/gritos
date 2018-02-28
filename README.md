@@ -10,6 +10,10 @@ Gritos.com
 
 # Changelog
 
+## 1.9.1
+bug with moment locale not showing es
+load model of msg before updating likes.
+
 ## 1.9.0
 Full Gallery View, working.
 
