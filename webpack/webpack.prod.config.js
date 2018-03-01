@@ -106,7 +106,7 @@ const config = {
     // Merge all duplicate modules
     new webpack.optimize.UglifyJsPlugin({ // Optimize the JavaScript...
       compress: {
-        warnings: false, // ...but do not show warnings in the console (there is a lot of them)
+        warnings: false, // do not show warnings in the console
         drop_console: true,
         drop_debugger: true,
       },

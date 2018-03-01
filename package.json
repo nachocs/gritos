@@ -32,7 +32,6 @@
     "bootstrap": "^3.3.7",
     "facebook-sdk-promise": "^1.2.1",
     "font-awesome": "^4.7.0",
-    "https-proxy-agent": "^2.1.1",
     "icomoon-free-npm": "0.0.0",
     "intersection-observer": "^0.4.3",
     "jquery": "^3.1.1",
@@ -71,6 +70,7 @@
     "exports-loader": "^0.6.4",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^0.10.1",
+    "https-proxy-agent": "^2.1.1",
     "html-loader": "^0.4.5",
     "html-webpack-plugin": "^2.28.0",
     "json-loader": "^0.5.4",
@@ -89,7 +89,6 @@
     "webpack": "^3.11.0",
     "webpack-assets-manifest": "^0.6.2",
     "webpack-bundle-analyzer": "^2.10.0",
-    "webpack-dashboard": "^0.3.0",
-    "webpack-dev-server": "^2.9.7"
+    "webpack-dev-server": "^2.11.2"
   }
 }
