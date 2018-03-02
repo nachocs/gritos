@@ -327,6 +327,42 @@ div.titulo{
         }
       }
     }
+    .msg-encuesta{
+      box-shadow: 0px 0px 4px -2px black;
+      border-radius: 5px;
+      .msg-encuesta-header{
+        padding: 0 10px;
+        text-align: center;
+        span{
+          font-family: newdreamers, sans-serif;
+          font-size: 1rem;
+        }
+      }
+      .msg-encuesta-item{
+        font-size: 1rem;
+        padding: 0 10px;
+        border: 1px solid aliceblue;
+        border-radius: 5px;
+        margin: 5px;
+        &:hover{
+          background-color: #eee;
+        }
+        .msg-encuesta-item-value{
+          display: inline-block;
+        }
+        .msg-encuesta-item-votos{
+          float: right;
+          margin-right: 5px;
+        }
+        .msg-encuesta-item-votar{
+          float: right;
+          cursor: pointer;
+          &:hover{
+            color: green;
+          }
+        }
+      }
+    }
   }
 }
 .action-icons{

@@ -22,7 +22,7 @@ export default Backbone.View.extend({
   cierraOpcion(e) {
     const opc = this.$(e.currentTarget).data('opcion');
     let options = this.model.get('options');
-    options = options.filter((option) => option.id !== opc);
+    options = options.filter((option) => Number(option.id) !== Number(opc));
     this.model.set('options', options);
     this.render();
   },
@@ -33,10 +33,10 @@ export default Backbone.View.extend({
       let lastOption;
       options.forEach((option) => {
         option.value = this.$('[name=' + option.id + ']').val();
-        lastOption = option.id;
+        lastOption = Number(option.id);
       });
       if (targetOpt === lastOption) {
-        const newId = Number(lastOption) + 1;
+        const newId = lastOption + 1;
         options.push({
           id: newId,
           value: '',
@@ -48,6 +48,18 @@ export default Backbone.View.extend({
         const nextFocus = targetOpt + 1;
         this.$('[name=' + nextFocus + ']').focus();
       }
+    } else {
+      const self = this;
+      setTimeout(() => {
+        const opt = [];
+        self.$('[name]').each((index, element) => {
+          opt.push({
+            id: element.name,
+            value: element.value,
+          });
+          self.model.set('options', opt);
+        });
+      });
     }
   },
   render() {

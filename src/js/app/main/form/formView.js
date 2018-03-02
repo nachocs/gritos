@@ -551,12 +551,14 @@ export default ViewBase.extend({
       }
     }
     if (this.encuestasForm && this.encuestasForm.model) {
-      Object.assign(saveObj, {
-        encuesta: JSON.stringify(this.encuestasForm.model.toJSON()),
-      });
+      const encuestas = this.encuestasForm.model.toJSON();
+      if (encuestas.options && encuestas.options.length > 0) {
+        encuestas.options = encuestas.options.filter(option => option.value);
+        Object.assign(saveObj, {
+          encuesta: JSON.stringify(encuestas),
+        });
+      }
     }
-    console.log(saveObj);
-    return;
     this.isSaving = true;
     this.formModel.save(
       saveObj, {

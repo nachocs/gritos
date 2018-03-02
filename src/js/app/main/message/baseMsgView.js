@@ -90,6 +90,38 @@ export default ViewBase.extend({
     'click .img-hover': 'displayBigImage',
     'mouseout .imagen-modal': 'hideBigImage',
     'click .imagen-modal': 'hideBigImage',
+    'click .msg-encuesta-item-votar': 'votar',
+  },
+  votar(e) {
+    const votoid = this.$(e.currentTarget).data('votoid');
+    const enc = JSON.parse(this.model.get('encuesta'));
+    if (votoid && enc && enc.options && enc.options.length > 0 && this.userModel.get('ID')) {
+      this.model.fetch().done(() => {
+        const encuesta = JSON.parse(this.model.get('encuesta'));
+        encuesta.options.forEach(option => {
+          if (option.id) {
+            let log = option.log ? option.log.split(/\|/) : [];
+            const match = log.find(l => Number(l) === Number(this.userModel.get('ID')));
+            if (Number(option.id) === Number(votoid)) {
+              if (match) { // resta
+                option.votos = option.votos ? Number(option.votos) - 1 : 0;
+                log = log.filter(l => Number(l) !== Number(this.userModel.get('ID')));
+              } else { // suma
+                option.votos = option.votos ? Number(option.votos) + 1 : 1;
+                log.push(this.userModel.get('ID'));
+              }
+            } else if (match) {
+              option.votos = option.votos ? Number(option.votos) - 1 : 0;
+              log = log.filter(l => Number(l) !== Number(this.userModel.get('ID')));
+            }
+            option.log = log.join('|');
+          }
+        });
+        this.model.save('encuesta', JSON.stringify(encuesta));
+        this.render();
+      });
+    }
+
   },
   hideBigImage() {
     this.$('.imagen-modal').removeClass('active');
@@ -352,6 +384,7 @@ export default ViewBase.extend({
       userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
       emocion: this.model.get('emocion') && this.model.get('emocion').replace('http:', ''),
+      encuesta: this.model.get('encuesta') ? JSON.parse(this.model.get('encuesta')) : '',
     });
   },
   clean() {

@@ -56,6 +56,31 @@
 		<% } %>
 	<%= obj.comments %>
 	</div>
+	<% if(obj.encuesta && obj.encuesta.options && obj.encuesta.options.length > 0){ %>
+		<div class="msg-encuesta">
+			<div class="msg-encuesta-header">
+				<span>Votaci&oacute;n</span>
+			</div>
+			<% for (var i=0; i < obj.encuesta.options.length; i++){ var option = obj.encuesta.options[i]; %>
+				<div class="msg-encuesta-item">
+					<div class="msg-encuesta-item-value">
+						<span><%= option.value %></span>
+					</div>
+					<div class="msg-encuesta-item-votar" data-votoid="<%= option.id %>">
+						<% var match = option.log ? option.log.split(/\|/).find(l => Number(l) === Number(obj.userModel.ID)) : null; %>
+						<% if(match){ %>
+							<span><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
+						<% } else { %>
+							<span><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+						<% } %>
+					</div>
+					<div class="msg-encuesta-item-votos">
+						<span><%= option.votos ? option.votos : '' %></span>
+					</div>
+				</div>
+			<% } %>
+		</div>
+	<% } %>
 	<div class="foot">
 		<% if (obj.showForm && obj.tagsShown && obj.tagsShown.length > 0){ %>
 			<div class="tags">
@@ -71,5 +96,5 @@
 <div class="minimsgs"></div>
 <div class="mini-form"></div>
 <div class="imagen-modal">
-	<img />	
+	<img />
 </div>
