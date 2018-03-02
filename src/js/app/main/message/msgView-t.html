@@ -69,9 +69,9 @@
 					<div class="msg-encuesta-item-votar" data-votoid="<%= option.id %>">
 						<% var match = option.log ? option.log.split(/\|/).find(l => Number(l) === Number(obj.userModel.ID)) : null; %>
 						<% if(match){ %>
-							<span><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
+							<span title="quitar tu voto"><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
 						<% } else { %>
-							<span><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+							<span title="vota a &eacute;ste"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
 						<% } %>
 					</div>
 					<div class="msg-encuesta-item-votos">
