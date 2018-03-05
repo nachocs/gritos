@@ -1,5 +1,4 @@
 import ViewBase from '../base/ViewBase';
-import globalModel from '../../models/globalModel';
 import GalleryCollection from './galleryCollection';
 import $ from 'jquery';
 import GalleryMsgView from './galleryMsgView';
@@ -9,11 +8,7 @@ export default ViewBase.extend({
   initialize() {
     this.collection = new GalleryCollection([]);
     this.views = {};
-    this.listenTo(globalModel, 'change:isGallery', () => {
-      if (globalModel.get('isGallery')) {
-        this.collection.fetch();
-      }
-    });
+
     // this.listenTo(this.collection, 'sync', this.render.bind(this));
     this.listenTo(this.collection, 'reset', this.render.bind(this));
     this.listenTo(this.collection, 'add', this.renderOne.bind(this));

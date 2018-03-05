@@ -1,21 +1,21 @@
 import ViewBase from '../base/ViewBase';
-import template from './galleryThumbnailView.html';
+import template from './votacionesThumbnailView.html';
 import _ from 'lodash';
 import globalModel from '../../models/globalModel';
-import GalleryThumbnailModel from './galleryThumbnailModel';
+import VotacionesThumbnailModel from './votacionesThumbnailModel';
 import router from '../../router';
 
 //https://gritos.com/jsgritos/api/json.cgi?indice=gritos/avengers&encontrar=IMAGEN0_THUMB&max=1
 //https://gritos.com/jsgritos/api/json.cgi?indice=ciudadanos/35331&encontrar=IMAGEN0_THUMB&max=1
 export default ViewBase.extend({
-  model: new GalleryThumbnailModel(),
+  model: new VotacionesThumbnailModel(),
   template: _.template(template),
   className: 'right-block',
   events: {
-    'click .gotogallery': 'goToGallery',
+    'click .gotovotaciones': 'goToVotaciones',
   },
-  goToGallery() {
-    let ruta = '/' + globalModel.get('ID') + '/gallery';
+  goToVotaciones() {
+    let ruta = '/' + globalModel.get('ID') + '/votaciones';
     ruta = ruta.replace(/\/\//, '/');
     router.navigate(ruta, { trigger: true });
   },
@@ -35,8 +35,14 @@ export default ViewBase.extend({
     this.listenTo(this.model, 'sync', this.render.bind(this));
   },
   render() {
-    this.$el.html(this.template(this.model.toJSON()));
+    this.$el.html(this.template(this.serializer()));
     this.delegateEvents();
     return this;
+  },
+  serializer() {
+    const obj = this.model.toJSON();
+    return Object.assign({}, obj, {
+      comments: obj.comments && obj.comments.length > 50 ? obj.comments.substring(0, 50) + '...' : obj.comments,
+    });
   },
 });

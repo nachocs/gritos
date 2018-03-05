@@ -25,6 +25,16 @@
 						<% if (userModel.ID === obj.ciudadano){%>
 							<li><i class="fa fa-pencil fa-lg js-edit" aria-hidden="true" title="edit"></i></li>
 						<% } %>
+						<% if (obj.encuesta && (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).includes(userModel.ID)))){%>
+							<li>
+								<span class="js-parar-encuesta fa-stack fa-lg" title="<%= obj.encuesta.cerrado ? 'abrir' : 'cerrar' %> votacion" style="width: 1em; height: 1em; line-height: 1em;">
+								  <i class="fa fa-lg fa-bar-chart fa-stack-1x" style="font-size: 1em;"></i>
+									<% if(!obj.encuesta.cerrado){ %>
+								  <i class="fa fa-lg fa-ban fa-stack-2x" style="color: red; font-size: 1.33333333em;"></i>
+									<% } %>
+								</span>
+							</li>
+						<% } %>
 					</ul>
 				</div>
 			</div>
@@ -59,7 +69,7 @@
 	<% if(obj.encuesta && obj.encuesta.options && obj.encuesta.options.length > 0){ %>
 		<div class="msg-encuesta">
 			<div class="msg-encuesta-header">
-				<span>Votaci&oacute;n</span>
+				<span>Votaci&oacute;n <%= obj.encuesta.cerrado ? '(cerrada)' : '' %></span>
 			</div>
 			<% for (var i=0; i < obj.encuesta.options.length; i++){ var option = obj.encuesta.options[i]; %>
 				<div class="msg-encuesta-item">
@@ -67,11 +77,13 @@
 						<span><%= option.value %></span>
 					</div>
 					<div class="msg-encuesta-item-votar" data-votoid="<%= option.id %>">
-						<% var match = option.log ? option.log.split(/\|/).find(l => Number(l) === Number(obj.userModel.ID)) : null; %>
-						<% if(match){ %>
-							<span title="quitar tu voto"><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
-						<% } else { %>
-							<span title="vota a &eacute;ste"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+						<% if(obj.userModel.ID && !obj.encuesta.cerrado){ %>
+							<% var match = option.log ? option.log.split(/\|/).find(l => Number(l) === Number(obj.userModel.ID)) : null; %>
+							<% if(match){ %>
+								<span title="quitar tu voto"><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
+							<% } else { %>
+								<span title="vota a &eacute;ste"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+							<% } %>
 						<% } %>
 					</div>
 					<div class="msg-encuesta-item-votos">

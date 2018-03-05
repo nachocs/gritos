@@ -91,6 +91,15 @@ export default ViewBase.extend({
     'mouseout .imagen-modal': 'hideBigImage',
     'click .imagen-modal': 'hideBigImage',
     'click .msg-encuesta-item-votar': 'votar',
+    'click .js-parar-encuesta': 'pararVotacion',
+  },
+  pararVotacion() {
+    this.model.fetch().done(() => {
+      const encuesta = JSON.parse(this.model.get('encuesta'));
+      encuesta.cerrado = !encuesta.cerrado;
+      this.model.save('encuesta', JSON.stringify(encuesta));
+      this.render();
+    });
   },
   votar(e) {
     const votoid = this.$(e.currentTarget).data('votoid');
@@ -384,8 +393,17 @@ export default ViewBase.extend({
       userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
       emocion: this.model.get('emocion') && this.model.get('emocion').replace('http:', ''),
-      encuesta: this.model.get('encuesta') ? JSON.parse(this.model.get('encuesta')) : '',
+      encuesta: this.getEncuesta(),
     });
+  },
+  getEncuesta() {
+    const encuesta = this.model.get('encuesta') ? JSON.parse(this.model.get('encuesta')) : '';
+    if (encuesta && encuesta.options && encuesta.options.length > 0) {
+      encuesta.options = _.sortBy(encuesta.options, (opt) => {
+        return Number(opt.votos) * -1;
+      });
+    }
+    return encuesta;
   },
   clean() {
     this.formView && this.formView.trigger('remove');

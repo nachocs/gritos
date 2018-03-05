@@ -1,7 +1,12 @@
-<% if (obj.IMAGEN0_THUMB){ %>
-  <img src="<%= obj.IMAGEN0_THUMB  %>" class="gotogallery">
-<% } else if(obj.IMAGEN1_THUMB_URL){ %>
-  <img src="<%= obj.IMAGEN1_THUMB_URL  %>" class="gotogallery">
-<% } else if (obj.IMAGEN1_URL ){ %>
-  <img src="<%= obj.IMAGEN1_URL  %>" class="gotogallery">
+<% if (obj.IMAGEN0_THUMB || obj.IMAGEN1_THUMB_URL || obj.IMAGEN1_URL){ %>
+  <div class="right-side-head">
+    <span class="gotogallery">Galer&iacute;a</span>
+  </div>
+  <% if (obj.IMAGEN0_THUMB){ %>
+    <img src="<%= obj.IMAGEN0_THUMB  %>" class="gotogallery">
+  <% } else if(obj.IMAGEN1_THUMB_URL){ %>
+    <img src="<%= obj.IMAGEN1_THUMB_URL  %>" class="gotogallery">
+  <% } else if (obj.IMAGEN1_URL ){ %>
+    <img src="<%= obj.IMAGEN1_URL  %>" class="gotogallery">
+  <% } %>
 <% } %>

@@ -35,7 +35,7 @@ export default Backbone.Collection.extend({
     }
     if (this.globalModel) {
       this.listenTo(this.globalModel, 'change', () => {
-        if (!this.globalModel.get('isGallery')) {
+        if (!this.globalModel.get('isGallery') && !this.globalModel.get('isVotaciones')) {
           this.clean();
           this.id = this.globalModel.get('ID'); // para cuando se cambia de foro principal
           if (this.globalModel.get('msg') || this.globalModel._previousAttributes.msg) {

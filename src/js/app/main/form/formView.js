@@ -113,11 +113,14 @@ export default ViewBase.extend({
     this.clearArea();
     if (this.$('.encuesta-area').hasClass('active')) {
       this.$('.encuesta-area').removeClass('active');
+      this.$('.formularioTextArea').attr('placeholder', this.getPlaceholder());
+
       if (this.encuestasForm) {
         this.encuestasForm.model.clear();
       }
     } else {
       this.$('.encuesta-area').addClass('active');
+      this.$('.formularioTextArea').attr('placeholder', 'Pregunta lo que quieras');
       this.encuestasForm = new EncuestasForm();
       this.$('.encuesta-area').html(this.encuestasForm.render().el);
       this.$('.encuesta-area').find('[name=1]').focus();
@@ -634,15 +637,8 @@ export default ViewBase.extend({
     //   $(this).height(this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth')));
     // });
   },
-  serializer() {
-    const obj = this.userModel.toJSON();
+  getPlaceholder() {
     let titulo_head;
-    if (this.parentModel && this.parentModel.get('ID')) {
-      Object.assign(obj, { parentModel: this.parentModel.toJSON() });
-    }
-    if (this.msg && this.msg.get('ID')) {
-      Object.assign(obj, { msg: this.msg.toJSON() });
-    }
     if (this.headModel) {
       if (this.headModel.get('INDICE') && this.headModel.get('INDICE').match(/^ciudadanos/)) {
         titulo_head = 'Escribe en el muro de ' + this.headModel.get('Titulo');
@@ -652,6 +648,17 @@ export default ViewBase.extend({
         titulo_head = 'Sueltate! Grita! (en tu muro).';
       }
     }
+    return titulo_head;
+
+  },
+  serializer() {
+    const obj = this.userModel.toJSON();
+    if (this.parentModel && this.parentModel.get('ID')) {
+      Object.assign(obj, { parentModel: this.parentModel.toJSON() });
+    }
+    if (this.msg && this.msg.get('ID')) {
+      Object.assign(obj, { msg: this.msg.toJSON() });
+    }
     Object.assign(obj, {
       emojis: '<img class="emojione" alt="😁" title="emojis" src="' + smile + '">',
       formModel: this.formModel.toJSON(),
@@ -659,7 +666,7 @@ export default ViewBase.extend({
       tagPlaceShown: this.tagPlaceShown,
       active: this.active,
       isHead: this.isHead,
-      titulo_head,
+      titulo_head: this.getPlaceholder(),
       default_dreamy: this.images.default_dreamy,
     });
     return obj;

@@ -12,6 +12,7 @@ import AvisosView from './header/avisosView';
 import ViewBase from './base/ViewBase';
 import RightView from './right/rightView';
 import GalleryView from './gallery/galleryView';
+import EncuestasCollection from './encuestas/encuestasCollection';
 
 export default ViewBase.extend({
   className: 'main',
@@ -24,7 +25,6 @@ export default ViewBase.extend({
       userModel: this.userModel,
       headModel: this.model,
     });
-
     this.loginView = new LoginView({
       userModel: this.userModel,
     });
@@ -43,6 +43,13 @@ export default ViewBase.extend({
     });
     this.galleryView = new GalleryView({});
     this.rightView = new RightView({});
+    this.encuestasCollection = new EncuestasCollection([]);
+    this.votacionesCollectionView = new MsgCollectionView({
+      collection: this.encuestasCollection,
+      userModel: this.userModel,
+      headModel: this.model,
+    });
+
     this.notificacionesView = new NotificacionesView({});
     this.listenTo(this.model, 'sync', this.render.bind(this));
     this.listenTo(this.userModel, 'change', this.render.bind(this));
@@ -91,16 +98,22 @@ export default ViewBase.extend({
       this.spinnerView = new SpinnerView({
         collection: this.galleryView.collection,
       });
-      this.$('.right-side').remove();
+    } else if (this.globalModel.get('isVotaciones')) {
+      this.$('.content').first().removeClass('gallery');
+      this.$('.msg-list').replaceWith(this.votacionesCollectionView.render().el);
+      this.$('.form-view').html(this.formView.render().el);
+      this.spinnerView = new SpinnerView({
+        collection: this.encuestasCollection,
+      });
     } else {
       this.$('.content').first().removeClass('gallery');
       this.$('.msg-list').replaceWith(this.msgCollectionView.render().el);
       this.$('.form-view').html(this.formView.render().el);
-      this.$('.right-side').replaceWith(this.rightView.render().el);
       this.spinnerView = new SpinnerView({
         collection: this.collection,
       });
     }
+    this.$('.right-side').replaceWith(this.rightView.render().el);
     this.$('.login-view').html(this.loginView.render().el);
     this.$('.spinner-view').html(this.spinnerView.render().el);
     this.$('.resumen-collection').replaceWith(this.resumenView.render().el);
@@ -135,6 +148,10 @@ export default ViewBase.extend({
     if (this.globalModel.get('isGallery')) {
       if (($(e.currentTarget).scrollTop() + window.innerHeight) > ($('.gallery').height() - 200)) {
         this.galleryView.nextPage();
+      }
+    } else if (this.globalModel.get('isVotaciones')) {
+      if (($(e.currentTarget).scrollTop() + window.innerHeight) > ($('.msg-list').height() - 200)) {
+        this.encuestasCollection.nextPage();
       }
     } else {
       if (($(e.currentTarget).scrollTop() + window.innerHeight) > ($('.msg-list').height() - 200)) {
