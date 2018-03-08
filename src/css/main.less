@@ -344,6 +344,7 @@ div.titulo{
         border: 1px solid aliceblue;
         border-radius: 5px;
         margin: 5px;
+        background: #d8fdcf;
         &:hover{
           background-color: #eee;
         }
@@ -1561,4 +1562,32 @@ h6.resumen-subheader{
       cursor: pointer;
     }
   }
+}
+// [data-userlist]{
+  // cursor: zoom-in;
+// }
+.user-list {
+    position: absolute;
+    min-width: 100px;
+    width: auto;
+    background: white;
+    min-height: 20px;
+    font-size: .9rem;
+    // color: white;
+    top: 200px;
+    z-index: 100;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2);
+    .user-list-head{
+      padding: 0 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+    ul.user-list-content{
+      list-style: none;
+      padding: 1px;
+      margin: 5px;
+      li{
+        padding-right: 5px;
+      }
+    }
 }

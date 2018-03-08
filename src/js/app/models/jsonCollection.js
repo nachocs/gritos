@@ -29,16 +29,18 @@ export default Backbone.Collection.extend({
     this.listenTo(this, 'request', () => {
       this.loading = true;
     });
-    this.listenTo(globalModel, 'change:' + this.isValue, () => {
-      if (globalModel.get(this.isValue)) {
-        this.fetch();
-      }
-    });
+    if (this.isValue) {
+      this.listenTo(globalModel, 'change:' + this.isValue, () => {
+        if (globalModel.get(this.isValue)) {
+          this.fetch();
+        }
+      });
+    }
   },
   url() {
     let uri;
     this.indice = this.getIndice();
-    if (this.indice) {
+    if (this.indice && this.encontrar) {
       uri = 'https://gritos.com/jsgritos/api/json.cgi?indice=' + this.indice + '&encontrar=' + this.encontrar + '&max=' + this.max;
       if (this.lastReadEntry) {
         uri = uri + '&last=' + this.lastReadEntry;
