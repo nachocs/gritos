@@ -10,6 +10,10 @@ Gritos.com
 
 # Changelog
 
+## 1.10.0
+Encuestas y userList.
+Cache fetch in some calls.
+
 ## 1.9.1
 bug with moment locale not showing es
 load model of msg before updating likes.

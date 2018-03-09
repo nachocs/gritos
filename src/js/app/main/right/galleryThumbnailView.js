@@ -30,7 +30,7 @@ export default ViewBase.extend({
         id = 'gritos/' + id;
       }
       this.model.set('indice', id);
-      this.model.fetch();
+      this.model.fetch({ cache: true });
     });
     this.listenTo(this.model, 'sync', this.render.bind(this));
   },

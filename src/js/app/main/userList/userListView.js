@@ -32,8 +32,6 @@ export default Backbone.View.extend({
     });
     this.listenTo(this.model, 'change', this.render.bind(this));
     _.bindAll(this);
-    console.log(this);
-
   },
   render() {
     this.$el.html(this.template(this.serializer()));
@@ -62,9 +60,11 @@ export default Backbone.View.extend({
     return this.model.toJSON();
   },
   clean() {
-    this.collection.each((model) => {
-      this.removeOne(model);
-    });
+    if (this.collection) {
+      this.collection.each((model) => {
+        this.removeOne(model);
+      });
+    }
     delete this.collection;
     delete this.views;
     this.remove();

@@ -1,1 +1,8 @@
-<%= obj.alias_principal %>
+<% if (obj.dreamy_principal){ %>
+  <div class="minidreamy" style="background-image:url('<%= obj.dreamy_principal %>')"></div>
+<% } else if (obj.FB_picture){ %>
+  <div class="minidreamy" style="background-image:url('<%= obj.FB_picture %>')"></div>
+<% } else { %>
+  <div class="minidreamy" style="background-image:url('<%= obj.images.default_dreamy %>')"></div>
+<% } %>
+<span><%= obj.alias_principal %></span>

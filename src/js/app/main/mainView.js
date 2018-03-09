@@ -13,6 +13,7 @@ import ViewBase from './base/ViewBase';
 import RightView from './right/rightView';
 import GalleryView from './gallery/galleryView';
 import EncuestasCollection from './encuestas/encuestasCollection';
+import UserListView from './userList/userListView';
 
 export default ViewBase.extend({
   className: 'main',
@@ -57,12 +58,49 @@ export default ViewBase.extend({
     this.images = {
       logo: require('../../../img/logo50x50.gif'),
     };
+    this.listenTo(this.globalModel, 'change', (() => {
+      if (this.userListView) {
+        this.userListView.clean();
+      }
+    }));
+
+
   },
   events: {
+    'click': 'cleanUserList',
     'click .new-msg': 'newMsg',
     'click .foro-admin': 'openForoAdmin',
     'click [data-link]': 'goToLink',
     'click .js-home': 'goToHome',
+    'mouseover [data-userlist]': 'openUserList',
+  },
+  openUserList(e) {
+    const userlist = $(e.currentTarget).data('userlist');
+    const userlisthead = $(e.currentTarget).data('userlisthead');
+    if (userlist) {
+      if (this.userListView) {
+        this.userListView.clean();
+      }
+      this.userListView = new UserListView({ encontrar: userlist, userlisthead });
+      $('#root').append(this.userListView.render().el);
+      const coordinates = $(e.currentTarget).offset();
+      const self = this;
+      const coordinates2 = Object.assign({}, coordinates);
+      coordinates2.top = coordinates2.top - self.userListView.$el.height() - 20;
+      self.userListView.$el.offset(coordinates2);
+      this.userListView.collection.fetch({ cache: true }).done(() => {
+        setTimeout(() => {
+          coordinates.top = coordinates.top - self.userListView.$el.height() - 10;
+          self.userListView.$el.offset(coordinates);
+        });
+      });
+    }
+
+  },
+  cleanUserList() {
+    if (this.userListView) {
+      this.userListView.clean();
+    }
   },
   goToHome() {
     $(window).scrollTop(0);

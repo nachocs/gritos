@@ -1,6 +1,6 @@
 {
   "name": "gritos",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "Gritos.com",
   "main": "js/app/app.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "autolinker": "^1.2.1",
     "babel-polyfill": "^6.23.0",
     "backbone": "^1.3.3",
+    "backbone-fetch-cache": "^2.0.1",
     "bootstrap": "^3.3.7",
     "facebook-sdk-promise": "^1.2.1",
     "font-awesome": "^4.7.0",
