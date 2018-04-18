@@ -15,6 +15,7 @@
     url('../fonts/newdreamers.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
     url('../fonts/newdreamers.ttf') format('truetype'); /* TTF file for CSS3 browsers */
 }
+@enlaces:#222486;
 
 .newdreamers{
   font-family: newdreamers!important;
@@ -264,7 +265,7 @@ div.titulo{
         overflow-y: auto;
         width: auto;
         a{
-          text-decoration: underline;
+          color: @enlaces;
         }
       }
       .mdl-card__title{
@@ -898,7 +899,7 @@ iframe {
     background-color: rgb(250, 250, 250);
   }
   a{
-    text-decoration: underline;
+    color: @enlaces;
   }
 }
 .form-submit{
@@ -1069,6 +1070,7 @@ div[contenteditable = true]:empty:before{
         }
         a{
           text-decoration: none;
+          color: @enlaces;
         }
         .nots-text{
           display: flex;
@@ -1256,6 +1258,7 @@ h6.resumen-subheader{
   max-height: 180px;
   a{
     text-decoration: none;
+    color: @enlaces;
   }
   img{
     // max-width: 50%;
