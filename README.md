@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.10.1
+bug in IE, doesn't support 'includes'
+
 ## 1.10.0
 Encuestas y userList.
 Cache fetch in some calls.
