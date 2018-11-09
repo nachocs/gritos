@@ -60,11 +60,11 @@ export default Backbone.View.extend({
   },
   serializer() {
     const arraymola = this.model.get('molalog') ? this.model.get('molalog').split('|') : [];
-    const currentMola = arraymola.includes(this.userModel.get('ID'));
+    const currentMola = !!(arraymola.indexOf(this.userModel.get('ID')) > -1);
     const arraynomola = this.model.get('nomolalog') ? this.model.get('nomolalog').split('|') : [];
-    const currentNomola = arraynomola.includes(this.userModel.get('ID'));
+    const currentNomola = !!(arraynomola.indexOf(this.userModel.get('ID')) > -1);
     const arraylove = this.model.get('lovelog') ? this.model.get('lovelog').split('|') : [];
-    const currentLove = arraylove.includes(this.userModel.get('ID'));
+    const currentLove = !!(arraylove.indexOf(this.userModel.get('ID')) > -1);
     return _.extend({},
       this.model.toJSON(), {
         currentMola,

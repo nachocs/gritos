@@ -19,13 +19,13 @@
 				<div class="admin-menu">
 					<ul>
 						<li><i class="fa fa-ban fa-lg js-ban" aria-hidden="true" title="spam!"></i></li>
-						<% if (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).includes(userModel.ID))){%>
+						<% if (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).indexOf(userModel.ID) > -1)){%>
 							<li><i class="fa fa-trash-o fa-lg js-delete" aria-hidden="true" title="delete"></i></li>
 						<% } %>
 						<% if (userModel.ID === obj.ciudadano){%>
 							<li><i class="fa fa-pencil fa-lg js-edit" aria-hidden="true" title="edit"></i></li>
 						<% } %>
-						<% if (obj.encuesta && (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).includes(userModel.ID)))){%>
+						<% if (obj.encuesta && (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).indexOf(userModel.ID) > -1))){%>
 							<li>
 								<span class="js-parar-encuesta fa-stack fa-lg" title="<%= obj.encuesta.cerrado ? 'abrir' : 'cerrar' %> votacion" style="width: 1em; height: 1em; line-height: 1em;">
 								  <i class="fa fa-lg fa-bar-chart fa-stack-1x" style="font-size: 1em;"></i>
