@@ -660,7 +660,7 @@ export default ViewBase.extend({
       Object.assign(obj, { msg: this.msg.toJSON() });
     }
     Object.assign(obj, {
-      emojis: '<img class="emojione" alt="😁" title="emojis" src="' + smile + '">',
+      emojis: '<img class="emojione" alt="😝" title="emojis" src="' + smile + '">',
       formModel: this.formModel.toJSON(),
       tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
       tagPlaceShown: this.tagPlaceShown,

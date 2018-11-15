@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 export default Backbone.View.extend({
   template: _.template(template),
-  initialize(){
+  initialize() {
     this.listenTo(this.collection, 'sync', () => {
       this.hideSpinner();
     });
@@ -18,17 +18,26 @@ export default Backbone.View.extend({
       this.showSpinner();
     });
   },
-  showSpinner(){
+  showSpinner() {
     this.$el.find('.mdl-spinner').addClass('is-active');
-    componentHandler.upgradeElement(this.$el.find('.mdl-spinner')[0]);
+    const ele = this.$el.find('.mdl-spinner')[0];
+    if ('object' == typeof ele && ele instanceof Element) {
+      componentHandler.upgradeElement(ele);
+    }
   },
-  hideSpinner(){
+  hideSpinner() {
     this.$el.find('.mdl-spinner').removeClass('is-active');
-    componentHandler.upgradeElement(this.$el.find('.mdl-spinner')[0]);
+    const ele = this.$el.find('.mdl-spinner')[0];
+    if ('object' == typeof ele && ele instanceof Element) {
+      componentHandler.upgradeElement(ele);
+    }
   },
-  render(){
+  render() {
     this.$el.html(this.template());
-    componentHandler.upgradeElement(this.$el.find('.mdl-spinner')[0]);
+    const ele = this.$el.find('.mdl-spinner')[0];
+    if ('object' == typeof ele && ele instanceof Element) {
+      componentHandler.upgradeElement(ele);
+    }
     return this;
   },
 });

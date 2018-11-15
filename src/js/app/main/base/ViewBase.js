@@ -10,7 +10,9 @@ export default Backbone.View.extend({
     _.defer(() => {
       if (self && self.$el) {
         self.$el.find('[class*=" mdl-js"]').each(function () {
-          componentHandler.upgradeElement(this);
+          if ('object' == typeof this && this instanceof Element){
+            componentHandler.upgradeElement(this);
+          }
         });
       }
     });

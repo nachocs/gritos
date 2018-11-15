@@ -16,11 +16,15 @@ export default Backbone.View.extend({
     this.collection.each((model) => {
       this.renderOne(model);
     });
-    componentHandler.upgradeElement(this.el);
+    if ('object' == typeof this.el && this.el instanceof Element) {
+      componentHandler.upgradeElement(this.el);
+    }
     return this;
   },
   renderOne(model, collection, options) {
-    if (!model.id) { return; }
+    if (!model.id) {
+      return;
+    }
     const msgView = new this.MsgView({
       model,
       userModel: this.userModel,

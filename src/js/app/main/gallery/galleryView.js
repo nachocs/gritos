@@ -21,14 +21,19 @@ export default ViewBase.extend({
     this.collection.each((model) => {
       this.renderOne(model);
     });
-    componentHandler.upgradeElement(this.el);
+    if ('object' == typeof this.el && this.el instanceof Element) {
+      componentHandler.upgradeElement(this.el);
+    }
+
     return this;
   },
   nextPage() {
     this.collection.nextPage();
   },
   renderOne(model) {
-    if (!model.id) { return; }
+    if (!model.id) {
+      return;
+    }
     const msgView = new GalleryMsgView({
       model,
     });

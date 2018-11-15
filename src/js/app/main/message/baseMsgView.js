@@ -48,7 +48,9 @@ export default ViewBase.extend({
         userModel: this.userModel,
         headModel: this.headModel,
       });
-      this.previousMsgView = new PreviousMsgView({ collection: this.minimsgsCollection });
+      this.previousMsgView = new PreviousMsgView({
+        collection: this.minimsgsCollection
+      });
       this.listenTo(this.model, 'change:minimsgs', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'reset', this.renderMiniMsgs.bind(this));
       this.listenTo(this.minimsgsCollection, 'add', this.renderMiniMsgs.bind(this));
@@ -282,7 +284,10 @@ export default ViewBase.extend({
     const self = this;
     if (self.$el.find('.icon').length > 0) {
       setTimeout(() => {
-        componentHandler.upgradeElement(self.$el.find('.icon')[0]);
+        const ele = self.$el.find('.icon')[0];
+        if ('object' == typeof ele && ele instanceof Element) {
+          componentHandler.upgradeElement(ele);
+        }
       }, 100);
     }
     this.materialDesignUpdate();
