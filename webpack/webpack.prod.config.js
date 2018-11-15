@@ -104,13 +104,13 @@ const config = {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(true),
     // Merge all duplicate modules
-    // new webpack.optimize.UglifyJsPlugin({ // Optimize the JavaScript...
-    //   compress: {
-    //     warnings: false, // do not show warnings in the console
-    //     drop_console: true,
-    //     drop_debugger: true,
-    //   },
-    // }),
+    new webpack.optimize.UglifyJsPlugin({ // Optimize the JavaScript...
+      compress: {
+        warnings: false, // do not show warnings in the console
+        drop_console: true,
+        drop_debugger: true,
+      },
+    }),
     new ExtractTextPlugin({
       filename: 'dist/' + BUILD_NUM + '/[name].[contenthash].css',
       disable: false,
@@ -130,7 +130,7 @@ const config = {
         removeEmptyAttributes: true,
         removeStyleLinkTypeAttributes: true,
         keepClosingSlash: true,
-        minifyJS: false,
+        minifyJS: true,
         minifyCSS: true,
         minifyURLs: true,
       },

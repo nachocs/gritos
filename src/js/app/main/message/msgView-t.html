@@ -4,7 +4,8 @@
 <div class="mdl-card mdl-shadow--4dp">
 	<div class="action-icons">
 		<% if (obj.showForm){ %>
-			<div class="forward"><span data-link="/<%= obj.INDICE.replace(/^gritos\//,'') %>/<%= obj.ID %>"><i class="fa fa-chevron-circle-right fa-lg" aria-hidden="true"></i></span></div>
+			<div class="forward">
+				<span data-link="/<%= obj.INDICE.replace(/^gritos\//,'') %>/<%= obj.ID %>"><i class="fa fa-chevron-circle-right fa-lg" aria-hidden="true"></i></span></div>
 			<div class="share" title="share"><i class="fa fa-share-alt" aria-hidden="true"></i>
 				<div class="share-menu">
 					<ul>
@@ -19,13 +20,13 @@
 				<div class="admin-menu">
 					<ul>
 						<li><i class="fa fa-ban fa-lg js-ban" aria-hidden="true" title="spam!"></i></li>
-						<% if (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).indexOf(userModel.ID) > -1)){%>
+						<% if (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).indexOf(userModel.ID) > -1)){ %>
 							<li><i class="fa fa-trash-o fa-lg js-delete" aria-hidden="true" title="delete"></i></li>
 						<% } %>
 						<% if (userModel.ID === obj.ciudadano){%>
 							<li><i class="fa fa-pencil fa-lg js-edit" aria-hidden="true" title="edit"></i></li>
 						<% } %>
-						<% if (obj.encuesta && (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).indexOf(userModel.ID) > -1))){%>
+						<% if (obj.encuesta && (userModel.ID === obj.ciudadano || userModel.nivel > 7 || (headModel.Userid && headModel.Userid.split(/\|/).indexOf(userModel.ID) > -1))){ %>
 							<li>
 								<span class="js-parar-encuesta fa-stack fa-lg" title="<%= obj.encuesta.cerrado ? 'abrir' : 'cerrar' %> votacion" style="width: 1em; height: 1em; line-height: 1em;">
 								  <i class="fa fa-lg fa-bar-chart fa-stack-1x" style="font-size: 1em;"></i>
@@ -42,7 +43,12 @@
 	</div>
 	<div class="mdl-card__title">
 		<div class="mdl-card__title-text">
-			<% if (obj.ciudadano){ %><span data-link="/ciudadanos/<%= obj.ciudadano %>"><%}%><%= name %><% if (obj.ciudadano){ %></span>
+			<% if (obj.ciudadano){ %>
+				<span data-link="/ciudadanos/<%= obj.ciudadano %>">
+			<% } %>
+			<%= name %>
+			<% if (obj.ciudadano){ %>
+				</span>
 			<% } %>
 		</div>
 		<div class="mdl-card__subtitle-text">
@@ -78,7 +84,7 @@
 					</div>
 					<div class="msg-encuesta-item-votar" data-votoid="<%= option.id %>">
 						<% if(obj.userModel.ID && !obj.encuesta.cerrado){ %>
-							<% var match = option.log ? option.log.split(/\|/).find(l => Number(l) === Number(obj.userModel.ID)) : null; %>
+							<% var match = option.log ? (option.log.split(/\|/).indexOf(obj.userModel.ID) > -1) : null; %>
 							<% if(match){ %>
 								<span title="quitar tu voto"><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
 							<% } else { %>
