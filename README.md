@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.10.2
+Added font for Material Icons to support IE
+
 ## 1.10.1
 bug in IE, doesn't support 'includes'
 
