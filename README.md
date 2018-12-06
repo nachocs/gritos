@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.10.3
+Dreamys url pointing root
+
 ## 1.10.2
 Added font for Material Icons to support IE
 
