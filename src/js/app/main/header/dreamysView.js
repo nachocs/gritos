@@ -50,6 +50,7 @@ export default ViewBase.extend({
       DreamysService.fetchPersonalDreamys(this.model.get('ID'));
     }
   },
+
   uploadPostAndUpdate() {
     if (!this.model.get('uid')) { return; }
     const self = this;
