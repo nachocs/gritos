@@ -397,7 +397,7 @@ export default ViewBase.extend({
       images,
       userModel: this.userModel.toJSON(),
       headModel: this.headModel.toJSON(),
-      emocion: this.model.get('emocion') && this.model.get('emocion').replace('http:', ''),
+      emocion: this.model.get('emocion') && this.model.get('emocion').replace('http://dreamers.com', ''),
       encuesta: this.getEncuesta(),
     });
   },
