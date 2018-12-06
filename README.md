@@ -10,7 +10,7 @@ Gritos.com
 
 # Changelog
 
-## 1.10.4
+## 1.10.5
 Dreamys url pointing root
 
 ## 1.10.2
