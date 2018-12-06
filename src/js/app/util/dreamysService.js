@@ -34,11 +34,11 @@ const Service = class DreamysService {
     return data.map(l => {
       if (l.IMAGEN1_URL) {
         l.IMAGEN1_URL = l.IMAGEN1_URL.replace(/^https?\:\/\/dreamers\.com/, '');
-        l.IMAGEN1_URL = l.IMAGEN1_URL.replace(/^\/\/dreamers\.com\/mrdreamy\//, '/mrdreamy/');
+        l.IMAGEN1_URL = l.IMAGEN1_URL.replace(/^\/\/dreamers\.com\/mrdreamy\//, '/imagenes/mrdreamy/');
       }
       if (l.IMAGEN1_THUMB) {
         l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(/^https?\:\/\/dreamers\.com/, '');
-        l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(/^\/\/dreamers\.com\/mrdreamy\//, '/mrdreamy/');
+        l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(/^\/\/dreamers\.com\/mrdreamy\//, '/imagenes/mrdreamy/');
       }
       return l;
     });
