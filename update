@@ -1,5 +1,6 @@
 set -x;
 cd /home/gritos/secure/gritos;
 git pull;
-npm run build;
+npm install --verbose;
+npm run build --verbose;
 cp -R dist/* ../www/;
