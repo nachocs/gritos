@@ -1,7 +1,7 @@
 {
   "name": "gritos",
-  "version": "1.10.6",
-  "description": "Gritos.com",
+  "version": "1.10.7",
+  "description": "Grita sin cortarte un pelo",
   "main": "js/app/app.js",
   "scripts": {
     "lint": "eslint .",

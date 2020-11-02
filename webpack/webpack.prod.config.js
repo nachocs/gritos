@@ -142,8 +142,8 @@ const config = {
     new WebpackAssetsManifest({
       output: 'manifest.json',
       assets: {
-        'name': 'Gritos.com',
-        'short_name': 'Gritos.com',
+        'name': 'Gritos',
+        'short_name': 'gritos',
         'start_url': 'https://gritos.com',
         'theme_color': 'white',
         'display': 'standalone',
