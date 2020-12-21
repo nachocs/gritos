@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.10.8
+Added google adsense
+
 ## 1.10.6
 Dreamys and emocions url pointing root
 

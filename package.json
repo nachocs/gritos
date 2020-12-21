@@ -1,6 +1,6 @@
 {
   "name": "gritos",
-  "version": "1.10.7",
+  "version": "1.10.8",
   "description": "Grita sin cortarte un pelo",
   "main": "js/app/app.js",
   "scripts": {
