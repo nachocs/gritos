@@ -10,6 +10,9 @@ Gritos.com
 
 # Changelog
 
+## 1.10.9
+Added link to Privacy / legal in menu
+
 ## 1.10.8
 Added google adsense
 
