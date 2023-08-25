@@ -10,6 +10,8 @@ Gritos.com
 
 # Changelog
 
+## 1.10.10
+added html entities decode to encuestas
 ## 1.10.9
 Added link to Privacy / legal in menu
 

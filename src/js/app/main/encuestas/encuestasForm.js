@@ -1,4 +1,5 @@
 import Backbone from 'backbone';
+import { encode } from 'html-entities';
 import _ from 'lodash';
 import template from './encuestasForm.html';
 
@@ -33,6 +34,7 @@ export default Backbone.View.extend({
       let lastOption;
       options.forEach((option) => {
         option.value = this.$('[name=' + option.id + ']').val();
+        option.value = encode(option.value, {mode: 'extensive'});
         lastOption = Number(option.id);
       });
       if (targetOpt === lastOption) {
@@ -55,7 +57,7 @@ export default Backbone.View.extend({
         self.$('[name]').each((index, element) => {
           opt.push({
             id: element.name,
-            value: element.value,
+            value: encode(element.value, { mode: 'extensive' }),
           });
           self.model.set('options', opt);
         });
