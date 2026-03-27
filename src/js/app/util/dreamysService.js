@@ -1,8 +1,6 @@
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import endpoints from './endpoints';
-import 'rxjs/add/observable/dom/ajax';
-import 'rxjs/add/operator/map';
+import { ReplaySubject } from "rxjs";
+import { ajax } from "rxjs/ajax";
+import { map } from "rxjs/operators";
 
 const Service = class DreamysService {
   constructor() {
@@ -17,11 +15,10 @@ const Service = class DreamysService {
     if (this.generalDreamysLoaded) {
       return;
     }
-    const url = 'json.cgi?indice=dreamys&encontrar=public';
+    const url = "json.cgi?indice=dreamys&encontrar=public";
 
-    return Observable
-      .ajax(endpoints.apiUrl + url)
-      .map(e => this.mapDreamys(e.response))
+    return ajax(endpoints.apiUrl + url)
+      .pipe(map((e) => this.mapDreamys(e.response)))
       .subscribe((re) => {
         this.generalDreamysLoaded = true;
         this.generalDreamysSubject.next(re);
@@ -31,14 +28,23 @@ const Service = class DreamysService {
     return this.gDreamys;
   }
   mapDreamys(data) {
-    return data.map(l => {
+    return data.map((l) => {
       if (l.IMAGEN1_URL) {
-        l.IMAGEN1_URL = l.IMAGEN1_URL.replace(/^https?\:\/\/dreamers\.com/, '');
-        l.IMAGEN1_URL = l.IMAGEN1_URL.replace(/^\/\/dreamers\.com\/mrdreamy\//, '/imagenes/mrdreamy/');
+        l.IMAGEN1_URL = l.IMAGEN1_URL.replace(/^https?\:\/\/dreamers\.com/, "");
+        l.IMAGEN1_URL = l.IMAGEN1_URL.replace(
+          /^\/\/dreamers\.com\/mrdreamy\//,
+          "/imagenes/mrdreamy/",
+        );
       }
       if (l.IMAGEN1_THUMB) {
-        l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(/^https?\:\/\/dreamers\.com/, '');
-        l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(/^\/\/dreamers\.com\/mrdreamy\//, '/imagenes/mrdreamy/');
+        l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(
+          /^https?\:\/\/dreamers\.com/,
+          "",
+        );
+        l.IMAGEN1_THUMB = l.IMAGEN1_THUMB.replace(
+          /^\/\/dreamers\.com\/mrdreamy\//,
+          "/imagenes/mrdreamy/",
+        );
       }
       return l;
     });
@@ -48,11 +54,10 @@ const Service = class DreamysService {
     if (this.personalDreamysLoaded[id]) {
       return;
     }
-    const url = 'json.cgi?indice=dreamys&encontrar=ciudadano=' + id;
+    const url = "json.cgi?indice=dreamys&encontrar=ciudadano=" + id;
 
-    return Observable
-      .ajax(endpoints.apiUrl + url)
-      .map(e => this.mapDreamys(e.response))
+    return ajax(endpoints.apiUrl + url)
+      .pipe(map((e) => this.mapDreamys(e.response)))
       .subscribe((re) => {
         this.personalDreamysLoaded[id] = true;
         this.personalDreamysSubject.next(re);

@@ -124,8 +124,8 @@
     </script>
   <% } %>
 
-  <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
-  <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>" crossorigin="anonymous"></script>
+  <% for (var i = 0; i < htmlWebpackPlugin.files.js.length; i++) { %>
+  <script src="<%= htmlWebpackPlugin.files.js[i] %>" crossorigin="anonymous"></script>
   <% } %>
 
 
