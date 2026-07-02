@@ -1,18 +1,21 @@
-import Backbone from 'backbone';
-import globalModel from './globalModel';
-import model from './msgModel';
-import _ from 'lodash';
+import Backbone from "backbone";
+import _ from "lodash";
+import globalModel from "./globalModel";
+import model from "./msgModel";
 
 export default Backbone.Collection.extend({
   model,
-  initialize(options) {
+  initialize(options = {}) {
     if (options.encontrar) {
       this.encontrar = options.encontrar;
     }
     if (options.isValue) {
       this.isValue = options.isValue;
     }
-    this.listenTo(globalModel, 'change', () => {
+    if (options.id) {
+      this.indice = options.id;
+    }
+    this.listenTo(globalModel, "change", () => {
       this.lastReadEntry = null;
       this.noMoreEntries = false;
       this.reset();
@@ -20,17 +23,17 @@ export default Backbone.Collection.extend({
     this.noMoreEntries = false;
     this.loading = false;
     this.max = 10;
-    this.listenTo(this, 'sync', () => {
+    this.listenTo(this, "sync", () => {
       this.loading = false;
     });
-    this.listenTo(this, 'error', () => {
+    this.listenTo(this, "error", () => {
       this.loading = false;
     });
-    this.listenTo(this, 'request', () => {
+    this.listenTo(this, "request", () => {
       this.loading = true;
     });
     if (this.isValue) {
-      this.listenTo(globalModel, 'change:' + this.isValue, () => {
+      this.listenTo(globalModel, "change:" + this.isValue, () => {
         if (globalModel.get(this.isValue)) {
           this.fetch();
         }
@@ -41,9 +44,15 @@ export default Backbone.Collection.extend({
     let uri;
     this.indice = this.getIndice();
     if (this.indice && this.encontrar) {
-      uri = 'https://gritos.com/jsgritos/api/json.cgi?indice=' + this.indice + '&encontrar=' + this.encontrar + '&max=' + this.max;
+      uri =
+        "https://gritos.com/jsgritos/api/json.cgi?indice=" +
+        this.indice +
+        "&encontrar=" +
+        this.encontrar +
+        "&max=" +
+        this.max;
       if (this.lastReadEntry) {
-        uri = uri + '&last=' + this.lastReadEntry;
+        uri = uri + "&last=" + this.lastReadEntry;
       }
       return uri;
     }
@@ -54,21 +63,21 @@ export default Backbone.Collection.extend({
     }
   },
   getIndice() {
-    let id = globalModel.get('ID');
+    let id = this.indice || globalModel.get("ID");
     if (id) {
       if (id.match(/foroscomun/)) {
         id = null;
       } else if (id.match(/ciudadanos/)) {
-        id = id.replace(/\/$/, '');
+        id = id.replace(/\/$/, "");
       } else {
-        id = 'gritos/' + id;
+        id = "gritos/" + id;
       }
       return id;
     }
   },
   parse(resp) {
     if (resp.length === this.max) {
-      this.lastReadEntry = Math.min.apply(null, _.map(resp, 'ID'));
+      this.lastReadEntry = Math.min.apply(null, _.map(resp, "ID"));
     } else {
       this.noMoreEntries = true;
     }

@@ -1,21 +1,20 @@
-import ViewBase from '../base/ViewBase';
-import formModel from '../../models/formModel';
-import _ from 'lodash';
-import $ from 'jquery';
-import Wysiwyg from './Wysiwyg';
-import template from './formView.html';
-import endpoints from '../../util/endpoints';
+import $ from "jquery";
+import _ from "lodash";
+import formModel from "../../models/formModel";
+import endpoints from "../../util/endpoints";
+import ViewBase from "../base/ViewBase";
+import Wysiwyg from "./Wysiwyg";
+import template from "./formView.html";
 // import emojione from 'emojione';
-import EmojisModal from './emojisModal';
-import GlobalModel from '../../models/globalModel';
-import router from '../../router';
-import Ws from '../../util/Ws';
-import vent from '../../util/vent';
-import Util from '../../util/util';
-import MsgModel from '../../models/msgModel';
-import ModalView from '../modalView';
-import smile from '../../../../img/smile.svg';
-import EncuestasForm from '../encuestas/encuestasForm';
+import smile from "../../../../img/smile.svg";
+import GlobalModel from "../../models/globalModel";
+import MsgModel from "../../models/msgModel";
+import router from "../../router";
+import Ws from "../../util/Ws";
+import Util from "../../util/util";
+import vent from "../../util/vent";
+import EncuestasForm from "../encuestas/encuestasForm";
+import EmojisModal from "./emojisModal";
 
 function isOrContains(node, container) {
   while (node) {
@@ -39,7 +38,7 @@ function elementContainsSelection(el) {
       }
       return true;
     }
-  } else if ((sel = document.selection) && sel.type != 'Control') {
+  } else if ((sel = document.selection) && sel.type != "Control") {
     return isOrContains(sel.createRange().parentElement(), el);
   }
   return false;
@@ -78,105 +77,114 @@ export default ViewBase.extend({
     //  });
     //  }
     this.wysiwyg = new Wysiwyg();
-    this.listenTo(this.userModel, 'change', this.render.bind(this));
-    this.listenTo(this, 'remove', this.clean.bind(this));
-    this.listenTo(this.formModel, 'change', this.render.bind(this));
-    $(window).on('beforeunload', () => {
-      if (this.$('.formularioTextArea') && this.$('.formularioTextArea').html() && this.$('.formularioTextArea').html().length > 0) {
-        return 'tienes un mensaje pendiente de enviar';
+    this.listenTo(this.userModel, "change", this.render.bind(this));
+    this.listenTo(this, "remove", this.clean.bind(this));
+    this.listenTo(this.formModel, "change", this.render.bind(this));
+    $(window).on("beforeunload", () => {
+      if (
+        this.$(".formularioTextArea") &&
+        this.$(".formularioTextArea").html() &&
+        this.$(".formularioTextArea").html().length > 0
+      ) {
+        return "tienes un mensaje pendiente de enviar";
       }
     });
     this.images = {
-      default_dreamy: require('../../../../img/dreamy4.gif'),
+      default_dreamy: require("../../../../img/dreamy4.gif"),
     };
   },
-  className: 'formulario',
+  className: "formulario",
   events: {
-    'click .formularioTextArea': 'clearArea',
-    'click .form-submit-button': 'submitPost',
-    'mouseup .formularioTextArea': 'getSelectedText',
-    'mousedown .formularioTextArea': 'getSelectedText',
-    'keyup .formularioTextArea': 'getSelectedText',
-    'keydown .formularioTextArea': 'getSelectedText',
-    'change input[type="file"]': 'upload',
-    'click .emojis': 'showEmojis',
-    'click .show-tags': 'toggleTags',
-    'keyup .input-tag': 'inputTag',
-    'click [data-delete-tag]': 'deleteTag',
-    'paste .formularioTextArea': 'onPaste',
-    'error': 'imgError',
-    'click .capture-url-close': 'removeCapturedUrl',
-    'click .dreamy': 'selectDreamy',
-    'click .polls-place': 'abreEncuesta',
+    "click .formularioTextArea": "clearArea",
+    "click .form-submit-button": "submitPost",
+    "mouseup .formularioTextArea": "getSelectedText",
+    "mousedown .formularioTextArea": "getSelectedText",
+    "keyup .formularioTextArea": "getSelectedText",
+    "keydown .formularioTextArea": "getSelectedText",
+    'change input[type="file"]': "upload",
+    "click .emojis": "showEmojis",
+    "click .show-tags": "toggleTags",
+    "keyup .input-tag": "inputTag",
+    "click [data-delete-tag]": "deleteTag",
+    "paste .formularioTextArea": "onPaste",
+    error: "imgError",
+    "click .capture-url-close": "removeCapturedUrl",
+    "click .dreamy": "selectDreamy",
+    "click .polls-place": "abreEncuesta",
   },
   abreEncuesta() {
     this.clearArea();
-    if (this.$('.encuesta-area').hasClass('active')) {
-      this.$('.encuesta-area').removeClass('active');
-      this.$('.formularioTextArea').attr('placeholder', this.getPlaceholder());
+    if (this.$(".encuesta-area").hasClass("active")) {
+      this.$(".encuesta-area").removeClass("active");
+      this.$(".formularioTextArea").attr("placeholder", this.getPlaceholder());
 
       if (this.encuestasForm) {
         this.encuestasForm.model.clear();
       }
     } else {
-      this.$('.encuesta-area').addClass('active');
-      this.$('.formularioTextArea').attr('placeholder', 'Pregunta lo que quieras');
+      this.$(".encuesta-area").addClass("active");
+      this.$(".formularioTextArea").attr(
+        "placeholder",
+        "Pregunta lo que quieras",
+      );
       this.encuestasForm = new EncuestasForm();
-      this.$('.encuesta-area').html(this.encuestasForm.render().el);
-      this.$('.encuesta-area').find('[name=1]').focus();
+      this.$(".encuesta-area").html(this.encuestasForm.render().el);
+      this.$(".encuesta-area").find("[name=1]").focus();
     }
   },
   selectDreamy() {
     this.setComments();
-    ModalView.update({
+    vent.trigger("modal:update", {
       model: {
         show: true,
-        header: 'Selecciona tu dreamy para este grito',
+        header: "Selecciona tu dreamy para este grito",
       },
       dreamys: true,
       formModel: this.formModel,
     });
-
   },
   imgError(e) {
     console.log(e);
   },
   onPaste(e) {
     function replaceStyleAttr(str) {
-      return str.replace(/(<[\w\W]*?)(style)([\w\W]*?>)/g, function (a, b, c, d) {
-        return b + 'style_replace' + d;
-      });
+      return str.replace(
+        /(<[\w\W]*?)(style)([\w\W]*?>)/g,
+        function (a, b, c, d) {
+          return b + "style_replace" + d;
+        },
+      );
     }
 
     function removeTagsExcludeA(str) {
-      return str.replace(/<\/?((?!a)(\w+))\s*[\w\W]*?>/g, '');
+      return str.replace(/<\/?((?!a)(\w+))\s*[\w\W]*?>/g, "");
     }
 
     e.preventDefault();
-    let text = '';
+    let text = "";
     if (e.clipboardData || e.originalEvent.clipboardData) {
-      text = (e.originalEvent || e).clipboardData.getData('text/plain');
+      text = (e.originalEvent || e).clipboardData.getData("text/plain");
     } else if (window.clipboardData) {
-      text = window.clipboardData.getData('Text');
+      text = window.clipboardData.getData("Text");
     }
     text = removeTagsExcludeA(replaceStyleAttr(text));
-    if (document.queryCommandSupported('insertText')) {
-      document.execCommand('insertText', false, text);
+    if (document.queryCommandSupported("insertText")) {
+      document.execCommand("insertText", false, text);
     } else {
-      document.execCommand('paste', false, text);
+      document.execCommand("paste", false, text);
     }
   },
   deleteTag(e) {
-    const tag = this.$(e.currentTarget).data('delete-tag');
-    const tags = this.formModel.get('tags').split(',');
-    if (this.globalModel.get('ID') === tags[tag]) {
+    const tag = this.$(e.currentTarget).data("delete-tag");
+    const tags = this.formModel.get("tags").split(",");
+    if (this.globalModel.get("ID") === tags[tag]) {
       return;
     }
-    let newTags = '';
+    let newTags = "";
     for (let i = 0; i < tags.length; ++i) {
       if (i != tag) {
         if (newTags.length > 0) {
-          newTags = newTags + ',';
+          newTags = newTags + ",";
         }
         newTags = newTags + tags[i];
       }
@@ -190,19 +198,21 @@ export default ViewBase.extend({
       e.target.value = e.target.value.substring(0, 10);
     }
     if (e.keyCode === 13 || e.keyCode === 188) {
-      e.target.value = e.target.value.replace(/\W/ig, '');
-      let newTag = e.target.value.replace(/\W/ig, '');
+      e.target.value = e.target.value.replace(/\W/gi, "");
+      let newTag = e.target.value.replace(/\W/gi, "");
       if (newTag && newTag.length > 2) {
-        newTag = '#' + newTag;
-        let tags = this.formModel.get('tags') ? this.formModel.get('tags').split(',') : [];
+        newTag = "#" + newTag;
+        let tags = this.formModel.get("tags")
+          ? this.formModel.get("tags").split(",")
+          : [];
         tags.push(newTag);
         tags = _.uniq(tags);
         this.setComments();
-        this.formModel.set({ tags: _.join(tags, ',') });
-        this.$('.input-tag').focus();
+        this.formModel.set({ tags: _.join(tags, ",") });
+        this.$(".input-tag").focus();
       }
     } else {
-      e.target.value = e.target.value.replace(/\W/ig, '');
+      e.target.value = e.target.value.replace(/\W/gi, "");
     }
   },
   toggleTags() {
@@ -212,9 +222,9 @@ export default ViewBase.extend({
   },
   toggleTagsIn(prev) {
     if (prev) {
-      this.$el.find('.tags-place ul').show('slow');
+      this.$el.find(".tags-place ul").show("slow");
     } else {
-      this.$el.find('.tags-place ul').hide('slow');
+      this.$el.find(".tags-place ul").hide("slow");
     }
     if (prev) {
       this.materialDesignUpdate();
@@ -224,11 +234,11 @@ export default ViewBase.extend({
   },
   showEmojisIn(prev) {
     if (prev) {
-      this.$('.emojis-modal-place').show('slow');
+      this.$(".emojis-modal-place").show("slow");
       EmojisModal.setParent(this);
-      this.$('.emojis-modal-place').html(EmojisModal.render().el);
+      this.$(".emojis-modal-place").html(EmojisModal.render().el);
     } else {
-      this.$('.emojis-modal-place').hide('slow');
+      this.$(".emojis-modal-place").hide("slow");
     }
     this.showEmojisModal = prev;
   },
@@ -246,7 +256,7 @@ export default ViewBase.extend({
       this.restoreSelection(this.currentPosition);
       this.insertTextAtCursor(string);
     } else {
-      this.$('.formularioTextArea').append(string);
+      this.$(".formularioTextArea").append(string);
     }
     // if (this.currentPosition){
     //   const content = this.$('.formularioTextArea').html();
@@ -259,15 +269,17 @@ export default ViewBase.extend({
   addImages() {
     const jsonModel = this.formModel.toJSON();
     for (const prop in jsonModel) {
-      if ((/IMAGEN\d+\_THUMB$/).test(prop)) {
+      if (/IMAGEN\d+\_THUMB$/.test(prop)) {
         const thisThumb = jsonModel[prop];
-        this.$('.thumbs-place').append('<img src=\'' + thisThumb + '\'>');
+        this.$(".thumbs-place").append("<img src='" + thisThumb + "'>");
       }
     }
   },
 
   upload() {
-    if (!this.userModel.get('uid')) { return; }
+    if (!this.userModel.get("uid")) {
+      return;
+    }
     this.clearArea();
     this.showEmojisIn(false);
     const self = this;
@@ -275,9 +287,9 @@ export default ViewBase.extend({
     let imagenes_jump = 0;
 
     Object.keys(this.formModel.toJSON()).forEach((key) => {
-      if ((/IMAGEN(\d+)_URL/).exec(key)) {
-        const image = (/IMAGEN(\d+)_URL/).exec(key)[1];
-        if ((Number(image) + 1) > imagenes_jump) {
+      if (/IMAGEN(\d+)_URL/.exec(key)) {
+        const image = /IMAGEN(\d+)_URL/.exec(key)[1];
+        if (Number(image) + 1 > imagenes_jump) {
           imagenes_jump = Number(image) + 1;
         }
       }
@@ -287,20 +299,26 @@ export default ViewBase.extend({
     }
     $.each(this.$('input[type="file"]')[0].files, (i, file) => {
       const numero = imagenes_jump + i;
-      data.append('FICHERO_IMAGEN' + numero, file);
+      data.append("FICHERO_IMAGEN" + numero, file);
     });
     $.ajax({
-      url: endpoints.apiUrl + 'upload.cgi?sessionId=' + this.userModel.get('uid'),
+      url:
+        endpoints.apiUrl + "upload.cgi?sessionId=" + this.userModel.get("uid"),
       data,
       cache: false,
       contentType: false,
       processData: false,
-      type: 'POST',
+      type: "POST",
       success(data) {
         // console.log('UPLOAD RESPONSE: ', data);
         self.setComments();
-        if (data.response && data.response.Ficheros && self.formModel.get('Ficheros')) {
-          data.response.Ficheros = self.formModel.get('Ficheros') + ',' + data.response.Ficheros;
+        if (
+          data.response &&
+          data.response.Ficheros &&
+          self.formModel.get("Ficheros")
+        ) {
+          data.response.Ficheros =
+            self.formModel.get("Ficheros") + "," + data.response.Ficheros;
         }
         self.formModel.set(data.response);
         self.addImages();
@@ -308,10 +326,11 @@ export default ViewBase.extend({
     });
   },
   setComments() {
-    this.formModel.set('comments', this.$('.formularioTextArea').html());
+    this.formModel.set("comments", this.$(".formularioTextArea").html());
   },
   saveSelection() {
-    let sel, res = null;
+    let sel,
+      res = null;
     if (window.getSelection) {
       sel = window.getSelection();
       if (sel.getRangeAt && sel.rangeCount) {
@@ -321,19 +340,29 @@ export default ViewBase.extend({
       res = document.selection.createRange();
     }
 
-    if (res && res.commonAncestorContainer.className && !res.commonAncestorContainer.className.match(/formularioTextArea/)) {
+    if (
+      res &&
+      res.commonAncestorContainer.className &&
+      !res.commonAncestorContainer.className.match(/formularioTextArea/)
+    ) {
       res = null;
     }
-    if (res && !res.commonAncestorContainer.className && res.commonAncestorContainer.parentNode && !res.commonAncestorContainer.parentNode.className.match(/formularioTextArea/)) {
+    if (
+      res &&
+      !res.commonAncestorContainer.className &&
+      res.commonAncestorContainer.parentNode &&
+      !res.commonAncestorContainer.parentNode.className.match(
+        /formularioTextArea/,
+      )
+    ) {
       res = null;
     }
     return res;
-
   },
   insertTextAtCursor(element) {
     let sel, range;
-    if (!elementContainsSelection(this.$('.formularioTextArea')[0])) {
-      this.$('.formularioTextArea').append(element);
+    if (!elementContainsSelection(this.$(".formularioTextArea")[0])) {
+      this.$(".formularioTextArea").append(element);
     } else {
       if (window.getSelection) {
         sel = window.getSelection();
@@ -343,7 +372,7 @@ export default ViewBase.extend({
           // Range.createContextualFragment() would be useful here but is
           // only relatively recently standardized and is not supported in
           // some browsers (IE9, for one)
-          const el = document.createElement('div');
+          const el = document.createElement("div");
           el.innerHTML = element;
           const frag = document.createDocumentFragment();
           let node;
@@ -362,7 +391,7 @@ export default ViewBase.extend({
             sel.addRange(range);
           }
         }
-      } else if (document.selection && document.selection.type != 'Control') {
+      } else if (document.selection && document.selection.type != "Control") {
         // IE < 9
         document.selection.createRange().pasteHTML(element);
       }
@@ -384,12 +413,20 @@ export default ViewBase.extend({
   },
   isThisUrl(url) {
     let check = true;
-    if (!url) { return false; }
+    if (!url) {
+      return false;
+    }
     const puntos = url.match(/\./);
     if (puntos && puntos.length === 1 && !url.match(/\//)) {
-      const partes = url.split('.');
+      const partes = url.split(".");
       const last = partes[partes.length - 1];
-      if (last === 'com' || last === 'co' || last === 'uk' || last === 'us' || last === 'es') {
+      if (
+        last === "com" ||
+        last === "co" ||
+        last === "uk" ||
+        last === "us" ||
+        last === "es"
+      ) {
         check = true;
       } else {
         check = false;
@@ -402,50 +439,62 @@ export default ViewBase.extend({
   },
   getCaptureUrls() {
     // setTimeout(()=>{
-    let content = this.$('.formularioTextArea').clone();
-    content.find('.captured-url').remove();
+    let content = this.$(".formularioTextArea").clone();
+    content.find(".captured-url").remove();
     content = content.html();
-    content = content.replace(/&nbsp;/ig, ' ');
-    content = content.replace(/\n/ig, ' ');
-    content = content.replace(/<[^>]*>/ig, ' ');
-    const EMAIL_REGEXP = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/ig;
-    content = content.replace(EMAIL_REGEXP, '');
+    content = content.replace(/&nbsp;/gi, " ");
+    content = content.replace(/\n/gi, " ");
+    content = content.replace(/<[^>]*>/gi, " ");
+    const EMAIL_REGEXP =
+      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi;
+    content = content.replace(EMAIL_REGEXP, "");
 
-    const urlMatch = content.match(/\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9:%_\+.~#?&//=]*)/igm);
+    const urlMatch = content.match(
+      /\b(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9:%_\+.~#?&//=]*)/gim,
+    );
     if (urlMatch && urlMatch.length > 0) {
       urlMatch.forEach((url) => {
-        url = url.replace(/[\s\t\n<]+/ig, '');
-        url = url.replace(/^https?\:\/\//, '');
-        if (!this.capturedUrls[url] && !url.match(/youtube/) && !this.removedCapturedUrls[url] && (Object.keys(this.capturedUrls).length < 5) && this.isThisUrl(url)) {
+        url = url.replace(/[\s\t\n<]+/gi, "");
+        url = url.replace(/^https?\:\/\//, "");
+        if (
+          !this.capturedUrls[url] &&
+          !url.match(/youtube/) &&
+          !this.removedCapturedUrls[url] &&
+          Object.keys(this.capturedUrls).length < 5 &&
+          this.isThisUrl(url)
+        ) {
           this.capturingUrls = true;
-          vent.on('capture_url_reply_' + this.userModel.get('ID'), (data) => {
-            const dataurl = data.url.replace(/^https?\:\/\//, '');
+          vent.on("capture_url_reply_" + this.userModel.get("ID"), (data) => {
+            const dataurl = data.url.replace(/^https?\:\/\//, "");
             if (!this.capturedUrls[dataurl]) {
               this.capturedUrls[dataurl] = true;
               // console.log('recibido capture_url_reply ', data);
-              const capturedUrlDiv = Util.displayCapturedUrl(Object.assign({}, data.reply, { id: dataurl }));
-              this.$('.formularioTextArea').append(capturedUrlDiv);
+              const capturedUrlDiv = Util.displayCapturedUrl(
+                Object.assign({}, data.reply, { id: dataurl }),
+              );
+              this.$(".formularioTextArea").append(capturedUrlDiv);
             }
             this.capturingUrls = false;
           });
           // console.log('capture url request', url);
-          Ws.captureUrlRequest(this.userModel.get('ID'), url);
+          Ws.captureUrlRequest(this.userModel.get("ID"), url);
         }
       });
     }
     // },0);
-
   },
 
   removeCapturedUrl(e) {
-    const url = this.$(e.target).data('capturedurl');
+    const url = this.$(e.target).data("capturedurl");
     delete this.capturedUrls[url];
     this.removedCapturedUrls[url] = true;
-    this.$('.formularioTextArea').find('div[data-capturedurlid="' + url + '"]').remove();
+    this.$(".formularioTextArea")
+      .find('div[data-capturedurlid="' + url + '"]')
+      .remove();
   },
   getSelectedText(e) {
     let selection;
-    if (this.type === 'msg' && e.keyCode == 13) {
+    if (this.type === "msg" && e.keyCode == 13) {
       this.getCaptureUrls();
       this.submitPost();
       return;
@@ -458,11 +507,11 @@ export default ViewBase.extend({
 
     if (window.getSelection) {
       selection = window.getSelection();
-    } else if (typeof document.selection != 'undefined') {
+    } else if (typeof document.selection != "undefined") {
       selection = document.selection;
     }
-    if ((typeof selection === 'undefined') || (selection.toString().length < 1)) {
-      this.$('.wysiwyg').hide();
+    if (typeof selection === "undefined" || selection.toString().length < 1) {
+      this.$(".wysiwyg").hide();
       return;
     }
 
@@ -470,10 +519,24 @@ export default ViewBase.extend({
     const range = selection.getRangeAt(0);
 
     //If the range spans some text, and inside a tag, set its css class.
-    if (range && !selection.isCollapsed) { // range da la posicion sin contar el scroll
-      this.$('.wysiwyg').show().css({ top: (range.getBoundingClientRect().top + $(window).scrollTop() - this.$('.mdl-card').first().offset().top - 22) + 'px', left: (range.getBoundingClientRect().left - this.$('.mdl-card').first().offset().left) + 'px' });
+    if (range && !selection.isCollapsed) {
+      // range da la posicion sin contar el scroll
+      this.$(".wysiwyg")
+        .show()
+        .css({
+          top:
+            range.getBoundingClientRect().top +
+            $(window).scrollTop() -
+            this.$(".mdl-card").first().offset().top -
+            22 +
+            "px",
+          left:
+            range.getBoundingClientRect().left -
+            this.$(".mdl-card").first().offset().left +
+            "px",
+        });
     } else if (selection.isCollapsed) {
-      this.$('.wysiwyg').hide();
+      this.$(".wysiwyg").hide();
     }
   },
   submitPost() {
@@ -482,7 +545,7 @@ export default ViewBase.extend({
     const runPost = _.throttle(this.submitPostThrottle.bind(this), 1000);
     const waiting = (callback, wait) => {
       setTimeout(() => {
-        if (!this.capturingUrls || (countWait > 4)) {
+        if (!this.capturingUrls || countWait > 4) {
           callback();
         } else {
           waiting(callback, wait);
@@ -496,8 +559,12 @@ export default ViewBase.extend({
     waiting(runPost, wait);
   },
   submitPostThrottle() {
-    if (!this.userModel.get('uid')) { return; }
-    if (this.isSaving) { return; }
+    if (!this.userModel.get("uid")) {
+      return;
+    }
+    if (this.isSaving) {
+      return;
+    }
     this.showEmojisIn(false);
     this.toggleTagsIn(false);
     const self = this;
@@ -505,118 +572,129 @@ export default ViewBase.extend({
     let comments;
     let esUnForo = false;
     // tinyMCE.triggerSave();
-    comments = this.$('.formularioTextArea').clone();
-    comments.find('.captured-url .capture-url-close').remove();
+    comments = this.$(".formularioTextArea").clone();
+    comments.find(".captured-url .capture-url-close").remove();
     comments = comments.html();
     // comments = comments.replace(/\n/ig, '<br>');
     // comments = comments.replace(/\r/ig, '<br>');
-    comments = comments.replace(/\&nbsp\;/ig, ' ');
-    comments = comments.replace(/\&amp\;/ig, '&');
+    comments = comments.replace(/\&nbsp\;/gi, " ");
+    comments = comments.replace(/\&amp\;/gi, "&");
 
     if (comments.length < 1) {
       return;
     }
-    if (this.isHead && this.formModel.get('INDICE') === 'gritosdb') {
-      titulo = this.$('#titulo').val();
+    if (this.isHead && this.formModel.get("INDICE") === "gritosdb") {
+      titulo = this.$("#titulo").val();
       if (titulo.length < 1) {
         return;
       }
     }
     const saveObj = {
       comments,
-      uid: this.userModel.get('uid'),
-      tags: this.formModel.get('tags'),
+      uid: this.userModel.get("uid"),
+      tags: this.formModel.get("tags"),
     };
-    if (this.type === 'msg' && this.parentModel && this.parentModel.get('ID')) {
+    if (this.type === "msg" && this.parentModel && this.parentModel.get("ID")) {
       Object.assign(saveObj, {
         minigrito: {
-          indice: this.parentModel.get('INDICE'),
-          entrada: this.parentModel.get('ID'),
+          indice: this.parentModel.get("INDICE"),
+          entrada: this.parentModel.get("ID"),
         },
       });
     }
-    if (this.type === 'foro' && this.collection.id && this.collection.id.length && this.collection.id !== 'foroscomun') {
+    if (
+      this.type === "foro" &&
+      this.collection.id &&
+      this.collection.id.length &&
+      this.collection.id !== "foroscomun"
+    ) {
       esUnForo = true;
       Object.assign(saveObj, {
-        foro: this.collection.id.replace(/\/$/, ''),
-      }, );
+        foro: this.collection.id.replace(/\/$/, ""),
+      });
     }
     if (this.isHead) {
       Object.assign(saveObj, {
-        foro: this.formModel.get('INDICE'),
+        foro: this.formModel.get("INDICE"),
         isHead: 1,
-      }, );
-      if (this.formModel.get('INDICE') === 'gritosdb') {
+      });
+      if (this.formModel.get("INDICE") === "gritosdb") {
         Object.assign(saveObj, {
           Titulo: titulo,
-          Name: this.formModel.get('Name'),
-        }, );
+          Name: this.formModel.get("Name"),
+        });
       }
     }
     if (this.encuestasForm && this.encuestasForm.model) {
       const encuestas = this.encuestasForm.model.toJSON();
       if (encuestas.options && encuestas.options.length > 0) {
-        encuestas.options = encuestas.options.filter(option => option.value);
+        encuestas.options = encuestas.options.filter((option) => option.value);
         Object.assign(saveObj, {
           encuesta: JSON.stringify(encuestas),
         });
       }
     }
     this.isSaving = true;
-    this.formModel.save(
-      saveObj, {
-        success(model, data) {
-          self.isSaving = false;
-          self.formModel.clear();
-          self.isClear = false;
-          self.capturedUrls = {};
-          self.removedCapturedUrls = {};
-          if (!self.isHead) {
-            self.render();
-            if (!data.mensaje.num || esUnForo) { data.mensaje.num = data.mensaje.ID; }
-            const msgModel = new MsgModel();
-            self.collection.add(msgModel.parse(data.mensaje), { merge: true, individual: true });
-          } else {
-            if (self.headModel) {
-              GlobalModel.changeForo(self.headModel.get('Name'));
-              self.headModel.fetch();
-              router.navigate('/' + self.headModel.get('Name'), { trigger: true });
-            }
+    this.formModel.save(saveObj, {
+      success(model, data) {
+        self.isSaving = false;
+        self.formModel.clear();
+        self.isClear = false;
+        self.capturedUrls = {};
+        self.removedCapturedUrls = {};
+        if (!self.isHead) {
+          self.render();
+          if (!data.mensaje.num || esUnForo) {
+            data.mensaje.num = data.mensaje.ID;
           }
-          // self.collection.reset();
-          // self.collection.fetch();
-          // console.log('success', data);
-        },
-        error() {
-          // console.log('error', data);
-        },
-      }
-    );
+          const msgModel = new MsgModel();
+          self.collection.add(msgModel.parse(data.mensaje), {
+            merge: true,
+            individual: true,
+          });
+        } else {
+          if (self.headModel) {
+            GlobalModel.changeForo(self.headModel.get("Name"));
+            self.headModel.fetch();
+            router.navigate("/" + self.headModel.get("Name"), {
+              trigger: true,
+            });
+          }
+        }
+        // self.collection.reset();
+        // self.collection.fetch();
+        // console.log('success', data);
+      },
+      error() {
+        // console.log('error', data);
+      },
+    });
   },
   clearArea(focus) {
     // if (this.isClear){return;}
     // this.$('.formularioTextArea').html(this.formModel.get('comments')).addClass('on');
     this.active = true;
-    this.$('.formularioTextArea').addClass('on');
+    this.$(".formularioTextArea").addClass("on");
     if (focus) {
-      this.$('.formularioTextArea').focus();
+      this.$(".formularioTextArea").focus();
     }
     // this.isClear =  true;
   },
   render() {
-    if (this.userModel && this.userModel.get('uid')) {
+    if (this.userModel && this.userModel.get("uid")) {
       this.$el.html(this.template(this.serializer()));
-      this.$el.addClass('active');
-      this.$('.wysiwyg-view').html(this.wysiwyg.render().el);
+      this.$el.addClass("active");
+      this.$(".wysiwyg-view").html(this.wysiwyg.render().el);
 
-      if (this.afterRender && typeof this.afterRender === 'function') {
+      if (this.afterRender && typeof this.afterRender === "function") {
         this.afterRender.apply(this);
       }
       this.showEmojisIn(this.showEmojisModal);
       this.toggleTagsIn(this.tagPlaceShown);
     } else if (this.$el) {
-      this.$el.removeClass('active');
-    } else if (!this.$el) { // TODO this is wrong somewhereg
+      this.$el.removeClass("active");
+    } else if (!this.$el) {
+      // TODO this is wrong somewhereg
       this.clean();
       return this;
     }
@@ -624,7 +702,7 @@ export default ViewBase.extend({
     return this;
   },
   afterRender() {
-    this.$('.wysiwyg').hide();
+    this.$(".wysiwyg").hide();
     // componentHandler.upgradeElement(this.$el.find('.mdl-button')[0]);
     // if (this.tagPlaceShown){
     //   this.$el.find('.mdl-js-textfield').each((index, ele)=>{
@@ -640,29 +718,35 @@ export default ViewBase.extend({
   getPlaceholder() {
     let titulo_head;
     if (this.headModel) {
-      if (this.headModel.get('INDICE') && this.headModel.get('INDICE').match(/^ciudadanos/)) {
-        titulo_head = 'Escribe en el muro de ' + this.headModel.get('Titulo');
-      } else if (this.headModel.get('INDICE')) {
-        titulo_head = 'Explayate a tu gusto en el foro de ' + this.headModel.get('Titulo');
+      if (
+        this.headModel.get("INDICE") &&
+        this.headModel.get("INDICE").match(/^ciudadanos/)
+      ) {
+        titulo_head = "Escribe en el muro de " + this.headModel.get("Titulo");
+      } else if (this.headModel.get("INDICE")) {
+        titulo_head =
+          "Explayate a tu gusto en el foro de " + this.headModel.get("Titulo");
       } else {
-        titulo_head = 'Sueltate! Grita! (en tu muro).';
+        titulo_head = "Sueltate! Grita! (en tu muro).";
       }
     }
     return titulo_head;
-
   },
   serializer() {
     const obj = this.userModel.toJSON();
-    if (this.parentModel && this.parentModel.get('ID')) {
+    if (this.parentModel && this.parentModel.get("ID")) {
       Object.assign(obj, { parentModel: this.parentModel.toJSON() });
     }
-    if (this.msg && this.msg.get('ID')) {
+    if (this.msg && this.msg.get("ID")) {
       Object.assign(obj, { msg: this.msg.toJSON() });
     }
     Object.assign(obj, {
-      emojis: '<img class="emojione" alt="😝" title="emojis" src="' + smile + '">',
+      emojis:
+        '<img class="emojione" alt="😝" title="emojis" src="' + smile + '">',
       formModel: this.formModel.toJSON(),
-      tags: this.formModel.get('tags') ? this.formModel.get('tags').split(',') : null,
+      tags: this.formModel.get("tags")
+        ? this.formModel.get("tags").split(",")
+        : null,
       tagPlaceShown: this.tagPlaceShown,
       active: this.active,
       isHead: this.isHead,
@@ -687,6 +771,6 @@ export default ViewBase.extend({
     for (const prop of Object.keys(this)) {
       delete this[prop];
     }
-    $(window).off('beforeunload');
+    $(window).off("beforeunload");
   },
 });

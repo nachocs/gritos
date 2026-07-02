@@ -1,6 +1,7 @@
 import { ReplaySubject } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import { map } from "rxjs/operators";
+import endpoints from "./endpoints";
 
 const Service = class DreamysService {
   constructor() {
