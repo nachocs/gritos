@@ -6,6 +6,8 @@ import { onNewMessage } from "../utils/messageEvents";
 import notificacionesReadState from "../utils/notificacionesReadState";
 import useSocket from "./useSocket";
 
+const stripSlash = (value) => (value || "").replace(/\/$/, "");
+
 const getMessageKey = (message, index) =>
   message?.wId ||
   `${message?.INDICE || ""}/${message?.ID || message?.id || index}`;
@@ -90,7 +92,7 @@ const useForumMessages = (foro) => {
   }, [foro]);
 
   const socketRoom = useMemo(
-    () => (foro ? `collection:${foro.replace(/\/$/, "")}` : null),
+    () => (foro ? `collection:${stripSlash(foro)}` : null),
     [foro],
   );
 
@@ -118,7 +120,13 @@ const useForumMessages = (foro) => {
       return undefined;
     }
     return onNewMessage(({ foro: messageForo, message }) => {
-      if (messageForo !== foro) {
+      // Compare without the trailing slash. A ciudadanos wall is fetched as
+      // `ciudadanos/<id>/` (the slash is what makes index.cgi list children),
+      // but FormShell posts to and publishes under `ciudadanos/<id>` — so a
+      // strict !== silently dropped every message posted on a wall, and the
+      // grito only showed up after a manual reload. The socket room below
+      // already normalised the slash; this comparison did not.
+      if (stripSlash(messageForo) !== stripSlash(foro)) {
         return;
       }
       setData((current) => uniqueById([message, ...current]));
