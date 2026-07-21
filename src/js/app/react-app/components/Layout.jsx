@@ -7,6 +7,7 @@ import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
 import AvisosBanner from "./AvisosBanner";
 import Drawer from "./Drawer";
+import ForoAdmin from "./ForoAdmin";
 import ForoDescription from "./ForoDescription";
 import FormShell from "./FormShell";
 import Header from "./Header";
@@ -120,16 +121,15 @@ const Layout = () => {
               isGallery={isGallery}
               isVotaciones={isVotaciones}
             />
-            <div className={`content${isGallery ? " galeria" : ""}`}>
+            <div className={`content${isGallery ? " content-gallery" : ""}`}>
               <ForoDescription head={head} isWall={isWall} />
+              <ForoAdmin head={head} />
               {!isGallery && (
                 <div className="form-view" ref={formSectionRef}>
                   <FormShell />
                 </div>
               )}
-              <div className="msg-list">
-                <Outlet />
-              </div>
+              <div className="msg-list">{!isGallery && <Outlet />}</div>
               {!isGallery && (
                 <button
                   className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg"
@@ -140,7 +140,16 @@ const Layout = () => {
                 </button>
               )}
             </div>
-            <div className="gallery" />
+            {/* Legacy puts the gallery in a slot that is a *sibling* of
+                `.content`, not inside it (`mainView-t.html`: `<div
+                class="content">…</div><div class="gallery"></div>`, and
+                `render()` replaces the placeholder with the gallery view).
+                Rendering it inside `.content` clamped the tile grid to that
+                element's `max-width: 800px`, so `.gallery-entry`'s `width: 30%`
+                resolved against 800px instead of the full content area — a
+                visibly narrower gallery than deployed. The `.content` element
+                itself still renders (head card + gear), exactly as legacy. */}
+            {isGallery && <Outlet />}
           </main>
         </ScrollRootContext.Provider>
       </div>
