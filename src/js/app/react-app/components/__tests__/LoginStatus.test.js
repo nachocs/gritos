@@ -1,11 +1,13 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { UserProvider } from "../../contexts/UserContext";
 import LoginStatus from "../LoginStatus";
 import ModalRoot from "../ModalRoot";
+import { openLoginMenu } from "../../utils/loginMenuEvents";
 
-// LoginStatus no longer renders its own login form inline — clicking "Log In"
-// opens the shared modal (LoginModal via ModalRoot's event bus), so these
-// tests render both together, the same way Layout does in the real app.
+// Parity target: legacy main/header/loginView.js. The login form is a dropdown
+// panel toggled by the header button, not a modal — the panel is always in the
+// DOM and hidden with the `hidden` class.
 describe("LoginStatus Component", () => {
   const originalFetch = global.fetch;
 
@@ -15,71 +17,90 @@ describe("LoginStatus Component", () => {
 
   const renderWithProviders = () =>
     render(
-      <UserProvider>
-        <LoginStatus />
-        <ModalRoot />
-      </UserProvider>,
+      <MemoryRouter>
+        <UserProvider>
+          <LoginStatus />
+          <ModalRoot />
+        </UserProvider>
+      </MemoryRouter>,
     );
 
-  it("should render login button when user is not logged in", () => {
-    renderWithProviders();
+  const menu = (container) => container.querySelector("ul.login-menu");
+  const toggle = (container) =>
+    container.querySelector("button.login-menu-button");
+
+  it("renders the logged-out affordance with the menu hidden", () => {
+    const { container } = renderWithProviders();
 
     expect(screen.getByText("Log In")).toBeInTheDocument();
+    expect(menu(container)).toHaveClass("hidden");
   });
 
-  it("should open the login modal when login button is clicked", () => {
-    renderWithProviders();
+  it("toggles the login menu open and closed from the header button", () => {
+    const { container } = renderWithProviders();
 
-    const loginButton = screen.getByText("Log In");
-    fireEvent.click(loginButton);
+    fireEvent.click(toggle(container));
+    expect(menu(container)).not.toHaveClass("hidden");
 
-    // After clicking, the login modal should appear with form fields
-    expect(screen.getByLabelText(/Alias\/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+    // Legacy has no outside-click handler: the same button closes it again.
+    fireEvent.click(toggle(container));
+    expect(menu(container)).toHaveClass("hidden");
   });
 
-  it("should handle login form submission", async () => {
+  it("opens the menu when the composer FAB asks for a login", () => {
+    const { container } = renderWithProviders();
+
+    // Fired from outside React (Layout's FAB handler), so it needs act().
+    act(() => openLoginMenu());
+
+    expect(menu(container)).not.toHaveClass("hidden");
+  });
+
+  it("submits alias/password to login.cgi", async () => {
     global.fetch = jest.fn(
       () =>
         new Promise(() => {
-          // Keep the request pending so the component remains in loading state.
+          // Keep the request pending; we only assert it was issued.
         }),
     );
 
-    renderWithProviders();
+    const { container } = renderWithProviders();
+    fireEvent.click(toggle(container));
 
-    const loginButton = screen.getByText("Log In");
-    fireEvent.click(loginButton);
-
-    const aliasInput = screen.getByLabelText(/Alias\/email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-
-    fireEvent.change(aliasInput, { target: { value: "testuser" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-
-    const submitButton = screen.getByRole("button", { name: /entrar/i });
-    fireEvent.click(submitButton);
-
-    // The button should show loading state
-    await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: /Entrando/i }),
-      ).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText(/Alias\/email/i), {
+      target: { value: "testuser" },
     });
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    fireEvent.change(screen.getByLabelText(/Password/i), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+    expect(global.fetch.mock.calls[0][0]).toContain("login.cgi");
   });
 
-  it("should show error message when credentials are missing", () => {
-    renderWithProviders();
+  it("does not call login.cgi when a field is empty", () => {
+    global.fetch = jest.fn();
 
-    const loginButton = screen.getByText("Log In");
-    fireEvent.click(loginButton);
+    const { container } = renderWithProviders();
+    fireEvent.click(toggle(container));
+    fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
 
-    const submitButton = screen.getByRole("button", { name: /entrar/i });
-    fireEvent.click(submitButton);
+    // Legacy bails out with a console.log and shows no error.
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(container.querySelector(".error-login")).not.toHaveClass("active");
+  });
+
+  it("opens the sign-up modal from the menu", () => {
+    const { container } = renderWithProviders();
+    fireEvent.click(toggle(container));
+
+    fireEvent.click(screen.getByText(/Regístrate \/ Sign Up/i));
 
     expect(
-      screen.getByText(/Alias y contraseña son obligatorios/i),
+      screen.getByRole("heading", { name: /Regístrate/i }),
     ).toBeInTheDocument();
   });
 });

@@ -52,6 +52,16 @@ export default defineConfig({
         secure: false,
         rewrite: (path) => path.replace(/^\/indices/, "/indices"),
       },
+      // Old message bodies embed root-relative asset paths (the classic
+      // minidreamy smilies, e.g. `/imagenes/mrdreamy/smilies/adlo.gif`). Those
+      // resolve against gritos.com in production — legacy never rewrote them
+      // either — but against localhost in dev, where nothing serves them, so
+      // every legacy smiley rendered as a broken image.
+      "/imagenes": {
+        target: "https://gritos.com",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

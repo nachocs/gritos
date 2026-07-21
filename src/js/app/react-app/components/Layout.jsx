@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import ScrollRootContext from "../contexts/ScrollRootContext";
+import { useUser } from "../hooks/useContexts";
 import useHead from "../hooks/useHead";
+import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
 import AvisosBanner from "./AvisosBanner";
 import Drawer from "./Drawer";
@@ -24,6 +26,7 @@ const Layout = () => {
   const formSectionRef = useRef(null);
   const { foro, id } = useParams();
   const { pathname } = useLocation();
+  const { user } = useUser();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Close the drawer whenever navigation happens (clicking a foro in the
@@ -67,14 +70,20 @@ const Layout = () => {
     : currentForo === "foroscomun"
       ? null
       : currentForo;
+  // Legacy mainView.newMsg(): scroll to the composer when logged in, otherwise
+  // pop the header's login menu open so the visitor can sign in first.
   const scrollToForm = useCallback(() => {
+    if (!user?.uid) {
+      openLoginMenu();
+      return;
+    }
     if (formSectionRef.current) {
       formSectionRef.current.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
     }
-  }, []);
+  }, [user?.uid]);
 
   // Legacy mainView's root element is `class="main"` and a chunk of main.less
   // is scoped under it (`.main header.ciudadano` wall colour, link colours,

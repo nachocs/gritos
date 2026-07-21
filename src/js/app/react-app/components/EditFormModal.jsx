@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import smile from "../../../../img/smile.svg";
 import { useUser, useForm } from "../hooks/useContexts";
@@ -23,7 +23,7 @@ const getInitialComment = (msg) => {
   );
 };
 
-const EditFormModal = ({ editForm }) => {
+const EditFormModal = ({ editForm, registerAction }) => {
   const { user } = useUser();
   const { submitMessage } = useForm();
   // ModalRoot unmounts this component on close, so the initial content can be
@@ -82,7 +82,7 @@ const EditFormModal = ({ editForm }) => {
   const thumbs = imageThumbs(imageAttrs);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event?.preventDefault();
     setError(null);
 
     if (!user?.uid) {
@@ -139,9 +139,27 @@ const EditFormModal = ({ editForm }) => {
     }
   };
 
+  // Legacy sets `this.action = EditForm.submitPost.bind(EditForm)`, so the
+  // modal footer's OK is what submits — the form's own button is hidden inside
+  // a modal by `.modal-body .formulario .form-submit .form-submit-button`.
+  const submitRef = useRef(handleSubmit);
+  submitRef.current = handleSubmit;
+  useEffect(() => {
+    registerAction?.(() => submitRef.current());
+  }, [registerAction]);
+
+  // Legacy injects a full `formView` into `.modal-body`, so the root here has
+  // to be `.formulario` (+ `active`, since `.formulario` is `display:none` by
+  // default) wrapping an inner `.mdl-card`. The previous root was
+  // `.modal-body edit-form-modal`, which meant every rule this markup relies on
+  // — `.file-submit`, `.emojis`, `.custom-file-upload`, `.thumbs-place` — never
+  // matched, because they're all nested *inside* `.formulario` in main.less.
+  // MDL's `.mdl-card` is `position:relative`, so it's also the containing block
+  // the absolutely-positioned icon row is measured against.
   return (
-    <div className="modal-body edit-form-modal">
+    <div className="formulario active">
       <form onSubmit={handleSubmit}>
+        <div className="mdl-card mdl-shadow--4dp">
         {isHead && modelIsGritosdb && (
           <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input
@@ -220,6 +238,7 @@ const EditFormModal = ({ editForm }) => {
           </div>
         )}
         {error && <p className="form-error">{error}</p>}
+        </div>
       </form>
     </div>
   );
@@ -233,6 +252,7 @@ EditFormModal.propTypes = {
       id: PropTypes.string,
     }),
   }),
+  registerAction: PropTypes.func,
 };
 
 export default EditFormModal;
