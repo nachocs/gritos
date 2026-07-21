@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import MessageItem from "./MessageItem";
 
-const MessageList = ({ messages, currentForo }) => {
+const MessageList = ({ messages, currentForo, head }) => {
   if (!messages || messages.length === 0) {
     return <p>No hay mensajes disponibles para este foro.</p>;
   }
@@ -11,12 +11,12 @@ const MessageList = ({ messages, currentForo }) => {
       {messages.map((message) => (
         <MessageItem
           key={
-            message.ID ||
             message.wId ||
-            `${message.INDICE || currentForo}-${message.ID || message.wId}`
+            `${message.INDICE || currentForo}-${message.ID}`
           }
           message={message}
           currentForo={currentForo}
+          head={head}
         />
       ))}
     </div>
@@ -26,6 +26,7 @@ const MessageList = ({ messages, currentForo }) => {
 MessageList.propTypes = {
   messages: PropTypes.arrayOf(PropTypes.any),
   currentForo: PropTypes.string,
+  head: PropTypes.object,
 };
 
 export default MessageList;

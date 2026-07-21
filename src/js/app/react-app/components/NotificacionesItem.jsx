@@ -93,7 +93,7 @@ const buildMessage = (data, indiceBasic, userId) => {
     return `${prefix} ${indiceBasic}`;
   }
 
-  const citizenName = entry.citizen?.alias_principal || "Alguien";
+  const citizenName = data.citizen?.alias_principal || "Alguien";
   const icon = getTypeIcon(data.subtipo);
   const itemText = `${citizenName}${countPhrase}`;
   const targetType = /\/\d+\/\d+$/.test(data.indice || "")
@@ -115,7 +115,7 @@ const NotificacionesItem = ({ item, onClick }) => {
   const indiceBasic = getIndiceBasic(data.indice, head, user?.ID);
   const dateText = unixDate(entry.FECHA || entry.date || data.date);
   const imageSrc =
-    entry.emocion || entry.citizen?.dreamy_principal || defaultDreamy;
+    entry.emocion || data.citizen?.dreamy_principal || defaultDreamy;
 
   return (
     <li className="notificaciones-item" onClick={onClick}>
@@ -139,12 +139,11 @@ NotificacionesItem.propTypes = {
       date: PropTypes.string,
       diferencia: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       name: PropTypes.string,
-      citizen: PropTypes.shape({
-        alias_principal: PropTypes.string,
-        dreamy_principal: PropTypes.string,
-        ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      }),
       emocion: PropTypes.string,
+      dreamy_principal: PropTypes.string,
+    }),
+    citizen: PropTypes.shape({
+      alias_principal: PropTypes.string,
       dreamy_principal: PropTypes.string,
     }),
     head: PropTypes.shape({

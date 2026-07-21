@@ -1,6 +1,8 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import endpoints from "../../util/endpoints";
 import { useUser } from "../hooks/useContexts";
+import { onNotificaciones } from "../utils/socketEvents";
+import Ws from "../../util/Ws";
+import notificacionesReadState from "../utils/notificacionesReadState";
 
 export const NotificationsContext = createContext({
   notifications: [],
@@ -11,43 +13,87 @@ export const NotificationsContext = createContext({
   clearNotifications: () => {},
 });
 
+let notificationSeq = 0;
+
 export const NotificationsProvider = ({ children }) => {
   const { user } = useUser();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [updateQueue, setUpdateQueue] = useState([]);
 
-  // Fetch notifications when user logs in
+  // Notifications are pushed over the socket, not fetched via HTTP: legacy's
+  // `index.cgi?notificaciones/<ID>` is the *read-state* counter resource
+  // (last-seen markers per room), not a notification feed — fetching it here
+  // and treating the response as a list was wrong. The real feed comes from
+  // asking the server to start pushing (Ws.prepararNotificaciones) and
+  // listening for `notificaciones_<uid>` events, mirroring legacy
+  // NotificacionesCollection. Persisting read-state back to the server is
+  // not ported yet (see MIGRATION_GAP_ANALYSIS.md, Phase 5).
   useEffect(() => {
-    if (user?.ID) {
-      setLoading(true);
-      fetch(`${endpoints.apiUrl}index.cgi?notificaciones/${user.ID}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setNotifications(data || []);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error loading notifications:", err);
-          setLoading(false);
-        });
-    } else {
+    if (!user?.ID) {
+      notificacionesReadState.clear();
       setNotifications([]);
       setLoading(false);
+      return undefined;
     }
+
+    setLoading(true);
+    notificacionesReadState.load(user.ID);
+    Ws.prepararNotificaciones(user.ID);
+
+    const unsubscribe = onNotificaciones(user.ID, (data) => {
+      setLoading(false);
+      const incoming = Array.isArray(data) ? data : [data];
+      const relevant = incoming.filter(
+        (not) =>
+          not?.entry &&
+          (not.entry.ciudadano !== user.ID ||
+            (not.tipo === "msg" && not.subtipo)),
+      );
+      if (!relevant.length) {
+        return;
+      }
+      setNotifications((prev) => [
+        ...relevant.map((not) => ({
+          ...not,
+          id: not.id ?? `noti-${Date.now()}-${notificationSeq++}`,
+          read: false,
+        })),
+        ...prev,
+      ]);
+    });
+
+    return unsubscribe;
   }, [user?.ID]);
 
-  const addNotification = useCallback((tipo, room, last, subtipo) => {
-    setUpdateQueue((prev) => [...prev, { tipo, room, last, subtipo }]);
+  // Called by FormContext right after a successful post, so the poster's own
+  // new entry doesn't immediately show back up as unread for them.
+  const addNotification = useCallback((notis) => {
+    notificacionesReadState.addNotificaciones(notis);
   }, []);
 
-  const markNotificationAsRead = useCallback((notificationId) => {
+  // Mirrors legacy notificacionesView.toggleNotificaciones(): only 'msg' and
+  // 'yo' notifications advance the persisted read-state watermark here
+  // ('foro'/'minis' are advanced elsewhere, via list-view/thread reads).
+  const markNotificationAsRead = useCallback((notification) => {
+    const notif =
+      typeof notification === "object"
+        ? notification
+        : notifications.find((n) => n.id === notification);
+    if (notif?.tipo === "msg" && notif.entry) {
+      const foro = `${notif.indice}/${notif.entry.ID}`;
+      notificacionesReadState.update(
+        "msg",
+        foro,
+        notif.entry[notif.subtipo],
+        notif.subtipo,
+      );
+    } else if (notif?.tipo === "yo" && notif.entry) {
+      notificacionesReadState.update("yo", notif.indice, notif.entry.ID);
+    }
     setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === notificationId ? { ...notif, read: true } : notif,
-      ),
+      prev.map((n) => (n.id === notif?.id ? { ...n, read: true } : n)),
     );
-  }, []);
+  }, [notifications]);
 
   const clearNotifications = useCallback(() => {
     setNotifications([]);

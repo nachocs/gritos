@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import EmojisModal from "../EmojisModal";
 
-const emojiPicks = (container) => container.querySelectorAll(".emoji-pick");
+// Legacy renders bare <img class="emojione"> straight into the content div
+// (no wrapper element) — see EmojisModal. Select them the same way.
+const emojiPicks = (container) =>
+  container.querySelectorAll(".emojis-modal-content .emojione");
 
 describe("EmojisModal", () => {
   it("renders category tabs and emojis from the emoji dataset", () => {

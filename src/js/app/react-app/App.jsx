@@ -16,8 +16,12 @@ const App = () => {
   useNavGuard();
 
   return (
-    <Layout>
-      <Routes>
+    <Routes>
+      {/* Layout is a layout route (renders <Outlet/>) so its descendants —
+          Header, FormShell, RightSidebar — see the matched :foro param via
+          useParams(). It must not wrap <Routes> as children: that would put
+          it outside any matched route and useParams() would always be {}. */}
+      <Route element={<Layout />}>
         {/* Root redirect to default forum */}
         <Route path="/" element={<Navigate to="/foroscomun" replace />} />
 
@@ -40,13 +44,15 @@ const App = () => {
         <Route path="/:foro/:id" element={<MensajePage />} />
         <Route path="/:foro/:id/votaciones" element={<VotacionesPage />} />
 
-        {/* Special Ciudadanos sub-routes handler */}
-        <Route path="/ciudadanos/:id/*" element={<MensajePage />} />
+        {/* Ciudadanos wall: legacy rendered /ciudadanos/<id> as a foro-style
+            page (wall header + message list + composer), NOT a message
+            detail — the static "ciudadanos" segment outranks /:foro/:id. */}
+        <Route path="/ciudadanos/:id" element={<ForoPage />} />
 
         {/* 404 / Default fallback */}
         <Route path="*" element={<Navigate to="/foroscomun" replace />} />
-      </Routes>
-    </Layout>
+      </Route>
+    </Routes>
   );
 };
 

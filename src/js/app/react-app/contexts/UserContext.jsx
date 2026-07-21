@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { createContext, useCallback, useEffect, useState } from "react";
 import endpoints from "../../util/endpoints";
+import { decodeBody } from "../utils/apiFetch";
 import Ws from "../../util/Ws";
 import { onSocketMessage } from "../utils/socketEvents";
 
@@ -69,7 +70,7 @@ export const UserProvider = ({ children }) => {
       },
       body: `uid=${encodeURIComponent(uid)}`,
     })
-      .then((response) => response.json())
+      .then((response) => decodeBody(response).then(JSON.parse))
       .then((data) => {
         if (data.status === "ok" && data.user) {
           setUser({ ...data.user, uid });

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { closeModal, onModalClose, onModalUpdate } from "../utils/modalEvents";
 import DreamysModal from "./DreamysModal";
 import EditFormModal from "./EditFormModal";
+import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 
 const ModalRoot = () => {
@@ -26,6 +27,8 @@ const ModalRoot = () => {
         setType("dreamys");
       } else if (updatePayload.editForm) {
         setType("editForm");
+      } else if (updatePayload.login) {
+        setType("login");
       } else {
         setType("default");
       }
@@ -36,7 +39,8 @@ const ModalRoot = () => {
         !!updatePayload.hideFooter ||
           !!updatePayload.signUp ||
           !!updatePayload.dreamys ||
-          !!updatePayload.editForm,
+          !!updatePayload.editForm ||
+          !!updatePayload.login,
       );
     };
 
@@ -87,6 +91,9 @@ const ModalRoot = () => {
     }
     if (type === "editForm") {
       return <EditFormModal editForm={payload?.editForm} />;
+    }
+    if (type === "login") {
+      return <LoginModal />;
     }
     return (
       <div className="modal-body">

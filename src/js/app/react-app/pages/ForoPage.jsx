@@ -1,23 +1,46 @@
-import { useContext, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import MessageList from "../components/MessageList";
 import PageShell from "../components/PageShell";
-import ScrollRootContext from "../contexts/ScrollRootContext";
+import { useUser } from "../hooks/useContexts";
 import useForumMessages from "../hooks/useForumMessages";
 import useHead from "../hooks/useHead";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
+import { openModal } from "../utils/modalEvents";
 import normalizeForo from "../utils/normalizeForo";
 
+// Legacy mainView-t.html gear condition: the foro's owner (listed in the
+// pipe-separated Userid), the wall's owner on a ciudadanos wall, or a
+// super-admin (nivel > 7). Never on foroscomun / headless foros.
+const canAdminForo = (head, user) => {
+  if (!head || !user?.ID || !head.INDICE || head.INDICE === "foroscomun") {
+    return false;
+  }
+  const owners = head.Userid ? String(head.Userid).split("|") : [];
+  return (
+    owners.includes(String(user.ID)) ||
+    (head.INDICE === "ciudadanos" && String(user.ID) === String(head.ID)) ||
+    Number(user.nivel) > 7
+  );
+};
+
+/**
+ * Foro page — also renders ciudadanos walls (/ciudadanos/:id), which legacy
+ * treated as a foro with ID "ciudadanos/<id>/" (trailing slash = children
+ * listing on index.cgi) and a special wall header card.
+ */
 const ForoPage = () => {
-  const { foro } = useParams();
-  const currentForo = normalizeForo(foro);
-  const title =
-    currentForo === "foroscomun" ? "Foros Común" : `Foro: ${currentForo}`;
+  const { foro, id } = useParams();
+  const isWall = !foro && Boolean(id);
+  const currentForo = isWall ? `ciudadanos/${id}/` : normalizeForo(foro);
+  const routeForo = isWall ? `ciudadanos/${id}` : currentForo;
 
   const {
     data: head,
     loading: headLoading,
     error: headError,
   } = useHead(currentForo);
+
+  const { user } = useUser();
 
   const {
     data: messages,
@@ -28,62 +51,50 @@ const ForoPage = () => {
     noMoreEntries,
   } = useForumMessages(currentForo);
 
-  const scrollRootRef = useContext(ScrollRootContext);
-  const sentinelRef = useRef(null);
-
-  useEffect(() => {
-    if (
-      !sentinelRef.current ||
-      fetchingMore ||
-      noMoreEntries ||
-      messagesLoading
-    ) {
-      return undefined;
-    }
-
-    const root = scrollRootRef?.current || null;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          nextPage();
-        }
+  // Legacy openForoAdmin(): edit the foro/wall head via the existing edit modal.
+  const openForoAdmin = () => {
+    openModal({
+      model: {
+        show: true,
+        header: head?.INDICE === "ciudadanos" ? "EDITA TU MURO" : "EDITAR FORO",
       },
-      {
-        root,
-        rootMargin: "200px",
-        threshold: 0.1,
-      },
-    );
+      editForm: { msg: head, isHead: true },
+    });
+  };
 
-    observer.observe(sentinelRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [fetchingMore, noMoreEntries, messagesLoading, nextPage, scrollRootRef]);
+  useInfiniteScroll(nextPage, {
+    disabled: noMoreEntries || messagesLoading,
+    fetchingMore,
+  });
 
   const initialLoading = headLoading || messagesLoading;
   const error = headError || messagesError;
-  const introHtml = head?.INTRODUCCION || "Cargando introducción del foro...";
 
   return (
-    <PageShell title={title} subtitle={head?.Titulo || "Cargando foro..."}>
+    <PageShell>
       {initialLoading && <p>Cargando contenido del foro…</p>}
       {error && <p>Error al cargar el foro. Intenta de nuevo más tarde.</p>}
       {!initialLoading && !error && (
         <>
-          <div
-            className="foro-intro"
-            dangerouslySetInnerHTML={{ __html: introHtml }}
-          />
-          <section>
-            <h3>Mensajes recientes</h3>
-            <MessageList messages={messages} currentForo={currentForo} />
+          {/* The foro/wall head card is rendered by Layout (as legacy does),
+              so it also appears on /:foro/:id, /gallery and /votaciones. */}
+          {canAdminForo(head, user) && (
             <div
-              ref={sentinelRef}
-              aria-hidden="true"
-              style={{ height: 1, width: "100%" }}
+              className="foro-admin"
+              role="button"
+              tabIndex={0}
+              title="Editar foro"
+              onClick={openForoAdmin}
+              onKeyDown={(e) => e.key === "Enter" && openForoAdmin()}
+            >
+              <i className="fa fa-cog fa-lg" aria-hidden="true" />
+            </div>
+          )}
+          <section>
+            <MessageList
+              messages={messages}
+              currentForo={routeForo}
+              head={head}
             />
             {!initialLoading && !fetchingMore && !noMoreEntries && (
               <button

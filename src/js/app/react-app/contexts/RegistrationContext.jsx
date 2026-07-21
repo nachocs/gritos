@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { createContext, useCallback, useState } from "react";
 import endpoints from "../../util/endpoints";
+import { decodeBody } from "../utils/apiFetch";
 import mockup from "../../util/mockups";
 
 export const RegistrationContext = createContext({
@@ -41,7 +42,7 @@ export const RegistrationProvider = ({ children }) => {
         method: "POST",
         body: formData,
       })
-        .then((response) => response.json())
+        .then((response) => decodeBody(response).then(JSON.parse))
         .then((data) => {
           setRegistering(false);
 

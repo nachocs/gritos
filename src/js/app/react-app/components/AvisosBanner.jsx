@@ -1,38 +1,64 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { onAviso } from "../utils/avisosEvents";
 
+/**
+ * Port of legacy avisosView: a small pill showing how many new top-level
+ * entries have arrived (via socket) in a room since it started being
+ * watched. Per-room baselines are ID-diff based, not an event count —
+ * `counters[room]` is set to `entry.ID - 1` the first time a room is seen,
+ * so the immediate next arrival always reads as "1 new". Only the most
+ * recently updated room is shown (legacy overwrites, doesn't accumulate
+ * across rooms); thread rooms (containing "/") are ignored. Clicking
+ * navigates to the room and clears the count.
+ */
 const AvisosBanner = () => {
-  const [avisos, setAvisos] = useState({ room: null, count: 0 });
+  const countersRef = useRef({});
+  const [state, setState] = useState({ room: null, nuevos: 0 });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleAviso = (data) => {
-      if (!data.room || data.room.includes("/")) {
+      if (!data?.room || data.room.includes("/") || !data.entry) {
         return;
       }
-      setAvisos((current) => ({
-        room: data.room.replace(/collection:/, ""),
-        count: current.count + 1,
-      }));
+      const room = data.room.replace(/collection:/, "");
+      const entryId = Number(data.entry.ID);
+      if (countersRef.current[room] === undefined) {
+        countersRef.current[room] = entryId - 1;
+      }
+      const nuevos = entryId - countersRef.current[room];
+      setState({ room, nuevos });
     };
 
     return onAviso(handleAviso);
   }, []);
 
-  if (!avisos.count) {
+  const closeAndGo = useCallback(() => {
+    setState((current) => ({ ...current, nuevos: 0 }));
+    if (state.room) {
+      navigate(`/${state.room}`);
+    }
+  }, [navigate, state.room]);
+
+  if (!state.nuevos) {
     return null;
   }
 
   return (
-    <div className="avisos-banner mdl-color--orange-50 mdl-shadow--2dp">
-      <span className="avisos-banner__label">Avisos</span>
-      <strong className="avisos-banner__count">{avisos.count}</strong>
-      {avisos.room && (
-        <span className="avisos-banner__room">Nuevo en {avisos.room}</span>
-      )}
+    <div
+      className="avisos-main"
+      onClick={closeAndGo}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && closeAndGo()}
+    >
+      <span>
+        {state.nuevos} nuevo{state.nuevos > 1 ? "s" : ""} grito
+        {state.nuevos > 1 ? "s" : ""} en #{state.room}
+      </span>
     </div>
   );
 };
-
-AvisosBanner.propTypes = {};
 
 export default AvisosBanner;

@@ -44,16 +44,22 @@ const EmojisModal = ({ onSelect }) => {
           })}
         </div>
         <div className="emojis-modal-content">
+          {/* Legacy renders the bare <img class="emojione"> straight into
+              .emojis-modal-content and delegates the click
+              ('click .emojis-modal-content .emojione'). Wrapping each one in a
+              <button class="emoji-pick"> — a class with no CSS at all — meant
+              every emoji picked up the browser's default button chrome: a grey
+              rgb(239,239,239) fill and a 2px outset border. */}
           {list.map((emoji) => (
-            <button
+            <Emoji
               key={emoji.unicode}
-              type="button"
-              className="emoji-pick"
-              title={emoji.shortname}
+              unicode={emoji.unicode}
+              shortname={emoji.shortname}
+              role="button"
+              tabIndex={0}
               onClick={() => onSelect(emoji)}
-            >
-              <Emoji unicode={emoji.unicode} shortname={emoji.shortname} />
-            </button>
+              onKeyDown={(e) => e.key === "Enter" && onSelect(emoji)}
+            />
           ))}
         </div>
       </div>

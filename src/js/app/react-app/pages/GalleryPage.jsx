@@ -1,23 +1,42 @@
 import { useParams } from "react-router-dom";
 import GalleryItem from "../components/GalleryItem";
 import PageShell from "../components/PageShell";
+import useHead from "../hooks/useHead";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import useJsonSearch from "../hooks/useJsonSearch";
 import normalizeForo from "../utils/normalizeForo";
 
+/**
+ * Gallery view — legacy galleryView: an image-tile grid of the foro's entries
+ * that carry a picture (`encontrar: "Ficheros"`), no text, with infinite
+ * scroll. The composer is hidden on this route (see Layout).
+ */
 const GalleryPage = () => {
-  const { foro } = useParams();
-  const currentForo = normalizeForo(foro);
+  const { foro, id } = useParams();
+  const isWall = foro === "ciudadanos" && Boolean(id);
+  const currentForo = isWall ? `ciudadanos/${id}` : normalizeForo(foro);
+
+  const { data: head } = useHead(currentForo);
   const {
     data: entries,
     loading,
+    fetchingMore,
     error,
-  } = useJsonSearch({
-    foro: currentForo,
-    encontrar: "Ficheros",
+    nextPage,
+    noMoreEntries,
+  } = useJsonSearch({ foro: currentForo, encontrar: "Ficheros" });
+
+  useInfiniteScroll(nextPage, {
+    disabled: noMoreEntries || loading,
+    fetchingMore,
   });
 
+  const subtitle = head?.Titulo
+    ? `Galería de ${head.Titulo}`
+    : `Galería del foro ${currentForo}`;
+
   return (
-    <PageShell title="Galería" subtitle={`Galería del foro ${currentForo}`}>
+    <PageShell>
       {loading && <p>Cargando galería…</p>}
       {error && <p>Error al cargar la galería.</p>}
       {!loading && !error && (
@@ -25,20 +44,17 @@ const GalleryPage = () => {
           {entries.length === 0 ? (
             <p>No hay elementos en la galería todavía.</p>
           ) : (
-            <ul className="gallery-list">
-              {entries.map((entry) => {
-                const entryId =
-                  entry.ID || entry.wId || `${entry.INDICE}-${entry.ID}`;
-                return (
-                  <GalleryItem
-                    key={entryId}
-                    entry={entry}
-                    currentForo={currentForo}
-                  />
-                );
-              })}
-            </ul>
+            <div className="gallery">
+              {entries.map((entry) => (
+                <GalleryItem
+                  key={entry.wId || `${entry.INDICE}-${entry.ID}`}
+                  entry={entry}
+                  currentForo={currentForo}
+                />
+              ))}
+            </div>
           )}
+          {fetchingMore && <p>Cargando más imágenes…</p>}
         </>
       )}
     </PageShell>

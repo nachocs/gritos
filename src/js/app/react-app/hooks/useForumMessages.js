@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import mockup from "../../util/mockups";
 import { publishAviso } from "../utils/avisosEvents";
 import { fetchForumMessages, normalizeMessage } from "../utils/foroApi";
+import { onNewMessage } from "../utils/messageEvents";
+import notificacionesReadState from "../utils/notificacionesReadState";
 import useSocket from "./useSocket";
 
 const getMessageKey = (message, index) =>
@@ -20,6 +22,13 @@ const getFirstEntry = (messages) => {
     .map((message) => Number(message?.num))
     .filter((num) => !Number.isNaN(num));
   return nums.length ? Math.min(...nums) : null;
+};
+
+const getLastEntry = (messages) => {
+  const nums = messages
+    .map((message) => Number(message?.num))
+    .filter((num) => !Number.isNaN(num));
+  return nums.length ? Math.max(...nums) : null;
 };
 
 const useForumMessages = (foro) => {
@@ -52,13 +61,17 @@ const useForumMessages = (foro) => {
 
     const load = mockup.active
       ? Promise.resolve(mockup.msgCollectionMockup.map(normalizeMessage))
-      : fetchForumMessages({ foro, signal: controller.signal });
+      : fetchForumMessages({ foro, max: 20, signal: controller.signal });
 
     load
       .then((messages) => {
         setData(uniqueById(messages));
         firstEntryRef.current = getFirstEntry(messages);
         setNoMoreEntries(messages.length === 0);
+        const lastEntry = getLastEntry(messages);
+        if (lastEntry !== null) {
+          notificacionesReadState.update("foro", foro.replace(/\/$/, ""), lastEntry);
+        }
       })
       .catch((fetchError) => {
         if (fetchError.name !== "AbortError") {
@@ -81,15 +94,36 @@ const useForumMessages = (foro) => {
     [foro],
   );
 
-  const handleUpdate = useCallback((payload) => {
-    const message = normalizeMessage(payload?.entry);
-    if (message) {
-      setData((current) => uniqueById([message, ...current]));
-      publishAviso(payload);
-    }
-  }, []);
+  const handleUpdate = useCallback(
+    (payload) => {
+      const message = normalizeMessage(payload?.entry);
+      if (message) {
+        setData((current) => uniqueById([message, ...current]));
+        publishAviso(payload);
+        if (foro && message.ID) {
+          notificacionesReadState.update("foro", foro.replace(/\/$/, ""), message.ID);
+        }
+      }
+    },
+    [foro],
+  );
 
   useSocket(socketRoom, "updated", handleUpdate);
+
+  // Insert the poster's own message immediately, matching legacy's direct
+  // collection.add() on submit success — doesn't depend on a socket echo,
+  // which the default foroscomun foro never even triggers (no room is set).
+  useEffect(() => {
+    if (!foro) {
+      return undefined;
+    }
+    return onNewMessage(({ foro: messageForo, message }) => {
+      if (messageForo !== foro) {
+        return;
+      }
+      setData((current) => uniqueById([message, ...current]));
+    });
+  }, [foro]);
 
   const nextPage = useCallback(() => {
     if (
@@ -99,20 +133,24 @@ const useForumMessages = (foro) => {
       firstEntryRef.current === null ||
       mockup.active
     ) {
-      return;
+      return Promise.resolve();
     }
 
     fetchingMoreRef.current = true;
     setFetchingMore(true);
     setError(null);
 
-    fetchForumMessages({ foro, init: firstEntryRef.current })
+    return fetchForumMessages({ foro, init: firstEntryRef.current, max: 20 })
       .then((messages) => {
         setData((current) => uniqueById([...current, ...messages]));
         firstEntryRef.current = getFirstEntry(messages);
         setNoMoreEntries(
           messages.length === 0 || firstEntryRef.current === null,
         );
+        const lastEntry = getLastEntry(messages);
+        if (lastEntry !== null) {
+          notificacionesReadState.update("foro", foro.replace(/\/$/, ""), lastEntry);
+        }
       })
       .catch((fetchError) => {
         setError(fetchError);

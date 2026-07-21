@@ -1,9 +1,10 @@
 import endpoints from "../../util/endpoints";
+import { fetchJson } from "./apiFetch";
 
 export const DEFAULT_HEAD = {
   Titulo: "gritos.com",
   INTRODUCCION:
-    "<div>Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.&nbsp;</div><div><font size=\"1\">Tus opiniones serán enviadas al HQ de la C.I.A., allí harán un correcto uso de ellas.</font></div>",
+    '<div>Expresa libremente y sin ningún tipo de tapujos tu opinión sobre el tema que quieras.&nbsp;</div><div><font size="1">Tus opiniones serán enviadas al HQ de la C.I.A., allí harán un correcto uso de ellas.</font></div>',
   INDICE: "",
   Userid: null,
   IMAGEN0_URL: null,
@@ -40,15 +41,9 @@ export const fetchJsonSearch = async ({
     params.set("last", String(last));
   }
 
-  const response = await fetch(`${endpoints.apiUrl}json.cgi?${params}`, {
+  const data = await fetchJson(`${endpoints.apiUrl}json.cgi?${params}`, {
     signal,
   });
-
-  if (!response.ok) {
-    throw new Error(`json.cgi request failed: ${response.status}`);
-  }
-
-  const data = await response.json();
   return Array.isArray(data) ? data : [];
 };
 
@@ -68,16 +63,10 @@ export const uploadImages = async ({ files, uid, indexStart = 0, signal }) => {
     formData.append(`FICHERO_IMAGEN${indexStart + i}`, file);
   });
 
-  const response = await fetch(
+  const data = await fetchJson(
     `${endpoints.apiUrl}upload.cgi?sessionId=${uid}`,
     { method: "POST", body: formData, signal },
   );
-
-  if (!response.ok) {
-    throw new Error(`upload request failed: ${response.status}`);
-  }
-
-  const data = await response.json();
   return data?.response || {};
 };
 
@@ -110,18 +99,52 @@ export const fetchMessage = async ({ foro, id, signal }) => {
     return null;
   }
 
-  const response = await fetch(`${endpoints.apiUrl}index.cgi?${foro}/${id}`, {
+  const data = await fetchJson(`${endpoints.apiUrl}index.cgi?${foro}/${id}`, {
     signal,
   });
 
-  if (!response.ok) {
-    throw new Error(`message request failed: ${response.status}`);
-  }
-
-  return normalizeMessage(await response.json());
+  return normalizeMessage(data);
 };
 
-export const fetchForumMessages = async ({ foro, init, signal }) => {
+/**
+ * Persist a full message entity — Backbone model.save() equivalent.
+ * Legacy PUT the entire model JSON to index.cgi?<INDICE>/<ID> (used by
+ * mola/nomola/love toggles and encuesta votes/open-close).
+ */
+export const saveMessage = async ({ message, signal }) => {
+  if (!message?.INDICE || !message?.ID) {
+    throw new Error("saveMessage requires INDICE and ID");
+  }
+  const data = await fetchJson(
+    `${endpoints.apiUrl}index.cgi?${message.INDICE}/${message.ID}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(message),
+      signal,
+    },
+  );
+  return normalizeMessage(data);
+};
+
+/**
+ * Delete a message — Backbone model.destroy() equivalent.
+ */
+export const deleteMessage = async ({ message, signal }) => {
+  if (!message?.INDICE || !message?.ID) {
+    throw new Error("deleteMessage requires INDICE and ID");
+  }
+  const response = await fetch(
+    `${endpoints.apiUrl}index.cgi?${message.INDICE}/${message.ID}`,
+    { method: "DELETE", signal },
+  );
+  if (!response.ok) {
+    throw new Error(`message delete failed: ${response.status}`);
+  }
+  return true;
+};
+
+export const fetchForumMessages = async ({ foro, init, max = 20, signal }) => {
   if (!foro) {
     return [];
   }
@@ -130,18 +153,14 @@ export const fetchForumMessages = async ({ foro, init, signal }) => {
   if (init) {
     params.set("init", String(init));
   }
+  params.set("max", String(max));
 
   const query = params.toString();
-  const response = await fetch(
+  const data = await fetchJson(
     `${endpoints.apiUrl}index.cgi?${foro}${query ? `&${query}` : ""}`,
     { signal },
   );
 
-  if (!response.ok) {
-    throw new Error(`forum messages request failed: ${response.status}`);
-  }
-
-  const data = await response.json();
   const messages = Array.isArray(data) ? data : data ? [data] : [];
   return messages.map(normalizeMessage).filter(Boolean);
 };
@@ -151,16 +170,14 @@ export const fetchHead = async ({ name, signal }) => {
     return DEFAULT_HEAD;
   }
 
-  const params = new URLSearchParams({ Name: name });
-  const response = await fetch(`${endpoints.apiUrl}head.cgi?${params}`, {
-    signal,
-  });
+  // Legacy HeadModel had urlRoot "head.cgi?" + idAttribute Name, which
+  // Backbone turned into `head.cgi?/<encoded name>` — the deployed app
+  // provably works with that form (a `Name=` query param does not).
+  const data = await fetchJson(
+    `${endpoints.apiUrl}head.cgi?/${encodeURIComponent(name)}`,
+    { signal },
+  );
 
-  if (!response.ok) {
-    throw new Error(`head request failed: ${response.status}`);
-  }
-
-  const data = await response.json();
   if (!data || !Object.keys(data).length) {
     return { ...DEFAULT_HEAD, Name: name };
   }
@@ -168,12 +185,6 @@ export const fetchHead = async ({ name, signal }) => {
 };
 
 export const fetchResumen = async ({ signal } = {}) => {
-  const response = await fetch(`${endpoints.apiUrl}resumen.cgi?`, { signal });
-
-  if (!response.ok) {
-    throw new Error(`resumen request failed: ${response.status}`);
-  }
-
-  const data = await response.json();
+  const data = await fetchJson(`${endpoints.apiUrl}resumen.cgi?`, { signal });
   return Array.isArray(data) ? data : [];
 };

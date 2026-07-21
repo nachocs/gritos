@@ -11,8 +11,8 @@ const useNavGuard = () => {
 
   // React Router v6 blocker
   const blocker = useBlocker(
-    ({ currentValue, nextLocation }) =>
-      isDirty && currentValue.pathname !== nextLocation.pathname,
+    ({ currentLocation, nextLocation }) =>
+      isDirty && currentLocation.pathname !== nextLocation.pathname,
   );
 
   useEffect(() => {

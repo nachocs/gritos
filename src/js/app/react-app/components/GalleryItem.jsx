@@ -1,42 +1,39 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
- * Individual item for the gallery list.
- * Migrated from galleryMsgView logic.
+ * A single gallery tile. Port of legacy galleryMsgView.html: an image-only
+ * square (no title/description text) with a hover "forward" chevron linking to
+ * the message. Uses IMAGEN0_URL, falling back to IMAGEN1_URL like the template.
  */
 const GalleryItem = ({ entry, currentForo }) => {
-  const imageUrl =
-    entry.IMAGEN0_URL ||
-    entry.IMAGEN1_URL ||
-    entry.IMAGEN0_THUMB_URL ||
-    entry.IMAGEN1_THUMB_URL;
+  const navigate = useNavigate();
+  const imageUrl = entry.IMAGEN0_URL || entry.IMAGEN1_URL;
+  if (!imageUrl) {
+    return null;
+  }
 
-  const entryId = entry.ID || entry.wId || `${entry.INDICE}-${entry.ID}`;
+  const entryId = entry.ID || entry.wId;
   const messageLink = `/${currentForo}/${entryId}`;
 
   return (
-    <li className="gallery-entry">
-      <Link to={messageLink} className="gallery-entry__link">
-        {imageUrl ? (
-          <div
-            className="gallery-entry__image"
-            style={{ backgroundImage: `url(${imageUrl})` }}
-          />
-        ) : (
-          <div className="gallery-entry__placeholder">Sin imagen</div>
-        )}
-        <div className="gallery-entry__info">
-          <strong>{entry.Titulo || `Elemento ${entryId}`}</strong>
-          <div>
-            {entry.SUBJECT ||
-              entry.COMMENTS ||
-              entry.comments ||
-              "Sin descripción."}
-          </div>
+    <div className="gallery-entry">
+      <div className="action-icons">
+        <div className="forward">
+          <Link to={messageLink}>
+            <i className="fa fa-chevron-circle-right fa-lg" aria-hidden="true" />
+          </Link>
         </div>
-      </Link>
-    </li>
+      </div>
+      <div
+        className="img-gallery"
+        role="button"
+        tabIndex={0}
+        style={{ backgroundImage: `url(${imageUrl})` }}
+        onClick={() => navigate(messageLink)}
+        onKeyDown={(e) => e.key === "Enter" && navigate(messageLink)}
+      />
+    </div>
   );
 };
 

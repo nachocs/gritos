@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import PropTypes from "prop-types";
+import smile from "../../../../img/smile.svg";
 import { useUser, useForm } from "../hooks/useContexts";
-import { buildEmojiHtml, insertAtCursor } from "../utils/emojiHtml";
+import { buildEmojiHtml } from "../utils/emojiHtml";
 import { imageThumbs, nextImageIndex, uploadImages } from "../utils/foroApi";
 import { closeModal } from "../utils/modalEvents";
 import EmojisModal from "./EmojisModal";
+import RichComposer from "./RichComposer";
 
 const getInitialComment = (msg) => {
   if (!msg) {
@@ -24,46 +26,23 @@ const getInitialComment = (msg) => {
 const EditFormModal = ({ editForm }) => {
   const { user } = useUser();
   const { submitMessage } = useForm();
-  const [comment, setComment] = useState("");
-  const [title, setTitle] = useState("");
+  // ModalRoot unmounts this component on close, so the initial content can be
+  // seeded once from the message being edited (the RichComposer is uncontrolled).
+  const [initialComment] = useState(() => getInitialComment(editForm?.msg));
+  const [title, setTitle] = useState(() =>
+    editForm?.isHead
+      ? editForm?.msg?.get?.("Titulo") || editForm?.msg?.Titulo || ""
+      : "",
+  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [imageAttrs, setImageAttrs] = useState({});
   const [showEmojis, setShowEmojis] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const textareaRef = useRef(null);
-
-  useEffect(() => {
-    if (!editForm) {
-      return undefined;
-    }
-    const msg = editForm.msg;
-    if (msg) {
-      setComment(getInitialComment(msg));
-      if (editForm.isHead) {
-        setTitle(msg.get?.("Titulo") || msg.Titulo || "");
-      }
-    } else {
-      setComment("");
-      setTitle("");
-    }
-    setImageAttrs({});
-    setShowEmojis(false);
-    return undefined;
-  }, [editForm]);
+  const composerRef = useRef(null);
 
   const handleEmojiSelect = (emoji) => {
-    const { value, caret } = insertAtCursor(
-      textareaRef.current,
-      buildEmojiHtml(emoji),
-    );
-    setComment(value);
-    requestAnimationFrame(() => {
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-        textareaRef.current.setSelectionRange(caret, caret);
-      }
-    });
+    composerRef.current?.insertHtml(buildEmojiHtml(emoji));
   };
 
   const handleFileChange = async (event) => {
@@ -111,8 +90,11 @@ const EditFormModal = ({ editForm }) => {
       return;
     }
 
-    const trimmedComment = comment.trim();
-    if (!trimmedComment) {
+    const trimmedComment = (composerRef.current?.getHtml() || "")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .trim();
+    if (!trimmedComment || composerRef.current?.isEmpty()) {
       setError("El mensaje no puede estar vacío.");
       return;
     }
@@ -174,13 +156,12 @@ const EditFormModal = ({ editForm }) => {
             </label>
           </div>
         )}
-        <textarea
-          ref={textareaRef}
-          className="formularioTextArea"
+        <RichComposer
+          ref={composerRef}
+          initialHtml={initialComment}
           placeholder={commentPlaceholder}
-          value={comment}
-          onChange={(event) => setComment(event.target.value)}
-          rows={6}
+          captureUrls
+          userId={user?.ID || user?.uid}
         />
 
         {thumbs.length > 0 && (
@@ -191,19 +172,13 @@ const EditFormModal = ({ editForm }) => {
           </div>
         )}
 
-        <div className="form-toolbar">
-          <button
-            type="button"
-            className="emojis mdl-button mdl-js-button mdl-button--icon"
-            title="Emojis"
-            onClick={() => setShowEmojis((prev) => !prev)}
-          >
-            <i className="material-icons">insert_emoticon</i>
-          </button>
-          <label
-            className="upload mdl-button mdl-js-button mdl-button--icon"
-            title="Adjuntar imagen"
-          >
+        {/* Same legacy classes the main composer uses: `.file-submit` +
+            `.custom-file-upload` for the camera and a plain `.emojis` div with
+            smile.svg. The `.form-toolbar` / `.upload` wrappers here had no CSS
+            at all, so the icons dropped out of their absolutely-positioned row
+            and picked up default button chrome. */}
+        <div className="file-submit">
+          <label className="custom-file-upload" title="imagen">
             <i className="material-icons">photo_camera</i>
             <input
               type="file"
@@ -214,14 +189,18 @@ const EditFormModal = ({ editForm }) => {
               disabled={uploading}
             />
           </label>
-          {uploading && <span className="upload-status">Subiendo...</span>}
         </div>
-
-        {showEmojis && (
-          <div className="emojis-modal-place">
-            <EmojisModal onSelect={handleEmojiSelect} />
-          </div>
-        )}
+        <div
+          className="emojis"
+          role="button"
+          tabIndex={0}
+          title="emojis"
+          onClick={() => setShowEmojis((prev) => !prev)}
+          onKeyDown={(e) => e.key === "Enter" && setShowEmojis((p) => !p)}
+        >
+          <img className="emojione" alt="😝" title="emojis" src={smile} />
+        </div>
+        {uploading && <span className="upload-status">Subiendo...</span>}
 
         <div className="form-submit">
           <button
@@ -232,6 +211,14 @@ const EditFormModal = ({ editForm }) => {
             {submitting ? "Guardando..." : "Guardar"}
           </button>
         </div>
+
+        {/* After `.form-submit`, matching legacy — otherwise the popup covers
+            the emoji icon that closes it (see FormShell). */}
+        {showEmojis && (
+          <div className="emojis-modal-place" style={{ display: "block" }}>
+            <EmojisModal onSelect={handleEmojiSelect} />
+          </div>
+        )}
         {error && <p className="form-error">{error}</p>}
       </form>
     </div>

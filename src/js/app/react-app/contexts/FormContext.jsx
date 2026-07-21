@@ -1,19 +1,31 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import endpoints from "../../util/endpoints";
+import { decodeBody } from "../utils/apiFetch";
 import Ws from "../../util/Ws";
+import { NotificationsContext } from "./NotificationsContext";
 
 export const FormContext = createContext({
   submitting: false,
   error: null,
   success: false,
+  isDirty: false,
   submitMessage: () => {},
   clearStatus: () => {},
+  setDirty: () => {},
 });
 
 export const FormProvider = ({ children }) => {
+  const { addNotification } = useContext(NotificationsContext);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Mirrors legacy Util.checkForms(), which warned on navigation whenever any
+  // open composer had pending text.
+  const setDirty = useCallback((dirty) => {
+    setIsDirty(dirty);
+  }, []);
 
   const submitMessage = useCallback((attrs) => {
     return new Promise((resolve, reject) => {
@@ -21,20 +33,20 @@ export const FormProvider = ({ children }) => {
       setError(null);
       setSuccess(false);
 
-      const formData = new FormData();
-      Object.keys(attrs).forEach((key) => {
-        formData.append(key, attrs[key]);
-      });
-
+      // Legacy posted via Backbone.sync, which sends the model as a JSON
+      // body — required for the nested `minigrito` object on replies
+      // (FormData would serialize it as "[object Object]").
       fetch(endpoints.apiUrl + "post.cgi", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(attrs),
       })
-        .then((response) => response.json())
+        .then((response) => decodeBody(response).then(JSON.parse))
         .then((data) => {
           if (data.status === "ok") {
             setSuccess(true);
             setSubmitting(false);
+            setIsDirty(false);
 
             // Handle WebSocket updates for notifications
             let room = null;
@@ -47,7 +59,6 @@ export const FormProvider = ({ children }) => {
             if (room && !room.match(/gritosdb/i) && room !== "ciudadanos") {
               Ws.update(`collection:${room}`);
 
-              // Add notifications
               const notificaciones = [];
               if (attrs.minigrito) {
                 notificaciones.push({
@@ -77,7 +88,7 @@ export const FormProvider = ({ children }) => {
                   last: "0",
                 });
               }
-              // TODO: Emit notification update event
+              addNotification(notificaciones);
             }
 
             resolve(data);
@@ -94,7 +105,7 @@ export const FormProvider = ({ children }) => {
           reject(err);
         });
     });
-  }, []);
+  }, [addNotification]);
 
   const clearStatus = useCallback(() => {
     setError(null);
@@ -105,8 +116,10 @@ export const FormProvider = ({ children }) => {
     submitting,
     error,
     success,
+    isDirty,
     submitMessage,
     clearStatus,
+    setDirty,
   };
 
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;

@@ -1,47 +1,65 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
+import MessageList from "../components/MessageList";
 import PageShell from "../components/PageShell";
+import useHead from "../hooks/useHead";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import useJsonSearch from "../hooks/useJsonSearch";
+import { normalizeMessage } from "../utils/foroApi";
 import normalizeForo from "../utils/normalizeForo";
 
+/**
+ * Votaciones view — legacy rendered the same message cards as the foro, but
+ * filtered to entries that carry a poll (`encontrar: "encuesta"`). The composer
+ * stays visible (it lives in Layout); only the listing is poll-only.
+ */
 const VotacionesPage = () => {
-  const { foro } = useParams();
-  const currentForo = normalizeForo(foro);
+  const { foro, id } = useParams();
+  // /ciudadanos/:id/votaciones — the wall's polls.
+  const isWall = foro === "ciudadanos" && Boolean(id);
+  const currentForo = isWall ? `ciudadanos/${id}` : normalizeForo(foro);
+
+  const { data: head } = useHead(currentForo);
   const {
-    data: votes,
+    data: entries,
     loading,
+    fetchingMore,
     error,
-  } = useJsonSearch({
-    foro: currentForo,
-    encontrar: "encuesta",
+    nextPage,
+    noMoreEntries,
+  } = useJsonSearch({ foro: currentForo, encontrar: "encuesta" });
+
+  const messages = useMemo(
+    () => entries.map(normalizeMessage).filter(Boolean),
+    [entries],
+  );
+
+  useInfiniteScroll(nextPage, {
+    disabled: noMoreEntries || loading,
+    fetchingMore,
   });
 
+  const title = head?.Titulo
+    ? `Votaciones de ${head.Titulo}`
+    : `Votaciones del foro ${currentForo}`;
+
   return (
-    <PageShell
-      title="Votaciones"
-      subtitle={`Votaciones del foro ${currentForo}`}
-    >
+    <PageShell>
       {loading && <p>Cargando votaciones…</p>}
       {error && <p>Error al cargar las votaciones.</p>}
       {!loading && !error && (
-        <>
-          {votes.length === 0 ? (
+        <section>
+          {messages.length === 0 ? (
             <p>No hay votaciones disponibles.</p>
           ) : (
-            <ul>
-              {votes.map((vote) => (
-                <li key={vote.ID || vote.wId || `${vote.INDICE}-${vote.ID}`}>
-                  <strong>{vote.Titulo || vote.ID || vote.wId}</strong>
-                  <div>
-                    {vote.SUBJECT ||
-                      vote.COMMENTS ||
-                      vote.comments ||
-                      "Sin descripción."}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <MessageList
+              messages={messages}
+              currentForo={currentForo}
+              head={head}
+            />
           )}
-        </>
+          {fetchingMore && <p>Cargando más votaciones…</p>}
+        </section>
       )}
     </PageShell>
   );

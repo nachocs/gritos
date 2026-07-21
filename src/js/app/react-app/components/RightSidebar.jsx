@@ -1,47 +1,38 @@
 import PropTypes from "prop-types";
-import MiniMessageList from "../../MiniMessageList";
-import useJsonSearch from "../hooks/useJsonSearch";
 import GalleryThumbnail from "./GalleryThumbnail";
 import VotacionesThumbnail from "./VotacionesThumbnail";
 
 /**
  * Aggregator component for the forum's right sidebar widgets.
- * Replaces src/js/app/main/right/ folder views.
+ * Replaces src/js/app/main/right/rightView.js — legacy only ever renders a
+ * gallery thumbnail and a votaciones teaser here, nothing else.
  */
-const RightSidebar = ({ foro }) => {
-  // Fetch the summary/resumen messages for the sidebar
-  const { data: resumenMsgs, loading: loadingResumen } = useJsonSearch({
-    foro,
-    encontrar: "Resumen",
-    max: 5,
-  });
+// Legacy rightView hides the sidebar only when there is no foro (foroscomun),
+// and otherwise hides *just the thumbnail for the view you're already on* —
+// the gallery page keeps the Votaciones teaser, the votaciones page keeps the
+// Galería thumbnail. Previously the whole sidebar was hidden on /gallery.
+const RightSidebar = ({ foro, isGallery, isVotaciones }) => {
+  if (!foro) {
+    return null;
+  }
 
   return (
-    <aside className="right-sidebar">
-      {/* Gallery Section */}
-      <div className="sidebar-section">
-        <h3 className="section-title">Imágenes</h3>
-        <GalleryThumbnail foro={foro} />
-      </div>
-
-      {/* Polls Section */}
-      <VotacionesThumbnail foro={foro} />
-
-      {/* Resumen / Compact Message List Section */}
-      <div className="sidebar-section">
-        <h3 className="section-title">Últimos Gritos</h3>
-        <MiniMessageList
-          messages={resumenMsgs}
-          currentForo={foro}
-          isLoading={loadingResumen}
-        />
-      </div>
+    <aside className="right-side">
+      {!isGallery && <GalleryThumbnail foro={foro} />}
+      {!isVotaciones && <VotacionesThumbnail foro={foro} />}
     </aside>
   );
 };
 
 RightSidebar.propTypes = {
-  foro: PropTypes.string.isRequired,
+  foro: PropTypes.string,
+  isGallery: PropTypes.bool,
+  isVotaciones: PropTypes.bool,
+};
+
+RightSidebar.defaultProps = {
+  isGallery: false,
+  isVotaciones: false,
 };
 
 export default RightSidebar;

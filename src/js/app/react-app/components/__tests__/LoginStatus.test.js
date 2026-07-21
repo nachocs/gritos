@@ -1,7 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { UserProvider } from "../../contexts/UserContext";
 import LoginStatus from "../LoginStatus";
+import ModalRoot from "../ModalRoot";
 
+// LoginStatus no longer renders its own login form inline — clicking "Log In"
+// opens the shared modal (LoginModal via ModalRoot's event bus), so these
+// tests render both together, the same way Layout does in the real app.
 describe("LoginStatus Component", () => {
   const originalFetch = global.fetch;
 
@@ -9,23 +13,27 @@ describe("LoginStatus Component", () => {
     global.fetch = originalFetch;
   });
 
-  const renderWithProviders = (component) => {
-    return render(<UserProvider>{component}</UserProvider>);
-  };
+  const renderWithProviders = () =>
+    render(
+      <UserProvider>
+        <LoginStatus />
+        <ModalRoot />
+      </UserProvider>,
+    );
 
   it("should render login button when user is not logged in", () => {
-    renderWithProviders(<LoginStatus />);
+    renderWithProviders();
 
     expect(screen.getByText("Log In")).toBeInTheDocument();
   });
 
-  it("should show menu when login button is clicked", () => {
-    renderWithProviders(<LoginStatus />);
+  it("should open the login modal when login button is clicked", () => {
+    renderWithProviders();
 
     const loginButton = screen.getByText("Log In");
     fireEvent.click(loginButton);
 
-    // After clicking, the menu should appear with form fields
+    // After clicking, the login modal should appear with form fields
     expect(screen.getByLabelText(/Alias\/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
   });
@@ -38,7 +46,7 @@ describe("LoginStatus Component", () => {
         }),
     );
 
-    renderWithProviders(<LoginStatus />);
+    renderWithProviders();
 
     const loginButton = screen.getByText("Log In");
     fireEvent.click(loginButton);
@@ -62,7 +70,7 @@ describe("LoginStatus Component", () => {
   });
 
   it("should show error message when credentials are missing", () => {
-    renderWithProviders(<LoginStatus />);
+    renderWithProviders();
 
     const loginButton = screen.getByText("Log In");
     fireEvent.click(loginButton);

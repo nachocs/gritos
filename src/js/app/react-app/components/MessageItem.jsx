@@ -1,18 +1,20 @@
 import moment from "moment";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-const normalizeRouteForo = (indice, currentForo) => {
-  if (!indice) {
-    return currentForo;
-  }
-  return indice.replace(/^gritos\//, "");
-};
+import { shareTo } from "../../util/socialShare";
+import { useUser } from "../hooks/useContexts";
+import { deleteMessage, fetchMessage, saveMessage } from "../utils/foroApi";
+import formatComments from "../utils/formatComments";
+import { openModal } from "../utils/modalEvents";
+import EncuestaBlock, { parseEncuesta } from "./EncuestaBlock";
+import MiniThread from "./MiniThread";
+import MolaActions from "./MolaActions";
 
 const getImageIndexes = (message) => {
   const indexes = new Set();
   Object.keys(message).forEach((key) => {
-    const match = key.match(/^IMAGEN(\d+)_/);
+    const match = key.match(/^IMAGEN(\d+)_URL$/);
     if (match) {
       indexes.add(Number(match[1]));
     }
@@ -20,21 +22,18 @@ const getImageIndexes = (message) => {
   return Array.from(indexes).sort((a, b) => a - b);
 };
 
-const getImageSource = (message, index) =>
-  message[`IMAGEN${index}_URL`] ||
-  message[`IMAGEN${index}_THUMB_URL`] ||
-  message[`IMAGEN${index}_THUMB`];
-
-const getImageDimensions = (message, index) => {
-  const width =
-    message[`IMAGEN${index}_ancho`] || message[`IMAGEN${index}_ANCHO`];
-  const height =
-    message[`IMAGEN${index}_alto`] || message[`IMAGEN${index}_ALTO`];
-  return {
-    width: width ? Number(width) : undefined,
-    height: height ? Number(height) : undefined,
-  };
-};
+const getImages = (message) =>
+  getImageIndexes(message)
+    .map((index) => {
+      const src = message[`IMAGEN${index}_URL`];
+      if (!src) {
+        return null;
+      }
+      const width = Number(message[`IMAGEN${index}_ancho`]) || undefined;
+      const height = Number(message[`IMAGEN${index}_alto`]) || undefined;
+      return { src, width, height };
+    })
+    .filter(Boolean);
 
 const formatMessageTime = (value) => {
   if (!value) {
@@ -48,43 +47,147 @@ const formatMessageTime = (value) => {
   return parsed.isValid() ? parsed.fromNow(true) : null;
 };
 
-const getImages = (message) =>
-  getImageIndexes(message)
-    .map((index) => {
-      const src = getImageSource(message, index);
-      if (!src) {
-        return null;
+// Port of legacy msgView serializer's tagsShown: `publicados` is a
+// pipe-separated list of "name,value" pairs; the message's own foro is
+// appended, and ciudadanos entries show the citizen alias with an @.
+const getTags = (message) => {
+  const tags = [];
+  if (message.publicados) {
+    message.publicados.split(/\|/).forEach((pub) => {
+      const [name, rawValue] = pub.split(/,/);
+      if (rawValue) {
+        tags.push({ name, value: rawValue.replace(/^gritos\//, "") });
       }
-      const { width, height } = getImageDimensions(message, index);
-      return { src, width, height };
-    })
-    .filter(Boolean);
-
-const MessageItem = ({ message, currentForo }) => {
-  const id =
-    message.ID ||
-    message.wId ||
-    `${message.INDICE || currentForo}-${message.ID || message.wId}`;
-  const routeForo = normalizeRouteForo(message.INDICE, currentForo);
-  const messageLink = `/${routeForo}/${id}`;
-  const title = message.Titulo || `Mensaje ${message.ID || id}`;
-  const displayName =
-    message.name ||
-    message.NOMBRE ||
-    message.nombre ||
-    message.ciudadano ||
-    "Anónimo";
-  const authorLink = message.ciudadano
-    ? `/ciudadanos/${message.ciudadano}`
-    : null;
-  const showForm = message.showForm !== false;
-  const content =
-    message.COMMENTS || message.comments || message.INTRODUCCION || "";
-  const date = formatMessageTime(
-    message.FECHA || message.date || message.fecha || null,
+    });
+  }
+  const indice = message.INDICE || "";
+  if (!indice.match(/^ciudadanos\//)) {
+    const mainName = indice.replace(/^gritos\//, "").replace(/^foros\//, "");
+    tags.push({ name: mainName, value: mainName });
+  } else if (message.indice_ciudadano_alias) {
+    tags.push({
+      name: message.indice_ciudadano_alias.replace(/\s/g, "_"),
+      value: indice,
+    });
+  }
+  const seen = new Set();
+  return tags.filter(
+    (tag) => tag.value && !seen.has(tag.value) && seen.add(tag.value),
   );
-  const emotionUrl = message.emocion || message.EMOCION || message.emotion;
-  const images = getImages(message);
+};
+
+const shareUrl = (message) =>
+  `https://gritos.com/${(message.INDICE || "").replace(/^gritos\//, "")}/${message.ID}`;
+
+const MessageItem = ({ message, currentForo, head, showForm, forceThread }) => {
+  const { user } = useUser();
+  // Card-local copy so votes/edits update in place (legacy re-rendered the
+  // view off its own model); re-synced whenever the list refreshes the prop.
+  const [msg, setMsg] = useState(message);
+  const [deleted, setDeleted] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [zoomSrc, setZoomSrc] = useState(null);
+
+  useEffect(() => {
+    setMsg(message);
+  }, [message]);
+
+  if (deleted) {
+    return null;
+  }
+
+  const id = msg.ID || msg.wId;
+  const routeForo = msg.INDICE
+    ? msg.INDICE.replace(/^gritos\//, "")
+    : currentForo;
+  const messageLink = `/${routeForo}/${id}`;
+  const displayName = msg.name || msg.ciudadano || "Anónimo";
+  const authorLink = msg.ciudadano ? `/ciudadanos/${msg.ciudadano}` : null;
+  const content = formatComments(msg.comments || msg.COMMENTS || "");
+  const date = formatMessageTime(msg.FECHA || msg.date || msg.fecha || null);
+  const emotionUrl = (msg.emocion || "").replace("http://dreamers.com", "");
+  const images = getImages(msg);
+  const isCarousel = images.length > 1;
+  const encuesta = parseEncuesta(msg.encuesta);
+  const tags = getTags(msg);
+
+  // Legacy permission rules from msgView-t.html.
+  const headUserids = head?.Userid ? head.Userid.split(/\|/) : [];
+  const isOwner = user?.ID && user.ID === msg.ciudadano;
+  const canDelete =
+    isOwner || Number(user?.nivel) > 7 || (user?.ID && headUserids.includes(user.ID));
+  const canManagePoll = encuesta && canDelete;
+
+  const handleContentClick = (event) => {
+    const spoiler = event.target.closest?.(".spoiler");
+    if (spoiler) {
+      event.preventDefault();
+      event.stopPropagation();
+      // Reveal/hide in place (legacy used a tooltip; same information).
+      if (spoiler.classList.contains("spoiler-on")) {
+        spoiler.textContent = "SPOILER";
+        spoiler.classList.remove("spoiler-on");
+      } else {
+        spoiler.textContent = spoiler.getAttribute("data-tip");
+        spoiler.classList.add("spoiler-on");
+      }
+    }
+    const img = event.target.closest?.("img.img-hover");
+    if (img?.src) {
+      setZoomSrc(img.src);
+    }
+  };
+
+  const confirmDelete = () => {
+    openModal({
+      model: { show: true, header: "¿BORRAR GRITO?" },
+      body: "¿Seguro que quieres borrar este mensaje?",
+      action: async () => {
+        try {
+          await deleteMessage({ message: msg });
+          setDeleted(true);
+        } catch (err) {
+          console.error("delete failed:", err);
+        }
+      },
+    });
+  };
+
+  const confirmBan = () => {
+    openModal({
+      model: { show: true, header: "¿ESTE GRITO APESTA?" },
+      body: "¿Seguro que quieres denunciar este mensaje como basura?",
+      // Legacy banThis() was a stub too (console.log only).
+      action: () => console.log("ban run"),
+    });
+  };
+
+  const editThis = () => {
+    openModal({
+      model: { show: true, header: "EDITAR GRITO" },
+      editForm: {
+        msg,
+        collection: { id: routeForo },
+      },
+    });
+  };
+
+  const pararVotacion = async () => {
+    try {
+      const fresh = await fetchMessage({ foro: msg.INDICE, id: msg.ID });
+      const freshEncuesta = parseEncuesta(fresh.encuesta);
+      if (!freshEncuesta) {
+        return;
+      }
+      freshEncuesta.cerrado = !freshEncuesta.cerrado;
+      const updated = { ...fresh, encuesta: JSON.stringify(freshEncuesta) };
+      const saved = await saveMessage({ message: updated });
+      setMsg(saved && saved.ID ? saved : updated);
+    } catch (err) {
+      console.error("poll toggle failed:", err);
+    }
+  };
 
   return (
     <article className="msg">
@@ -95,41 +198,131 @@ const MessageItem = ({ message, currentForo }) => {
         />
       )}
       <div className="mdl-card mdl-shadow--4dp">
-        {showForm && (
-          <div className="action-icons">
-            <div className="forward">
-              <Link to={messageLink}>
-                <i
-                  className="fa fa-chevron-circle-right fa-lg"
-                  aria-hidden="true"
-                />
-              </Link>
-            </div>
-          </div>
-        )}
-        {images.length > 0 && (
-          <div className="images-place">
-            {images.map((image, index) => {
-              const isVertical =
-                image.height && image.width
-                  ? image.height > image.width
-                  : false;
-              const wrapperClass = isVertical ? "msg-img-vertical" : "msg-img";
-              const style = {};
-              if (image.width) {
-                style.maxWidth = `${image.width}px`;
-              }
-              if (image.height) {
-                style.maxHeight = `${image.height}px`;
-              }
-              return (
-                <div key={index} className={wrapperClass} style={style}>
-                  <img src={image.src} alt={title} />
+        <div className="action-icons">
+          {showForm && (
+            <>
+              <div className="forward">
+                <Link to={messageLink}>
+                  <i
+                    className="fa fa-chevron-circle-right fa-lg"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </div>
+              <div
+                className="share"
+                title="share"
+                onClick={() => setShareOpen((v) => !v)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && setShareOpen((v) => !v)}
+              >
+                <i className="fa fa-share-alt" aria-hidden="true" />
+                <div className={`share-menu ${shareOpen ? "active" : ""}`}>
+                  <ul>
+                    <li>
+                      <i
+                        className="fa fa-facebook-official fa-lg"
+                        aria-hidden="true"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          shareTo("facebook", shareUrl(msg), head?.Titulo || "");
+                        }}
+                      />
+                    </li>
+                    <li>
+                      <i
+                        className="fa fa-twitter-square fa-lg"
+                        aria-hidden="true"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          shareTo("twitter", shareUrl(msg), head?.Titulo || "");
+                        }}
+                      />
+                    </li>
+                  </ul>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
+            </>
+          )}
+          {user?.ID && (
+            <div
+              className="show-admin"
+              title="admin"
+              onClick={() => setAdminOpen((v) => !v)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && setAdminOpen((v) => !v)}
+            >
+              <i className="fa fa-angle-down fa-lg" aria-hidden="true" />
+              <div className={`admin-menu ${adminOpen ? "active" : ""}`}>
+                <ul>
+                  <li>
+                    <i
+                      className="fa fa-ban fa-lg js-ban"
+                      aria-hidden="true"
+                      title="spam!"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        confirmBan();
+                      }}
+                    />
+                  </li>
+                  {canDelete && (
+                    <li>
+                      <i
+                        className="fa fa-trash-o fa-lg js-delete"
+                        aria-hidden="true"
+                        title="delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          confirmDelete();
+                        }}
+                      />
+                    </li>
+                  )}
+                  {isOwner && (
+                    <li>
+                      <i
+                        className="fa fa-pencil fa-lg js-edit"
+                        aria-hidden="true"
+                        title="edit"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          editThis();
+                        }}
+                      />
+                    </li>
+                  )}
+                  {canManagePoll && (
+                    <li>
+                      <span
+                        className="js-parar-encuesta fa-stack fa-lg"
+                        title={`${encuesta.cerrado ? "abrir" : "cerrar"} votacion`}
+                        style={{ width: "1em", height: "1em", lineHeight: "1em" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          pararVotacion();
+                        }}
+                      >
+                        <i
+                          className="fa fa-lg fa-bar-chart fa-stack-1x"
+                          style={{ fontSize: "1em" }}
+                        />
+                        {!encuesta.cerrado && (
+                          <i
+                            className="fa fa-lg fa-ban fa-stack-2x"
+                            style={{ color: "red", fontSize: "1.33333333em" }}
+                          />
+                        )}
+                      </span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="mdl-card__title">
           <div className="mdl-card__title-text">
             {authorLink ? (
@@ -141,16 +334,88 @@ const MessageItem = ({ message, currentForo }) => {
           {date && <div className="mdl-card__subtitle-text">{date}</div>}
           {showForm && <div className="rabito" />}
         </div>
-        <div className="mdl-card__supporting-text">
+        <div
+          className="mdl-card__supporting-text"
+          onClick={handleContentClick}
+        >
+          {images.length > 0 && (
+            <div className={`images-place ${isCarousel ? "images-strip" : ""}`}>
+              {images.map((image, index) => {
+                if (isCarousel) {
+                  // Legacy displayImage2: full-width, zoomable when tall.
+                  const zoomable = (image.height || 0) > 364;
+                  return (
+                    <div key={index}>
+                      <img
+                        title={zoomable ? "click para zoom" : ""}
+                        className={zoomable ? "img-hover" : ""}
+                        alt="imagen"
+                        src={image.src}
+                        width="100%"
+                        loading="lazy"
+                      />
+                    </div>
+                  );
+                }
+                const isVertical =
+                  image.width && image.height
+                    ? image.width < image.height
+                    : false;
+                const style = {};
+                if (image.width) {
+                  style.maxWidth = `${image.width}px`;
+                }
+                if (image.height) {
+                  style.maxHeight = `${image.height}px`;
+                }
+                return (
+                  <div
+                    key={index}
+                    className={isVertical ? "msg-img-vertical" : "msg-img"}
+                    style={style}
+                  >
+                    <img
+                      alt="imagen"
+                      src={image.src}
+                      width={image.width}
+                      loading="lazy"
+                      className="js-lazy-image js-lazy-image--handled fade-in"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
           {content ? (
             <div dangerouslySetInnerHTML={{ __html: content }} />
           ) : (
-            <p>Sin contenido disponible.</p>
+            !images.length && <p>Sin contenido disponible.</p>
           )}
         </div>
+        {encuesta && <EncuestaBlock message={msg} onMessageChange={setMsg} />}
         <div className="foot">
-          <div className="mola-view" />
+          {showForm && tags.length > 0 && (
+            <div className="tags">
+              {tags.map((tag) => (
+                <Link key={tag.value} to={`/${tag.value}`}>
+                  {tag.value.match(/^ciudadanos/) ? "@" : "#"}
+                  {tag.name}
+                </Link>
+              ))}
+            </div>
+          )}
+          <MolaActions message={msg} onMessageChange={setMsg} />
         </div>
+      </div>
+      {(showForm || forceThread) && msg.INDICE && msg.ID && (
+        <MiniThread message={msg} forceLoad={forceThread} />
+      )}
+      <div
+        className={`imagen-modal ${zoomSrc ? "active" : ""}`}
+        onClick={() => setZoomSrc(null)}
+        onMouseOut={() => setZoomSrc(null)}
+      >
+        {zoomSrc && <img src={zoomSrc} alt="imagen ampliada" />}
       </div>
     </article>
   );
@@ -161,24 +426,27 @@ MessageItem.propTypes = {
     ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     wId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     INDICE: PropTypes.string,
-    Titulo: PropTypes.string,
     FECHA: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    fecha: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    COMMENTS: PropTypes.string,
     comments: PropTypes.string,
-    INTRODUCCION: PropTypes.string,
-    nombre: PropTypes.string,
-    NOMBRE: PropTypes.string,
     ciudadano: PropTypes.string,
     emocion: PropTypes.string,
-    showForm: PropTypes.bool,
+    encuesta: PropTypes.string,
+    publicados: PropTypes.string,
   }).isRequired,
   currentForo: PropTypes.string,
+  head: PropTypes.shape({
+    Titulo: PropTypes.string,
+    Userid: PropTypes.string,
+  }),
+  showForm: PropTypes.bool,
+  forceThread: PropTypes.bool,
 };
 
 MessageItem.defaultProps = {
   currentForo: "foroscomun",
+  head: null,
+  showForm: true,
+  forceThread: false,
 };
 
 export default MessageItem;

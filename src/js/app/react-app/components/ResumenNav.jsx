@@ -71,40 +71,44 @@ const ResumenNav = () => {
       });
   };
 
-  if (loading) {
-    return <div className="resumen-nav">Cargando temas...</div>;
-  }
-
-  if (error) {
-    return <div className="resumen-nav">Error al cargar el resumen.</div>;
-  }
+  // Deployed strips the gritos//foros/ prefix for BOTH display and route
+  // (resumenItemView serializer + data-link). resumen.cgi returns
+  // { name: "gritos/kingcrimson" }; the drawer shows "kingcrimson" → /kingcrimson.
+  const shortName = (name) =>
+    String(name || "")
+      .replace(/^gritos\//, "")
+      .replace(/^foros\//, "");
 
   return (
-    <nav className="resumen-nav">
-      <h3>Resumen de foros</h3>
+    <nav className="mdl-navigation resumen-collection">
       <h6 className="resumen-subheader">
         <Link to="/">TOP</Link>
       </h6>
-      <ul>
-        {resumen.length === 0 ? (
-          <li>No hay temas disponibles.</li>
-        ) : (
-          resumen.map((item) => {
-            const name = item.name || item.ID || item.id || item.nombre;
-            const title = item.Titulo || item.title || name;
-            const route = name
-              ? `/${name.replace(/^gritos\//, "").replace(/foros\//, "")}`
-              : "#";
-            return (
-              <li key={name || title}>
-                <Link to={route}>{title}</Link>
-              </li>
-            );
-          })
+      <div className="resumen-collection-view">
+        {loading && <span className="mdl-navigation__link">Cargando…</span>}
+        {error && (
+          <span className="mdl-navigation__link">Error al cargar el resumen.</span>
         )}
-      </ul>
-      {user?.ID ? (
-        <div className="resumen-nav__new-topic">
+        {!loading &&
+          !error &&
+          resumen.map((item) => {
+            const name = shortName(item.name || item.value || item.ID);
+            if (!name) {
+              return null;
+            }
+            return (
+              <Link
+                key={name}
+                className="mdl-navigation__link"
+                to={`/${name}`}
+              >
+                {item.Titulo || name}
+              </Link>
+            );
+          })}
+      </div>
+      {user?.ID && (
+        <div className="nuevo-tema">
           <form onSubmit={handleNewTopicSubmit}>
             <label htmlFor="nuevo-tema">Nuevo Tema/Foro</label>
             <input
@@ -115,21 +119,20 @@ const ResumenNav = () => {
               disabled={submittingTopic}
             />
             <button type="submit" disabled={submittingTopic}>
-              {submittingTopic ? "Validando..." : "Crear tema"}
+              {submittingTopic ? "Validando…" : "Crear tema"}
             </button>
           </form>
           {topicError && <div className="resumen-nav__error">{topicError}</div>}
         </div>
-      ) : (
-        <div className="resumen-nav__new-topic">
-          <p className="resumen-nav__new-topic-label">
-            ¿Quieres un nuevo tema?
-          </p>
-          <p className="resumen-nav__new-topic-hint">
-            Inicia sesión para proponer uno.
-          </p>
-        </div>
       )}
+      <a
+        className="resumen-collection__legal"
+        href="https://dreamers.es/web1/globalbar/copyright/p/web1/home.html"
+        target="_blank"
+        rel="noreferrer"
+      >
+        privacidad / legal
+      </a>
     </nav>
   );
 };

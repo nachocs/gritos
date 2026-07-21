@@ -4,11 +4,6 @@ import { NotificationsContext } from "../contexts/NotificationsContext";
 import { useUser } from "../hooks/useContexts";
 import NotificacionesList from "./NotificacionesList";
 
-const classNameForCount = (count) =>
-  count > 0
-    ? "notificaciones-button__count is-active"
-    : "notificaciones-button__count";
-
 const buildRoute = (indice = "") => {
   let route = indice.replace(/^gritos\//, "").replace(/^foros\//, "");
   route = route.replace(/\/(\d+)\/(\d+)$/, "/$1");
@@ -46,7 +41,7 @@ const NotificacionesButton = () => {
   const markRead = () => {
     notifications.forEach((notif) => {
       if (!notif.read) {
-        markNotificationAsRead(notif.id);
+        markNotificationAsRead(notif);
       }
     });
   };
@@ -68,26 +63,36 @@ const NotificacionesButton = () => {
     return null;
   }
 
+  // Legacy notificacionesView-t.html renders the trigger as the 36px `public`
+  // material glyph carrying an MDL badge for the unread count — not a text
+  // label. Rendering the word "Notificaciones" was both wrong visually and
+  // wide enough to squeeze the foro title out of the mobile header. `.notis-icon`
+  // is styled opacity .5, going to 1 + pointer once `active`.
   return (
-    <div className="notificaciones-menu" ref={containerRef}>
-      <button
-        type="button"
-        className="mdl-navigation__link notificaciones-button"
+    <div
+      className="mdl-navigation__link notificaciones-view"
+      ref={containerRef}
+    >
+      <div
+        className="material-icons mdl-badge mdl-badge--overlap notis-icon active"
+        style={{ fontSize: "36px" }}
+        role="button"
+        tabIndex={0}
+        title="Notificaciones"
+        {...(unreadCount ? { "data-badge": unreadCount } : {})}
         onClick={togglePanel}
+        onKeyDown={(e) => e.key === "Enter" && togglePanel()}
       >
-        Notificaciones{" "}
-        {unreadCount > 0 && (
-          <span className={classNameForCount(unreadCount)}>{unreadCount}</span>
-        )}
-      </button>
-      {open && (
-        <div className="notificaciones-panel mdl-shadow--4dp">
-          <NotificacionesList
-            items={notifications}
-            onItemClick={handleItemClick}
-          />
-        </div>
-      )}
+        public
+      </div>
+      <div
+        className={`notificaciones-collection-view${open ? " active" : ""}`}
+      >
+        <NotificacionesList
+          items={notifications}
+          onItemClick={handleItemClick}
+        />
+      </div>
     </div>
   );
 };

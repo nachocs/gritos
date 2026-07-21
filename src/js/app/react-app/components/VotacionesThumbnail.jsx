@@ -9,43 +9,39 @@ import useJsonSearch from "../hooks/useJsonSearch";
 const VotacionesThumbnail = ({ foro }) => {
   const { data, loading } = useJsonSearch({
     foro,
-    encontrar: "VOTACION",
+    encontrar: "encuesta",
     max: 1,
   });
 
-  if (loading || !data || data.length === 0) {
+  if (!foro || loading || !data || data.length === 0) {
     return null;
   }
 
   const poll = data[0];
-  // Use the ID or Title for the link; if it's a general list, just go to the page
-  const pollTitle = poll.Titulo || poll.INDICE || "Votación activa";
+  // Matches legacy votacionesThumbnailView: only shown when there's a comment,
+  // truncated to 50 chars in the serializer.
+  if (!poll.comments) {
+    return null;
+  }
+  const preview =
+    poll.comments.length > 50
+      ? `${poll.comments.substring(0, 50)}...`
+      : poll.comments;
 
   return (
-    <div className="votaciones-thumbnail section-container">
-      <h3 className="section-title">Encuesta</h3>
-      <div className="thumbnail-card mdl-card mdl-shadow--2dp">
-        <div className="mdl-card__title">
-          <h2 className="mdl-card__title-text">{pollTitle}</h2>
+    <div className="votaciones-thumbnail section-container right-block">
+      <Link to={`/${foro}/votaciones`} className="gotovotaciones">
+        <div className="right-side-head">
+          <span className="gotovotaciones">Votaciones</span>
         </div>
-        <div className="mdl-card__supporting-text">
-          Participa en las votaciones de la comunidad.
-        </div>
-        <div className="mdl-card__actions mdl-card--border">
-          <Link
-            to={`/${foro}/votaciones`}
-            className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-          >
-            Ver Votaciones
-          </Link>
-        </div>
-      </div>
+        <span className="gotovotaciones">{preview}</span>
+      </Link>
     </div>
   );
 };
 
 VotacionesThumbnail.propTypes = {
-  foro: PropTypes.string.isRequired,
+  foro: PropTypes.string,
 };
 
 export default VotacionesThumbnail;

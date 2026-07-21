@@ -1,6 +1,26 @@
 import { useEffect, useState } from "react";
 import { fetchHead } from "../utils/foroApi";
 
+// Several components need the same foro head at once (Layout/Header for the
+// title bar, ForoPage for the description card + admin gating, FormShell for
+// the composer target, Gallery/Votaciones/Mensaje). Without this they each
+// fire their own head.cgi GET for the same name on every page load. Dedupe
+// only *concurrent in-flight* requests — deliberately not a result cache, so
+// a later mount (e.g. after editing the head via the admin gear) refetches
+// and never renders stale data.
+const inFlight = new Map();
+
+const fetchHeadShared = (name) => {
+  if (inFlight.has(name)) {
+    return inFlight.get(name);
+  }
+  const promise = fetchHead({ name }).finally(() => {
+    inFlight.delete(name);
+  });
+  inFlight.set(name, promise);
+  return promise;
+};
+
 const useHead = (name) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(Boolean(name));
@@ -14,27 +34,31 @@ const useHead = (name) => {
       return undefined;
     }
 
-    const controller = new AbortController();
+    // The shared request isn't tied to this consumer's lifetime, so guard
+    // state updates with a flag instead of aborting it out from under others.
+    let cancelled = false;
     setLoading(true);
     setError(null);
 
-    fetchHead({ name, signal: controller.signal })
+    fetchHeadShared(name)
       .then((head) => {
-        setData(head);
+        if (!cancelled) {
+          setData(head);
+        }
       })
       .catch((fetchError) => {
-        if (fetchError.name !== "AbortError") {
+        if (!cancelled) {
           setError(fetchError);
         }
       })
       .finally(() => {
-        if (!controller.signal.aborted) {
+        if (!cancelled) {
           setLoading(false);
         }
       });
 
     return () => {
-      controller.abort();
+      cancelled = true;
     };
   }, [name]);
 

@@ -9,35 +9,39 @@ import useJsonSearch from "../hooks/useJsonSearch";
 const GalleryThumbnail = ({ foro }) => {
   const { data, loading } = useJsonSearch({
     foro,
-    encontrar: "IMAGEN0_THUMB",
+    encontrar: "Ficheros",
     max: 1,
   });
 
-  if (loading || !data || data.length === 0) {
+  if (!foro || loading || !data || data.length === 0) {
     return null;
   }
 
   const entry = data[0];
-  const thumbUrl = entry.IMAGEN0_THUMB_URL || entry.IMAGEN0_URL;
+  // Matches legacy galleryThumbnailView.html field precedence.
+  const thumbUrl =
+    entry.IMAGEN0_THUMB || entry.IMAGEN1_THUMB_URL || entry.IMAGEN1_URL;
 
   if (!thumbUrl) return null;
 
+  // Matches legacy galleryThumbnailView.html: a `right-side-head` "Galería"
+  // caption above the thumbnail, both carrying the `gotogallery` class that
+  // main.less styles/sizes. The previous `thumbnail-overlay` + photo_library
+  // material icon had no counterpart in the deployed sidebar.
   return (
-    <div className="gallery-thumbnail section-container">
+    <div className="gallery-thumbnail section-container right-block">
       <Link to={`/${foro}/gallery`} title="Ver galería">
-        <div className="thumbnail-wrapper">
-          <img src={thumbUrl} alt="Galería" className="img-thumbnail" />
-          <div className="thumbnail-overlay">
-            <i className="material-icons">photo_library</i>
-          </div>
+        <div className="right-side-head">
+          <span className="gotogallery">Galería</span>
         </div>
+        <img src={thumbUrl} alt="Galería" className="gotogallery" />
       </Link>
     </div>
   );
 };
 
 GalleryThumbnail.propTypes = {
-  foro: PropTypes.string.isRequired,
+  foro: PropTypes.string,
 };
 
 export default GalleryThumbnail;

@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import DreamysService from "../../util/dreamysService";
 import endpoints from "../../util/endpoints";
+import { decodeBody } from "../utils/apiFetch";
 import { useUser } from "../hooks/useContexts";
 import { closeModal } from "../utils/modalEvents";
 
@@ -85,7 +86,7 @@ const DreamysModal = ({ uploadAvailable, formModel }) => {
           body: formData,
         },
       );
-      const data = await response.json();
+      const data = JSON.parse(await decodeBody(response));
 
       if (!data || data.status === "error") {
         setUploadError("Error al subir el dreamy.");
