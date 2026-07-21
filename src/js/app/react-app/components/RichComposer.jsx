@@ -103,6 +103,15 @@ const RichComposer = forwardRef(function RichComposer(
         return;
       }
       const dataurl = data.url.replace(/^https?:\/\//, "");
+      // Only render a card for a URL *this* composer asked about. The reply
+      // event is broadcast per-user, and a wall renders one composer per
+      // message (11 on a busy page), so without this every reply box sprouted
+      // a copy of a card for a link typed in the main composer. Legacy dodged
+      // it by registering its `capture_url_reply` listener lazily, inside the
+      // scan loop — a composer that never requested a URL never listened.
+      if (!pendingUrls.current.has(dataurl)) {
+        return;
+      }
       pendingUrls.current.delete(dataurl);
       if (capturedUrls.current[dataurl] || removedUrls.current[dataurl]) {
         return;

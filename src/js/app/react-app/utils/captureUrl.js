@@ -1,3 +1,5 @@
+import { decode } from "html-entities";
+
 /**
  * URL capture helpers, ported from legacy main/form/formView.js
  * (getCaptureUrls / isThisUrl) and util/displayCapturedUrl.html.
@@ -75,6 +77,16 @@ export const extractCaptureUrls = (html) => {
  * caret can't land inside it; the close button is stripped before submit.
  */
 export const buildCapturedUrlCard = ({ id, url, image, title, description }) => {
+  // The socket server scrapes pages as latin1 and returns text with HTML
+  // entities still in it ("sin ning&uacute;n tipo de tapujos"). Legacy fed that
+  // straight through lodash's unescaped `<%= %>` into an HTML string, so the
+  // browser parsed the entities while parsing the markup. Building DOM nodes
+  // and assigning `textContent` skips that step, leaving the raw `&uacute;`
+  // visible on the card — the same trap as the emoji `alt` attribute (#53d).
+  const text = (value) => (value ? decode(String(value)) : value);
+  title = text(title);
+  description = text(description);
+
   const card = document.createElement("div");
   card.setAttribute("contenteditable", "false");
   card.className = "captured-url";

@@ -454,3 +454,25 @@ Side-by-side against https://gritos.com, logged out and logged in:
 - foroscomun feed, a topic foro (e.g. any from the drawer), a user wall, one grito with comments, gallery, votaciones
 - post a grito (text + emoji + image + tags + poll + URL preview + dreamy), reply, edit, delete, vote a poll, mola/love, share
 - login (alias + FB), signup, logout, avatar change, notifications, avisos, live updates in a second browser
+
+### Live composer round-trips (2026-07-21)
+
+Exercised each composer attachment against the live API, posting as the site owner with their authorisation and deleting every test entry afterwards (verified server-side: no `Prueba*` entries remain).
+
+| Path | Result |
+|---|---|
+| Plain text | ✅ (found #67, #68) |
+| Poll / encuesta | ✅ serialises `{"options":[{id,value},…]}`; Enter adds the next option as in legacy |
+| Image | ✅ `upload.cgi` → `IMAGEN0_URL`/`_THUMB`/`Ficheros` merged into the post payload; server moves the file out of `temporal/`; thumb renders with legacy's dashed border; composer + thumbs clear on success |
+| Captured URL | ✅ after #69/#70 |
+
+`upload.cgi` *does* answer `{"status":"ok"}` — the `success` vs `status` inconsistency (#68) is specific to `post.cgi`. Both were verified against the live endpoint rather than assumed.
+
+| # | Finding | Status |
+|---|---|---|
+| 69 | **Captured-URL cards showed raw HTML entities** | ✅ The socket server scrapes as latin1 and returns text with entities intact ("sin ning&uacute;n tipo de tapujos"). Legacy pushed that through lodash's unescaped `<%= %>` into an HTML string, so the browser decoded the entities while parsing the markup. `buildCapturedUrlCard` builds DOM nodes and assigns `textContent`, which skips that step and left `&uacute;` visible — the same trap as the emoji `alt` attribute (#53d). Now decoded with `html-entities`. |
+| 70 | **One typed link produced a card in every open composer** | ✅ `capture_url_reply` is broadcast per *user*, and a wall renders one composer per message — 11 on the page under test — so a link typed in the main composer sprouted a duplicate card in all 11. Legacy avoided this by registering its `capture_url_reply` listener **lazily, inside the scan loop**, so a composer that never requested a URL never listened; the React port subscribes on mount instead. Now a reply is ignored unless that URL is pending in *this* composer. Verified: cards per editor went from `[1,1,1,…]` to `[1,0,0,…]`. |
+
+**Not a bug — server-side scraper limits:** capture requests for wikipedia and imdb produced no reply. The client emits correctly (`capture_url_request` with the user ID and protocol-stripped URL, exactly as legacy); the socket server's MetaInspector fetch fails on those sites and its error handler is silent. `gritos.com` captures fine. Same behaviour on legacy.
+
+**Notifications data model (was flagged 🟡):** resolved as already correct. Captured a live `notificaciones` payload — `{tipo, indice, diferencia, entry, id}` — and `NotificationsContext`'s filter (`not.entry && (entry.ciudadano !== user.ID || (tipo === 'msg' && subtipo))`) is character-for-character legacy's `NotificacionesCollection`. One deliberate deviation worth a decision: legacy calls `this.add(data, …)` with the **whole batch** when any single item passes the filter, so it shows notifications it just filtered; the branch adds only the items that passed. That looks like legacy sloppiness rather than intent, so it was not replicated.
