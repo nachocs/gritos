@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import smile from "../../../../img/smile.svg";
 import { useUser, useForm } from "../hooks/useContexts";
 import { buildEmojiHtml } from "../utils/emojiHtml";
@@ -26,6 +27,7 @@ const getInitialComment = (msg) => {
 const EditFormModal = ({ editForm, registerAction }) => {
   const { user } = useUser();
   const { submitMessage } = useForm();
+  const navigate = useNavigate();
   // ModalRoot unmounts this component on close, so the initial content can be
   // seeded once from the message being edited (the RichComposer is uncontrolled).
   const [initialComment] = useState(() => getInitialComment(editForm?.msg));
@@ -75,7 +77,9 @@ const EditFormModal = ({ editForm, registerAction }) => {
 
   const isHead = editForm?.isHead;
   const msgData = editForm?.msg;
-  const modelIsGritosdb = msgData?.get?.("INDICE") === "gritosdb" || msgData?.INDICE === "gritosdb";
+  const headIndice = msgData?.get?.("INDICE") ?? msgData?.INDICE;
+  const headName = msgData?.get?.("Name") ?? msgData?.Name;
+  const modelIsGritosdb = headIndice === "gritosdb";
   const commentPlaceholder = isHead
     ? "Escribe la introducción o descripción..."
     : "Actualiza tu mensaje...";
@@ -114,12 +118,13 @@ const EditFormModal = ({ editForm, registerAction }) => {
     };
 
     if (isHead) {
-      Object.assign(saveAttrs, { isHead: 1 });
+      // Legacy formView.submitPost sends `foro: INDICE` for *every* head save
+      // (formView.js:544-548), including the `gritosdb` new-foro case — where
+      // this branch previously sent Titulo/Name with no `foro` at all.
+      Object.assign(saveAttrs, { isHead: 1, foro: headIndice });
       if (modelIsGritosdb) {
         saveAttrs.Titulo = title.trim();
-        saveAttrs.Name = msgData?.Name || msgData?.get?.("Name");
-      } else if (msgData?.INDICE) {
-        saveAttrs.foro = msgData.INDICE;
+        saveAttrs.Name = headName;
       }
     } else if (
       editForm?.collection?.id &&
@@ -132,6 +137,14 @@ const EditFormModal = ({ editForm, registerAction }) => {
       await submitMessage(saveAttrs);
       setSubmitting(false);
       closeModal();
+      // Legacy formView.submitPost, isHead branch (formView.js:579-585):
+      // after saving a head it changes the global foro, refetches the head and
+      // `router.navigate('/' + Name, { trigger: true })`. Without this, creating
+      // a foro from the drawer left you sitting on whatever page you were on,
+      // with no way to reach the foro you had just made.
+      if (isHead && headName) {
+        navigate(`/${headName}`);
+      }
     } catch (err) {
       setSubmitting(false);
       setError("No se pudo guardar el formulario. Intenta de nuevo.");

@@ -107,7 +107,7 @@ const Layout = () => {
         }`}
       >
         <Header head={head} onMenuClick={() => setDrawerOpen(true)} />
-        <Drawer open={drawerOpen} />
+        <Drawer open={drawerOpen} head={head} />
         <div
           className={`mdl-layout__obfuscator${drawerOpen ? " is-visible" : ""}`}
           onClick={() => setDrawerOpen(false)}

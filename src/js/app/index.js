@@ -22,17 +22,14 @@ import { RegistrationProvider } from "./react-app/contexts/RegistrationContext";
 import { SocketProvider } from "./react-app/contexts/SocketContext";
 import { UserProvider } from "./react-app/contexts/UserContext";
 
-// Material Design Lite JS/CSS is loaded from the CDN in index.html
-// (matching the deployed 1.3.0 theme); avoid double-loading it here.
+// Material Design Lite's *JS* is loaded from the CDN in index.html. Its CSS is
+// not: main.less imports material.light_green-red.min.css locally, the theme
+// the deployed build ships.
 
 // Application styles (was a separate webpack CSS entry; Vite bundles via the JS entry)
 import "../../css/main.less";
 
 moment.locale("es");
-
-// Polyfill/shim for process in case build tool doesn't provide it
-const isProd =
-  typeof process !== "undefined" && process.env?.NODE_ENV === "production";
 
 const proxiedSync = Backbone.sync;
 Backbone.sync = (method, model, options = {}) => {
@@ -81,26 +78,29 @@ const renderApp = () => {
 /**
  * Initialize external SDKs and render the React application.
  */
-const init = async () => {
-  // Render the app immediately in development for faster feedback
-  // In production, we wait for critical SDKs if they affect initial render
-  if (!isProd) renderApp();
+const init = () => {
+  // Render first, always. This used to render immediately in development but
+  // `await loadFBSDK()` first in production — so the entire app hung behind a
+  // third-party script that content blockers routinely block outright. A
+  // blocked `connect.facebook.net` leaves that promise unsettled rather than
+  // rejected, so the `catch` never fires and production paints nothing at all.
+  // Legacy (app.js) renders synchronously and lets the SDK arrive whenever;
+  // nothing in the first paint needs it, and FB login is a stub either way.
+  renderApp();
 
-  try {
-    const FB = await loadFBSDK();
-    FB.init({
-      appId: "472185159492660",
-      cookie: true,
-      xfbml: true,
-      version: "v2.7",
-      status: true,
+  loadFBSDK()
+    .then((FB) => {
+      FB.init({
+        appId: "472185159492660",
+        cookie: true,
+        xfbml: true,
+        version: "v2.7",
+        status: true,
+      });
+    })
+    .catch((err) => {
+      console.error("Failed to load Facebook SDK:", err);
     });
-  } catch (err) {
-    console.error("Failed to load Facebook SDK:", err);
-  }
-
-  // Render the app after SDKs are initialized (or if in production)
-  if (isProd) renderApp();
 };
 
 init();

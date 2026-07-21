@@ -2,9 +2,53 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 
+// Google Analytics + AdSense, as carried by the deployed shell. Injected only
+// for `vite build`: in the static index.html they would also fire from
+// localhost:3001 on every dev reload, polluting the real UA property with
+// developer traffic. The deployed HTML is a build artifact, so this is where
+// they belong.
+const analyticsPlugin = () => ({
+  name: "gritos-analytics",
+  apply: "build",
+  transformIndexHtml: {
+    order: "post",
+    handler: () => [
+      {
+        tag: "script",
+        attrs: {
+          async: true,
+          "data-ad-client": "ca-pub-5436524166740759",
+          src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+        },
+        injectTo: "head",
+      },
+      {
+        tag: "script",
+        attrs: {
+          async: true,
+          src: "https://www.googletagmanager.com/gtag/js?id=UA-108283891-1",
+        },
+        injectTo: "head",
+      },
+      {
+        tag: "script",
+        children:
+          'function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-108283891-1");',
+        injectTo: "head",
+      },
+    ],
+  },
+});
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), analyticsPlugin()],
   root: ".",
+  // The icon set, manifest.json and logogritos.jpg are static files the shell
+  // references by absolute path; Vite serves publicDir at the site root and
+  // copies it into dist/ verbatim. Root-relative is also what manifest.json's
+  // own icon entries already assume ("/android-icon-36x36.png") — on the
+  // deployed site those 404, since the icons live under /assets/ there.
+  publicDir: "src/assets",
   resolve: {
     alias: [
       { find: "underscore", replacement: "lodash" },
