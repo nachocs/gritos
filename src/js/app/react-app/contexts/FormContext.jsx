@@ -14,6 +14,11 @@ export const FormContext = createContext({
   setDirty: () => {},
 });
 
+// The gritos CGIs are not consistent about their success key: login.cgi and
+// registro.cgi answer `{"status":"ok"}`, post.cgi answers `{"success":"ok"}`.
+const isPostOk = (data) =>
+  data?.status === "ok" || data?.success === "ok" || Boolean(data?.mensaje);
+
 export const FormProvider = ({ children }) => {
   const { addNotification } = useContext(NotificationsContext);
   const [submitting, setSubmitting] = useState(false);
@@ -43,7 +48,17 @@ export const FormProvider = ({ children }) => {
       })
         .then((response) => decodeBody(response).then(JSON.parse))
         .then((data) => {
-          if (data.status === "ok") {
+          // post.cgi answers `{"success":"ok", "mensaje":{…}}` — NOT
+          // `{"status":"ok"}` like login.cgi/registro.cgi do. Gating on
+          // `status` therefore never passed, so *every* successful post was
+          // reported to the user as "No se pudo publicar el grito", the
+          // composer was never cleared and the new grito was never inserted
+          // into the list — while the entry was in fact created on the server.
+          // Legacy never had this bug because Backbone.sync treats any 2xx as
+          // success and simply reads `data.mensaje`. Accept either key, and
+          // fall back to the presence of `mensaje`, which is what the success
+          // path actually consumes.
+          if (isPostOk(data)) {
             setSuccess(true);
             setSubmitting(false);
             setIsDirty(false);
@@ -93,7 +108,9 @@ export const FormProvider = ({ children }) => {
 
             resolve(data);
           } else {
-            const err = new Error(data.status || "Error al enviar el mensaje");
+            const err = new Error(
+              data.status || data.success || "Error al enviar el mensaje",
+            );
             setError(err.message);
             setSubmitting(false);
             reject(err);

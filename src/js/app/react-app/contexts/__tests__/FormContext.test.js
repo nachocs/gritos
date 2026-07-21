@@ -54,6 +54,32 @@ describe("FormContext", () => {
     addNotification.mockClear();
   });
 
+  // Regression: post.cgi answers `{"success":"ok"}`, NOT `{"status":"ok"}`
+  // like login.cgi does. The provider gated on `status`, so every real post
+  // was reported as a failure — the composer never cleared, the grito never
+  // appeared in the list, and the user saw "No se pudo publicar el grito"
+  // while the entry *was* created server-side. Every test here mocked the
+  // `status` shape, which is exactly why the suite stayed green. Verified
+  // against the live endpoint before fixing.
+  it("treats the real post.cgi response shape as success", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve(
+        jsonResponse({
+          success: "ok",
+          mensaje: { ID: "257", INDICE: "ciudadanos/1" },
+          description: null,
+        }),
+      ),
+    );
+
+    renderWithNotifications({ foro: "foroscomun", comments: "hola" });
+    await act(async () => {
+      screen.getByTestId("submit-btn").click();
+    });
+
+    expect(screen.getByTestId("status")).toHaveTextContent("done");
+  });
+
   it("calls addNotification with foro/msg/minis entries after posting a top-level grito", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve(jsonResponse({ status: "ok", mensaje: { ID: 42 } })),
