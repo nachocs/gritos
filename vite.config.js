@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
 
@@ -40,8 +41,31 @@ const analyticsPlugin = () => ({
   },
 });
 
+// Legacy's webpack build stamped manifest.json's `version` field from
+// package.json at build time (WebpackAssetsManifest in webpack.prod.config.js:
+// `version: JSON.stringify(require('../package.json').version)`). manifest.json
+// here is a static file copied verbatim by publicDir, so there's nothing to
+// stamp it during a plain copy — patch it back in once the copy has happened
+// (closeBundle fires after publicDir's contents land in outDir).
+const manifestVersionPlugin = () => ({
+  name: "gritos-manifest-version",
+  apply: "build",
+  closeBundle() {
+    const manifestPath = path.resolve(__dirname, "dist/manifest.json");
+    if (!fs.existsSync(manifestPath)) {
+      return;
+    }
+    const pkg = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8"),
+    );
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    manifest.version = pkg.version;
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  },
+});
+
 export default defineConfig({
-  plugins: [react(), analyticsPlugin()],
+  plugins: [react(), analyticsPlugin(), manifestVersionPlugin()],
   root: ".",
   // The icon set, manifest.json and logogritos.jpg are static files the shell
   // references by absolute path; Vite serves publicDir at the site root and
