@@ -104,6 +104,9 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <!-- iOS Safari doesn't read manifest.json at all for the "Add to Home
+         Screen" label — it uses this, falling back to <title> otherwise. -->
+    <meta name="apple-mobile-web-app-title" content="Gritos" />
 
     <!-- Material Icons font. The MDL *stylesheet* is not loaded here: main.less
          imports material.light_green-red.min.css locally, the same theme the
