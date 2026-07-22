@@ -2,13 +2,25 @@
 Gritos.com
 
 - This is the front-end for gritos.com website, a community around channels.
-- In ES6 with Backbone.
+- React 18 + Vite.
 
 # install
 - npm install
 - npm start
 
+# Known limitations
+- No CI/deploy pipeline yet for the Vite build — legacy's webpack + CircleCI + versioned S3 path (`/dist/<version>/…`) is gone; the `deploy`/`bump-version`/`tag` npm scripts reference files that no longer exist in this branch.
+- Facebook login is a stub (logs the response only) — matches legacy's own `fBlogin`, so this is parity-with-a-stub rather than a regression. A real port is a separate decision.
+- Single JS bundle over 1 MB — no route-level code splitting yet.
+- Dead legacy Backbone/Marionette source (`src/js/app/main/`, `src/js/app/models/`, `router.js`) still sits in the tree, unused by the React app. Kept temporarily as reference while porting; safe to delete once it's no longer needed for parity-checking.
+- A small globe/language icon near the login area on deployed is not yet ported (purpose unclear — likely i18n).
+
 # Changelog
+
+## 2.0.0
+Full rewrite: React 18 + Vite, replacing Backbone/Marionette + webpack.
+Ported mola/nomola/love, encuestas (create/vote/close), mini-threads with reply composer, ciudadano walls, multi-foro tags, dreamys, notifications, avisos, URL capture previews, WYSIWYG selection toolbar, gallery (infinite scroll), votaciones, admin menu (edit/delete/ban stub), share menu.
+Restored the HTML shell dropped with webpack (OG/Twitter metas, manifest.json, icon set, GA/AdSense, `imgError`, noscript); fixed SPA routing (root/reserved-foro URLs no longer rewritten, ciudadanos wall sub-paths no longer 404 to home); fixed a long tail of parity bugs surfaced against the deployed site (post-success detection, HTML-entity decoding in titles/captured-URL cards, MDL floating-label styling, full-height layout on sparse pages, reply-form spacing).
 
 ## 1.10.10
 added html entities decode to encuestas

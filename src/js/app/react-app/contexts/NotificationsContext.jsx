@@ -26,8 +26,8 @@ export const NotificationsProvider = ({ children }) => {
   // and treating the response as a list was wrong. The real feed comes from
   // asking the server to start pushing (Ws.prepararNotificaciones) and
   // listening for `notificaciones_<uid>` events, mirroring legacy
-  // NotificacionesCollection. Persisting read-state back to the server is
-  // not ported yet (see MIGRATION_GAP_ANALYSIS.md, Phase 5).
+  // NotificacionesCollection. Read-state persistence lives in
+  // utils/notificacionesReadState.js (PUT to that same resource).
   useEffect(() => {
     if (!user?.ID) {
       notificacionesReadState.clear();
