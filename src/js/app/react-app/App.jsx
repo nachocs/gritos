@@ -22,15 +22,22 @@ const App = () => {
           useParams(). It must not wrap <Routes> as children: that would put
           it outside any matched route and useParams() would always be {}. */}
       <Route element={<Layout />}>
-        {/* Root redirect to default forum */}
-        <Route path="/" element={<Navigate to="/foroscomun" replace />} />
+        {/* Render foroscomun directly at "/" rather than redirecting to
+            "/foroscomun": legacy's router never rewrites the address bar for
+            the default forum, it stays at "/" while treating the content as
+            foroscomun internally. ForoPage already defaults an absent :foro
+            param to "foroscomun" via normalizeForo, so no :foro param here
+            is fine. */}
+        <Route path="/" element={<ForoPage />} />
 
-        {/* Reserved forum names redirect to default */}
-        <Route path="/admin" element={<Navigate to="/foroscomun" replace />} />
-        <Route
-          path="/jsgritos"
-          element={<Navigate to="/foroscomun" replace />}
-        />
+        {/* "admin", "jsgritos" and bare "ciudadanos" are reserved forum names.
+            Legacy's router (router.js `foro()`) only reassigns its local
+            variable to foroscomun for these — it never calls navigate(), so
+            the address bar stays at whatever was typed. No explicit route is
+            needed here: the generic "/:foro" route below already matches
+            them, and normalizeForo() maps all three to foroscomun for the
+            content lookup, exactly like the "/ciudadanos/:id"-less bare
+            "/ciudadanos" case already does. */}
 
         {/* Main Forum View */}
         <Route path="/:foro" element={<ForoPage />} />

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../../../../img/logo50x50.gif";
 import normalizeForo from "../utils/normalizeForo";
 import LoginStatus from "./LoginStatus";
@@ -17,20 +17,17 @@ import NotificacionesButton from "./NotificacionesButton";
 const Header = ({ head, onMenuClick }) => {
   const { foro } = useParams();
   const currentForo = normalizeForo(foro);
-  const rootPath = `/${currentForo}`;
+  // Legacy's data-link="/<%= obj.Name !== 'foroscomun' ? obj.Name : '' %>":
+  // the title points at "/" on the default forum, not "/foroscomun".
+  const rootPath = currentForo === "foroscomun" ? "/" : `/${currentForo}`;
+  const navigate = useNavigate();
 
-  // Legacy `mainView.goToHome` (mainView.js:104-107): the logo goes to the site
-  // root and scrolls to top — it is the only "home" affordance in the header.
-  // It used to link to `rootPath`, so clicking it on any foro other than
-  // foroscomun just reloaded the page you were already on and never went home.
-  // The scroll is explicit here as it is in legacy, rather than left to
-  // ScrollToTop: clicking home *from* the home foro round-trips
-  // `/` → `<Navigate>` → `/foroscomun` and ends on the pathname it started on.
-  const goHome = () => window.scrollTo(0, 0);
-  // Deployed title logic (mainView-t.html): the large-screen title bar shows
-  // the head's `Titulo` verbatim ("king Crimson", and "gritos.com" on
-  // foroscomun since that's DEFAULT_HEAD.Titulo); the small-screen one shows
-  // the wall's Titulo on ciudadanos, else "#<name>" (or "gritos.com" at root).
+  const goHome = (event) => {
+    event.preventDefault();
+    navigate("/");
+    window.scrollTo(0, 0);
+  };
+
   const largeTitle = head?.Titulo || "gritos.com";
   const smallTitle =
     head?.INDICE === "ciudadanos"
