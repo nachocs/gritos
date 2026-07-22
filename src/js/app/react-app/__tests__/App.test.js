@@ -52,3 +52,21 @@ describe("App routing — reserved forum names", () => {
     },
   );
 });
+
+// Legacy's catch-all route regex (router.js defaultRoute:
+// /^\/?(\w+)\/(\d+)\/?/) only ever captures the first two path segments — a
+// path like /ciudadanos/1/251 resolves foro="ciudadanos", entrada="1" and
+// silently drops "/251", landing on the *wall*, not a message-251 detail view
+// (verified live: /ciudadanos/1/251 renders identically to /ciudadanos/1 on
+// the deployed site). Nothing previously matched a 3+ segment
+// /ciudadanos/:id/* path, so it fell through to the catch-all and bounced to
+// /foroscomun instead.
+describe("App routing — ciudadanos wall sub-paths", () => {
+  it.each(["/ciudadanos/1/251", "/ciudadanos/1/251/", "/ciudadanos/1/anything"])(
+    "renders ForoPage (the wall) at %s instead of redirecting home",
+    (path) => {
+      renderAt(path);
+      expect(screen.getByTestId("foro-page")).toHaveTextContent(path);
+    },
+  );
+});

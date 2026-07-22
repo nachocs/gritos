@@ -56,6 +56,18 @@ const App = () => {
             detail — the static "ciudadanos" segment outranks /:foro/:id. */}
         <Route path="/ciudadanos/:id" element={<ForoPage />} />
 
+        {/* Legacy's catch-all route regex (`router.js` defaultRoute:
+            `/^\/?(\w+)\/(\d+)\/?/`) only ever captures the first two path
+            segments after a match — a path like /ciudadanos/1/251 resolves
+            foro="ciudadanos", entrada="1" and silently drops "/251"; it lands
+            on mensaje('ciudadanos', '1'), which — since foro is 'ciudadanos'
+            — redirects to the *wall*, not a message-251 detail view (verified
+            live: /ciudadanos/1/251 renders identically to /ciudadanos/1 on
+            the deployed site). Nothing here previously matched a 3+ segment
+            /ciudadanos/:id/* path, so it fell through to the catch-all below
+            and bounced to /foroscomun instead. */}
+        <Route path="/ciudadanos/:id/*" element={<ForoPage />} />
+
         {/* 404 / Default fallback */}
         <Route path="*" element={<Navigate to="/foroscomun" replace />} />
       </Route>
