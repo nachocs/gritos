@@ -15,6 +15,7 @@ const ResumenNav = () => {
   const [newTopic, setNewTopic] = useState("");
   const [topicError, setTopicError] = useState("");
   const [submittingTopic, setSubmittingTopic] = useState(false);
+  const [topicFocused, setTopicFocused] = useState(false);
 
   const normalizeTopic = (value) =>
     value.replace(/\s/gi, "_").replace(/\W/gi, "");
@@ -108,21 +109,38 @@ const ResumenNav = () => {
           })}
       </div>
       {user?.ID && (
-        <div className="nuevo-tema">
-          <form onSubmit={handleNewTopicSubmit}>
-            <label htmlFor="nuevo-tema">Nuevo Tema/Foro</label>
+        // Legacy (resumenView-t.html): `.nuevo-tema` itself carries the MDL
+        // textfield classes, wrapping a <form id="nuevotema"> that holds the
+        // input/label/error. It had none of the MDL classes here at all —
+        // is-focused/is-dirty reproduce MDL's own JS, which never upgrades
+        // React-rendered DOM. There's no submit button in legacy: a
+        // single-input form submits on Enter, so none is rendered here either.
+        <div
+          className={`nuevo-tema mdl-textfield mdl-js-textfield mdl-textfield--floating-label${
+            topicFocused ? " is-focused" : ""
+          }${newTopic ? " is-dirty" : ""}`}
+        >
+          <form id="nuevotema" onSubmit={handleNewTopicSubmit}>
             <input
+              className="mdl-textfield__input"
               id="nuevo-tema"
               type="text"
               value={newTopic}
               onChange={(e) => setNewTopic(e.target.value)}
+              onFocus={() => setTopicFocused(true)}
+              onBlur={() => setTopicFocused(false)}
               disabled={submittingTopic}
             />
-            <button type="submit" disabled={submittingTopic}>
-              {submittingTopic ? "Validando…" : "Crear tema"}
-            </button>
+            <label className="mdl-textfield__label" htmlFor="nuevo-tema">
+              Nuevo Tema/Foro
+            </label>
+            <span
+              className="mdl-textfield__error"
+              style={topicError ? { visibility: "visible" } : undefined}
+            >
+              {topicError}
+            </span>
           </form>
-          {topicError && <div className="resumen-nav__error">{topicError}</div>}
         </div>
       )}
       <a
