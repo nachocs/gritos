@@ -17,7 +17,21 @@ import NotificacionesButton from "./NotificacionesButton";
 const Header = ({ head, onMenuClick }) => {
   const { foro } = useParams();
   const currentForo = normalizeForo(foro);
-  const rootPath = `/${currentForo}`;
+  // The title links to the *current* head, as legacy's `data-link` does:
+  // `/<Name>`, or `/` on foroscomun. It reads `Name` off the head rather than
+  // the URL, so it still resolves on a ciudadanos wall — where the route is
+  // `/ciudadanos/:id` and there is no `:foro` param to fall back on.
+  const titleName = head?.Name || currentForo;
+  const titlePath = titleName && titleName !== "foroscomun" ? `/${titleName}` : "/";
+
+  // Legacy `mainView.goToHome` (mainView.js:104-107): the logo goes to the site
+  // root and scrolls to top — it is the only "home" affordance in the header.
+  // It used to link to `/<current foro>`, so clicking it on any foro other than
+  // foroscomun just reloaded the page you were already on and never went home.
+  // The scroll is explicit here as it is in legacy, rather than left to
+  // ScrollToTop: clicking home *from* the home foro round-trips
+  // `/` → `<Navigate>` → `/foroscomun` and ends on the pathname it started on.
+  const goHome = () => window.scrollTo(0, 0);
   // Deployed title logic (mainView-t.html): the large-screen title bar shows
   // the head's `Titulo` verbatim ("king Crimson", and "gritos.com" on
   // foroscomun since that's DEFAULT_HEAD.Titulo); the small-screen one shows
@@ -48,7 +62,7 @@ const Header = ({ head, onMenuClick }) => {
       </div>
       <div className="mdl-layout__header-row">
         <div className="js-home logomask pseudo mdl-layout--large-screen-only">
-          <Link to={rootPath} title="home de gritos.com">
+          <Link to="/" title="home de gritos.com" onClick={goHome}>
             <img src={logo} alt="Gritos.com" />
           </Link>
         </div>
@@ -57,14 +71,14 @@ const Header = ({ head, onMenuClick }) => {
           className="mdl-layout-title titulo mdl-layout--large-screen-only"
           title={largeTitle}
         >
-          <Link to={rootPath}>{largeTitle}</Link>
+          <Link to={titlePath}>{largeTitle}</Link>
         </div>
 
         <div
           className="mdl-layout-title titulo mdl-layout--small-screen-only"
           title={smallTitle}
         >
-          <Link to={rootPath}>{smallTitle}</Link>
+          <Link to={titlePath}>{smallTitle}</Link>
         </div>
 
         <nav className="mdl-navigation">
@@ -88,6 +102,7 @@ Header.propTypes = {
   head: PropTypes.shape({
     Titulo: PropTypes.string,
     INDICE: PropTypes.string,
+    Name: PropTypes.string,
   }),
   onMenuClick: PropTypes.func.isRequired,
 };
