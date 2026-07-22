@@ -121,8 +121,7 @@ const LoginStatus = () => {
   };
 
   if (loggedIn) {
-    const avatarUrl =
-      user.dreamy_principal || user.FB_picture || defaultDreamy;
+    const avatarUrl = user.dreamy_principal || user.FB_picture || defaultDreamy;
 
     return (
       <>
@@ -132,7 +131,10 @@ const LoginStatus = () => {
         >
           <div
             className="dreamy"
-            style={{ backgroundImage: `url('${avatarUrl}')` }}
+            style={{
+              backgroundImage: `url('${avatarUrl}')`,
+              marginRight: "8px",
+            }}
           />
           <span className="mdl-layout--large-screen-only alias-principal">
             {user.alias_principal}
@@ -187,7 +189,9 @@ const LoginStatus = () => {
         <i className="material-icons">power_settings_new</i>
       </button>
 
-      <ul className={`login-menu${menuOpen ? "" : " hidden"} mdl-card mdl-shadow--4dp`}>
+      <ul
+        className={`login-menu${menuOpen ? "" : " hidden"} mdl-card mdl-shadow--4dp`}
+      >
         <form id="login-form" onSubmit={handleSubmit}>
           <MdlTextfield
             id="loginAlias"
