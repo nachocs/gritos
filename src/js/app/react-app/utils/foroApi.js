@@ -1,3 +1,4 @@
+import { decode } from "html-entities";
 import endpoints from "../../util/endpoints";
 import { fetchJson } from "./apiFetch";
 
@@ -181,7 +182,14 @@ export const fetchHead = async ({ name, signal }) => {
   if (!data || !Object.keys(data).length) {
     return { ...DEFAULT_HEAD, Name: name };
   }
-  return data;
+  // `Titulo` is rendered as plain text (the header/drawer title, the
+  // composer placeholder) rather than through dangerouslySetInnerHTML like
+  // INTRODUCCION/comments are — so unlike those, an HTML entity in it (the
+  // API returns "Japon&eacute;s a Gritos" as-is) never gets a browser HTML
+  // parse to decode it. Legacy fed everything through lodash's unescaped
+  // `<%= %>` into an HTML string, so this never showed there. Same trap as
+  // the captured-URL card title/description (see utils/captureUrl.js).
+  return data.Titulo ? { ...data, Titulo: decode(data.Titulo) } : data;
 };
 
 export const fetchResumen = async ({ signal } = {}) => {
