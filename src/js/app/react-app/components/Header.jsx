@@ -17,16 +17,11 @@ import NotificacionesButton from "./NotificacionesButton";
 const Header = ({ head, onMenuClick }) => {
   const { foro } = useParams();
   const currentForo = normalizeForo(foro);
-  // The title links to the *current* head, as legacy's `data-link` does:
-  // `/<Name>`, or `/` on foroscomun. It reads `Name` off the head rather than
-  // the URL, so it still resolves on a ciudadanos wall — where the route is
-  // `/ciudadanos/:id` and there is no `:foro` param to fall back on.
-  const titleName = head?.Name || currentForo;
-  const titlePath = titleName && titleName !== "foroscomun" ? `/${titleName}` : "/";
+  const rootPath = `/${currentForo}`;
 
   // Legacy `mainView.goToHome` (mainView.js:104-107): the logo goes to the site
   // root and scrolls to top — it is the only "home" affordance in the header.
-  // It used to link to `/<current foro>`, so clicking it on any foro other than
+  // It used to link to `rootPath`, so clicking it on any foro other than
   // foroscomun just reloaded the page you were already on and never went home.
   // The scroll is explicit here as it is in legacy, rather than left to
   // ScrollToTop: clicking home *from* the home foro round-trips
@@ -71,14 +66,14 @@ const Header = ({ head, onMenuClick }) => {
           className="mdl-layout-title titulo mdl-layout--large-screen-only"
           title={largeTitle}
         >
-          <Link to={titlePath}>{largeTitle}</Link>
+          <Link to={rootPath}>{largeTitle}</Link>
         </div>
 
         <div
           className="mdl-layout-title titulo mdl-layout--small-screen-only"
           title={smallTitle}
         >
-          <Link to={titlePath}>{smallTitle}</Link>
+          <Link to={rootPath}>{smallTitle}</Link>
         </div>
 
         <nav className="mdl-navigation">
@@ -102,7 +97,6 @@ Header.propTypes = {
   head: PropTypes.shape({
     Titulo: PropTypes.string,
     INDICE: PropTypes.string,
-    Name: PropTypes.string,
   }),
   onMenuClick: PropTypes.func.isRequired,
 };

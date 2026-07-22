@@ -100,67 +100,78 @@ const ReplyForm = ({ parent, onPosted }) => {
     }
   };
 
+  // Legacy mounts formView's own root (className "formulario") *inside* a
+  // separate ".mini-form" wrapper (baseMsgView.render(): `$('.mini-form')
+  // .html(this.formView.render().el)`, msgView-t.html: `<div class="mini-form">`).
+  // main.less's `.mini-form .formulario { padding: 0; .form-submit
+  // {display:none}; ... }` block depends on that nesting to strip the 960px
+  // composer's 20px padding and reposition the icons for a reply. Putting
+  // both classes on one div — as this used to — means that selector never
+  // matches, so replies rendered with the full-size composer's padding, wrong
+  // icon offsets, and a "Grita" button legacy hides here (Enter submits).
   return (
-    <div className="mini-form formulario active">
-      <div className="mdl-card mdl-shadow--4dp">
-        <RichComposer
-          ref={composerRef}
-          placeholder="hmmm..."
-          submitOnEnter
-          onEnterSubmit={submit}
-          captureUrls
-          userId={user.ID || user.uid}
-        />
-        {imageThumbs(imageAttrs).length > 0 && (
-          <div className="thumbs-place">
-            {imageThumbs(imageAttrs).map((thumb) => (
-              <img key={thumb.key} src={thumb.src} alt="adjunto" />
-            ))}
+    <div className="mini-form">
+      <div className="formulario active">
+        <div className="mdl-card mdl-shadow--4dp">
+          <RichComposer
+            ref={composerRef}
+            placeholder="hmmm..."
+            submitOnEnter
+            onEnterSubmit={submit}
+            captureUrls
+            userId={user.ID || user.uid}
+          />
+          {imageThumbs(imageAttrs).length > 0 && (
+            <div className="thumbs-place">
+              {imageThumbs(imageAttrs).map((thumb) => (
+                <img key={thumb.key} src={thumb.src} alt="adjunto" />
+              ))}
+            </div>
+          )}
+          <div className="file-submit">
+            <label className="custom-file-upload" title="imagen">
+              <i className="material-icons">photo_camera</i>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                onChange={handleFileChange}
+                disabled={uploading}
+              />
+            </label>
           </div>
-        )}
-        <div className="file-submit">
-          <label
-            className="custom-file-upload"
-            title="imagen"
+          <div
+            className="emojis"
+            role="button"
+            tabIndex={0}
+            title="emojis"
+            onClick={() => setShowEmojis((v) => !v)}
+            onKeyDown={(e) => e.key === "Enter" && setShowEmojis((v) => !v)}
           >
-            <i className="material-icons">photo_camera</i>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              hidden
-              onChange={handleFileChange}
-              disabled={uploading}
-            />
-          </label>
-        </div>
-        <div
-          className="emojis"
-          role="button"
-          tabIndex={0}
-          title="emojis"
-          onClick={() => setShowEmojis((v) => !v)}
-          onKeyDown={(e) => e.key === "Enter" && setShowEmojis((v) => !v)}
-        >
-          {/* Matches legacy formView: the yellow smile.svg, not a material glyph. */}
-          <img className="emojione" alt="😝" title="emojis" src={smile} />
-        </div>
-        <div className="form-submit">
-          <button
-            type="button"
-            className="form-submit-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-            disabled={submitting || uploading}
-            onClick={submit}
-          >
-            Grita
-          </button>
-        </div>
-        {showEmojis && (
-          <div className="emojis-modal-place" style={{ display: "block" }}>
-            <EmojisModal onSelect={handleEmojiSelect} />
+            {/* Matches legacy formView: the yellow smile.svg, not a material glyph. */}
+            <img className="emojione" alt="😝" title="emojis" src={smile} />
           </div>
-        )}
-        {error && <div className="form-error">{error}</div>}
+          {/* Hidden by `.mini-form .formulario .form-submit { display: none }`
+              once the nesting above is correct — replies submit on Enter, as
+              legacy's does; the button stays in the DOM only as a fallback. */}
+          <div className="form-submit">
+            <button
+              type="button"
+              className="form-submit-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+              disabled={submitting || uploading}
+              onClick={submit}
+            >
+              Grita
+            </button>
+          </div>
+          {showEmojis && (
+            <div className="emojis-modal-place" style={{ display: "block" }}>
+              <EmojisModal onSelect={handleEmojiSelect} />
+            </div>
+          )}
+          {error && <div className="form-error">{error}</div>}
+        </div>
       </div>
     </div>
   );

@@ -25,43 +25,25 @@ describe("Header", () => {
   // Regression: the logo linked to `/${currentForo}`, so on any foro other
   // than foroscomun the only "home" affordance in the header just reloaded
   // the page you were already on. Legacy binds `.js-home` to goToHome(),
-  // which routes to '/' (mainView.js:104-107).
+  // which routes to '/' (mainView.js:104-107). Only the logo was changed —
+  // the title link stays on `/${currentForo}` as before (see below).
   it("links the header logo to the site root, not the current foro", () => {
     const { container } = renderAt("/kingcrimson", {
       Titulo: "king Crimson",
-      Name: "kingcrimson",
       INDICE: "gritos",
     });
 
     expect(container.querySelector(".js-home a")).toHaveAttribute("href", "/");
   });
 
-  // The title is a separate affordance and does keep pointing at the current
-  // head, matching legacy's `data-link="/<Name>"`.
-  it("links the title to the current head's Name", () => {
-    renderAt("/kingcrimson", {
-      Titulo: "king Crimson",
-      Name: "kingcrimson",
-      INDICE: "gritos",
-    });
+  // The title link is unchanged: it still points at the current foro from the
+  // URL, not the site root.
+  it("links the title to the current foro", () => {
+    renderAt("/kingcrimson", { Titulo: "king Crimson", INDICE: "gritos" });
 
     expect(screen.getAllByText("king Crimson")[0].closest("a")).toHaveAttribute(
       "href",
       "/kingcrimson",
-    );
-  });
-
-  // Legacy renders `data-link="/"` when the head is foroscomun.
-  it("links the title to the root on foroscomun", () => {
-    renderAt("/foroscomun", {
-      Titulo: "gritos.com",
-      Name: "foroscomun",
-      INDICE: "gritos",
-    });
-
-    expect(screen.getAllByText("gritos.com")[0].closest("a")).toHaveAttribute(
-      "href",
-      "/",
     );
   });
 });
