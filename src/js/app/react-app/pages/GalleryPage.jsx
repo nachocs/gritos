@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import GalleryItem from "../components/GalleryItem";
 import PageShell from "../components/PageShell";
+import Spinner from "../components/Spinner";
 import useHead from "../hooks/useHead";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import useJsonSearch from "../hooks/useJsonSearch";
@@ -54,7 +55,7 @@ const GalleryPage = () => {
               ))}
             </div>
           )}
-          {fetchingMore && <p>Cargando más imágenes…</p>}
+          {fetchingMore && <Spinner />}
         </>
       )}
     </PageShell>

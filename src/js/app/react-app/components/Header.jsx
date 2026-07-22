@@ -75,12 +75,6 @@ const Header = ({ head, onMenuClick }) => {
 
         <nav className="mdl-navigation">
           <NotificacionesButton />
-          {/* Legacy mainView-t.html renders `<div class="mdl-navigation__link
-              login-view">` and injects loginView's element into it. The whole
-              `.login-view { ... }` block in main.less (the 48px dreamy, the
-              335px `ul.login-menu` panel, `.sign-up`, `.error-login`,
-              `.fb-login`) is scoped under that class, so it has to be the
-              wrapper here rather than a class on the button. */}
           <div className="mdl-navigation__link login-view">
             <LoginStatus />
           </div>

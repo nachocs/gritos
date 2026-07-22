@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import MessageList from "../components/MessageList";
 import PageShell from "../components/PageShell";
+import Spinner from "../components/Spinner";
 import useForumMessages from "../hooks/useForumMessages";
 import useHead from "../hooks/useHead";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
@@ -64,7 +65,7 @@ const ForoPage = () => {
                 Cargar más mensajes
               </button>
             )}
-            {fetchingMore && <p>Cargando más mensajes…</p>}
+            {fetchingMore && <Spinner />}
           </section>
         </>
       )}

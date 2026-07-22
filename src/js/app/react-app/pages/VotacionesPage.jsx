@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import MessageList from "../components/MessageList";
 import PageShell from "../components/PageShell";
+import Spinner from "../components/Spinner";
 import useHead from "../hooks/useHead";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import useJsonSearch from "../hooks/useJsonSearch";
@@ -58,7 +59,7 @@ const VotacionesPage = () => {
               head={head}
             />
           )}
-          {fetchingMore && <p>Cargando más votaciones…</p>}
+          {fetchingMore && <Spinner />}
         </section>
       )}
     </PageShell>
