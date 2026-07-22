@@ -2,8 +2,10 @@ import PropTypes from "prop-types";
 import MessageItem from "./MessageItem";
 
 const MessageList = ({ messages, currentForo, head }) => {
+  // Legacy shows nothing at all for an empty foro/wall — no placeholder text,
+  // just the (possibly empty) `.msg-list`.
   if (!messages || messages.length === 0) {
-    return <p>No hay mensajes disponibles para este foro.</p>;
+    return null;
   }
 
   return (

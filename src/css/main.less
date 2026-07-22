@@ -1316,6 +1316,20 @@ h6.resumen-subheader {
   position: fixed;
 }
 ////////////////////////
+// MDL's own JS wraps any `.mdl-js-layout` element in a `.mdl-layout__container`
+// div (`position: absolute`) on upgrade, and that's what actually makes the
+// olive background fill the full viewport height even when a page's content
+// is shorter than it (its `height:100%` resolves against the viewport, since
+// position:absolute escapes the normal #react-root/.main ancestor chain,
+// which has no height of its own). MDL's JS never upgrades React-rendered DOM
+// — it scans once before React mounts — so that wrapper never appears here,
+// and `.mdl-layout`'s own `height: 100%` (from the base MDL stylesheet)
+// resolves to auto instead: on a foro/wall with little or no content (e.g. an
+// empty ciudadanos wall), the layout collapsed to its content height, leaving
+// a blank white gap below it down to the bottom of the viewport.
+.mdl-layout {
+  min-height: 100vh;
+}
 .captured-url {
   position: relative;
   max-width: 100%;
