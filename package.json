@@ -50,7 +50,6 @@
     "regenerator-runtime": "^0.14.1",
     "rxjs": "^7.8.2",
     "slick-carousel": "^1.6.0",
-    "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
