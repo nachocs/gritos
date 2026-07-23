@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useUser } from "../hooks/useContexts";
+import { publishHeadUpdate } from "../utils/headEvents";
 import { openModal } from "../utils/modalEvents";
 
 /**
@@ -42,7 +43,23 @@ const ForoAdmin = ({ head }) => {
         show: true,
         header: head?.INDICE === "ciudadanos" ? "EDITA TU MURO" : "EDITAR FORO",
       },
-      editForm: { msg: head, isHead: true },
+      editForm: {
+        msg: head,
+        isHead: true,
+        onSaved: (updated) => {
+          // A wall's head always answers INDICE:"ciudadanos" (the citizen it
+          // belongs to is `ID`) — canAdminForo() above already relies on the
+          // same split. useHead() consumers fetch it as "ciudadanos/<id>",
+          // so that's the name to republish under, not the bare INDICE.
+          const name =
+            updated?.INDICE === "ciudadanos"
+              ? `ciudadanos/${updated.ID}`
+              : updated?.INDICE;
+          if (name) {
+            publishHeadUpdate(name, updated);
+          }
+        },
+      },
     });
 
   return (

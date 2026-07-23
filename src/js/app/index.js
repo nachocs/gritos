@@ -1,4 +1,3 @@
-import Backbone from "backbone";
 import "core-js/stable";
 import loadFBSDK from "facebook-sdk-promise";
 import moment from "moment";
@@ -30,14 +29,6 @@ import { UserProvider } from "./react-app/contexts/UserContext";
 import "../../css/main.less";
 
 moment.locale("es");
-
-const proxiedSync = Backbone.sync;
-Backbone.sync = (method, model, options = {}) => {
-  if (!options.crossDomain) {
-    options.crossDomain = true;
-  }
-  return proxiedSync(method, model, options);
-};
 
 const AppProviders = ({ children }) => (
   <SocketProvider>

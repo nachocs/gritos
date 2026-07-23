@@ -9,6 +9,15 @@ import ReplyForm from "./ReplyForm";
 const byNumAsc = (a, b) =>
   (Number(a.num) || Number(a.ID) || 0) - (Number(b.num) || Number(b.ID) || 0);
 
+// `message.minimsgs` is a pipe-separated list of every reply ID the thread
+// has ("1|2|3|4|5"), not just a truthy flag — the exact total to compare
+// against how many we've actually loaded. Needed because index.cgi doesn't
+// honor `max` on this endpoint (verified: requesting max=2 on a 5-reply
+// thread still returns all 5), so "did the last fetch come back short of a
+// page" isn't a real signal here the way it is for the main feed.
+const getTotalMinis = (message) =>
+  message?.minimsgs ? String(message.minimsgs).split("|").filter(Boolean).length : 0;
+
 const dedupe = (messages) => {
   const seen = new Set();
   return messages.filter((m) => {
@@ -40,9 +49,11 @@ const maxEntry = (batch) => {
  * Port of legacy miniMsgCollectionView + previousMsgView: the thread lives at
  * `index.cgi?<INDICE>/<ID>/` (trailing slash = children listing), the API
  * returns newest-first, display is oldest→newest with a "load previous"
- * control at the top while entries older than the first page remain
- * (legacy condition: firstEntry > 1). New replies arrive over the
- * `collection:<INDICE>/<ID>` socket room.
+ * control at the top while fewer replies are loaded than `message.minimsgs`
+ * says exist — legacy instead gated this on `firstEntry > 1`, which showed
+ * the control any time the earliest loaded num/ID wasn't 1, whether or not
+ * more actually existed. New replies arrive over the `collection:<INDICE>/
+ * <ID>` socket room.
  */
 const MiniThread = ({ message, forceLoad }) => {
   const room = `${message.INDICE}/${message.ID}`;
@@ -53,7 +64,11 @@ const MiniThread = ({ message, forceLoad }) => {
   const [loading, setLoading] = useState(false);
   const [loadingPrevious, setLoadingPrevious] = useState(false);
   const [firstEntry, setFirstEntry] = useState(null);
-  const [noMore, setNoMore] = useState(false);
+  // Starts true (hidden) rather than false so the dots don't flash on while
+  // the initial batch is still loading; flipped to the real answer once we
+  // know how many replies are loaded vs. how many `message.minimsgs` says
+  // exist in total.
+  const [noMore, setNoMore] = useState(true);
 
   useEffect(() => {
     if (!shouldLoad) {
@@ -62,12 +77,15 @@ const MiniThread = ({ message, forceLoad }) => {
     const controller = new AbortController();
     setLoading(true);
     setFirstEntry(null);
-    setNoMore(false);
+    setNoMore(true);
     fetchForumMessages({ foro: `${room}/`, signal: controller.signal })
       .then((batch) => {
+        const deduped = dedupe(batch).sort(byNumAsc);
         setFirstEntry(minEntry(batch));
-        setNoMore(batch.length === 0);
-        setMinis(dedupe(batch).sort(byNumAsc));
+        setNoMore(
+          batch.length === 0 || deduped.length >= getTotalMinis(message),
+        );
+        setMinis(deduped);
         const lastEntry = maxEntry(batch);
         if (lastEntry !== null) {
           notificacionesReadState.update("minis", room, lastEntry);
@@ -115,9 +133,7 @@ const MiniThread = ({ message, forceLoad }) => {
         foro: `${room}/`,
         init: firstEntry,
       });
-      if (!batch.length) {
-        setNoMore(true);
-      } else {
+      if (batch.length) {
         const min = minEntry(batch);
         if (min !== null && (firstEntry === null || min < firstEntry)) {
           setFirstEntry(min);
@@ -127,7 +143,9 @@ const MiniThread = ({ message, forceLoad }) => {
           notificacionesReadState.update("minis", room, lastEntry);
         }
       }
-      setMinis((current) => dedupe([...current, ...batch]).sort(byNumAsc));
+      const merged = dedupe([...minis, ...batch]).sort(byNumAsc);
+      setMinis(merged);
+      setNoMore(batch.length === 0 || merged.length >= getTotalMinis(message));
     } catch (err) {
       console.error("thread pagination failed:", err);
     } finally {
@@ -141,7 +159,7 @@ const MiniThread = ({ message, forceLoad }) => {
 
   return (
     <>
-      {shouldLoad && Number(firstEntry) > 1 && !noMore && (
+      {shouldLoad && !noMore && (
         <div className="previous-msgs-view">
           <div
             className="previous-minimsgs load-previous"

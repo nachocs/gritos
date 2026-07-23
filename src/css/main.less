@@ -1076,6 +1076,20 @@ div[contenteditable="true"]:empty:before {
     color: initial;
   }
 }
+// Upload progress feedback — a genuine addition beyond legacy, which had
+// none at all (its $.ajax upload call has no progress or error handling).
+.upload-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+  margin-left: 8px;
+  .upload-progress {
+    width: 80px;
+    height: 6px;
+  }
+}
 @media (max-width: 680px) {
   .images-place {
     margin: 0 -16px;
@@ -1706,21 +1720,3 @@ h6.resumen-subheader {
 }
 
 // Modal Root styles for React modals
-// Multi-image strip: lightweight replacement for the legacy slick carousel.
-.images-place.images-strip {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 8px;
-  > div {
-    flex: 0 0 auto;
-    max-width: 60%;
-    scroll-snap-align: start;
-    img {
-      display: block;
-      max-height: 400px;
-      width: auto;
-      max-width: 100%;
-    }
-  }
-}

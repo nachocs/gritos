@@ -53,23 +53,73 @@ export const fetchJsonSearch = async ({
  * Ports legacy formView.upload(): posts FICHERO_IMAGEN<n> fields to upload.cgi
  * and returns the response object (IMAGEN<n>_URL / IMAGEN<n>_THUMB / Ficheros)
  * to be merged into the post payload.
+ *
+ * Legacy's own $.ajax call has no progress or error handling at all — this
+ * goes beyond parity on purpose. Uses XMLHttpRequest rather than fetch()
+ * because fetch has no upload-progress event; XHR also happens to honor the
+ * response's charset natively (unlike fetch's always-UTF-8 .text()), so no
+ * decodeBody() dance is needed here.
  */
-export const uploadImages = async ({ files, uid, indexStart = 0, signal }) => {
-  if (!files || !files.length || !uid) {
-    return {};
-  }
+export const uploadImages = ({
+  files,
+  uid,
+  indexStart = 0,
+  onProgress,
+  signal,
+}) =>
+  new Promise((resolve, reject) => {
+    if (!files || !files.length || !uid) {
+      resolve({});
+      return;
+    }
 
-  const formData = new FormData();
-  Array.from(files).forEach((file, i) => {
-    formData.append(`FICHERO_IMAGEN${indexStart + i}`, file);
+    const formData = new FormData();
+    Array.from(files).forEach((file, i) => {
+      formData.append(`FICHERO_IMAGEN${indexStart + i}`, file);
+    });
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${endpoints.apiUrl}upload.cgi?sessionId=${uid}`);
+
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          onProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      };
+    }
+
+    xhr.onload = () => {
+      if (xhr.status < 200 || xhr.status >= 300) {
+        const error = new Error(`request failed: ${xhr.status}`);
+        error.status = xhr.status;
+        reject(error);
+        return;
+      }
+      try {
+        const data = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+        resolve(data?.response || {});
+      } catch (err) {
+        reject(err);
+      }
+    };
+    xhr.onerror = () => reject(new Error("upload network error"));
+    xhr.onabort = () => {
+      const error = new Error("upload aborted");
+      error.name = "AbortError";
+      reject(error);
+    };
+
+    if (signal) {
+      if (signal.aborted) {
+        xhr.abort();
+        return;
+      }
+      signal.addEventListener("abort", () => xhr.abort());
+    }
+
+    xhr.send(formData);
   });
-
-  const data = await fetchJson(
-    `${endpoints.apiUrl}upload.cgi?sessionId=${uid}`,
-    { method: "POST", body: formData, signal },
-  );
-  return data?.response || {};
-};
 
 // Count IMAGEN<n>_URL keys so the next upload continues numbering (legacy behaviour).
 export const nextImageIndex = (attrs = {}) =>

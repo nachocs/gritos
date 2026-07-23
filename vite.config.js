@@ -75,7 +75,6 @@ export default defineConfig({
   publicDir: "src/assets",
   resolve: {
     alias: [
-      { find: "underscore", replacement: "lodash" },
       // Allows resolving imports starting with '../../' etc more easily if needed
       { find: "@", replacement: path.resolve(__dirname, "./src") },
       // Bare `moment` resolves to dist/moment.js (English-only, no locales),

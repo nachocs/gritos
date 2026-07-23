@@ -41,6 +41,7 @@ const EditFormModal = ({ editForm, registerAction }) => {
   const [imageAttrs, setImageAttrs] = useState({});
   const [showEmojis, setShowEmojis] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const composerRef = useRef(null);
 
   const handleEmojiSelect = (emoji) => {
@@ -59,11 +60,13 @@ const EditFormModal = ({ editForm, registerAction }) => {
     }
     setError(null);
     setUploading(true);
+    setUploadProgress(0);
     try {
       const response = await uploadImages({
         files,
         uid: user.uid,
         indexStart: nextImageIndex(imageAttrs),
+        onProgress: setUploadProgress,
       });
       setImageAttrs((prev) => ({ ...prev, ...response }));
     } catch (err) {
@@ -71,6 +74,7 @@ const EditFormModal = ({ editForm, registerAction }) => {
       console.error("Upload error:", err);
     } finally {
       setUploading(false);
+      setUploadProgress(0);
       event.target.value = "";
     }
   };
@@ -110,10 +114,20 @@ const EditFormModal = ({ editForm, registerAction }) => {
 
     setSubmitting(true);
 
+    // Legacy formView seeds formModel with the *entire* original message
+    // (formView.js initialize(): `this.formModel.set(options.msg.toJSON())`),
+    // so Backbone.save() — which serializes the whole model, not just the
+    // attrs passed to save() — always resubmits the original ID/INDICE/
+    // FECHA/images alongside the edited fields. post.cgi keys off that ID to
+    // update the existing entry in place rather than creating a new one.
+    // Without spreading the original message here, edits had none of that
+    // identifying data and always created a duplicate post instead.
+    const baseMessage = msgData?.toJSON ? msgData.toJSON() : msgData || {};
     const saveAttrs = {
+      ...baseMessage,
       comments: trimmedComment,
       uid: user.uid,
-      tags: msgData?.tags || "",
+      tags: msgData?.tags || baseMessage.tags || "",
       ...imageAttrs,
     };
 
@@ -134,8 +148,12 @@ const EditFormModal = ({ editForm, registerAction }) => {
     }
 
     try {
-      await submitMessage(saveAttrs);
+      const data = await submitMessage(saveAttrs);
       setSubmitting(false);
+      // post.cgi's response is the saved entity, updated in place server-side
+      // — hand it back to whoever opened the modal so the card reflects the
+      // edit immediately instead of only after a reload/refetch.
+      editForm?.onSaved?.(data.mensaje);
       closeModal();
       // Legacy formView.submitPost, isHead branch (formView.js:579-585):
       // after saving a head it changes the global foro, refetches the head and
@@ -231,7 +249,16 @@ const EditFormModal = ({ editForm, registerAction }) => {
         >
           <img className="emojione" alt="😝" title="emojis" src={smile} />
         </div>
-        {uploading && <span className="upload-status">Subiendo...</span>}
+        {uploading && (
+          <span className="upload-status">
+            Subiendo... {uploadProgress}%
+            <progress
+              className="upload-progress"
+              value={uploadProgress}
+              max="100"
+            />
+          </span>
+        )}
 
         <div className="form-submit">
           <button

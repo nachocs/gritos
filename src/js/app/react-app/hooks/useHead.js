@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { fetchHead } from "../utils/foroApi";
+import { onHeadUpdate } from "../utils/headEvents";
 
 // Several components need the same foro head at once (Layout/Header for the
 // title bar, ForoPage for the description card + admin gating, FormShell for
 // the composer target, Gallery/Votaciones/Mensaje). Without this they each
 // fire their own head.cgi GET for the same name on every page load. Dedupe
 // only *concurrent in-flight* requests — deliberately not a result cache, so
-// a later mount (e.g. after editing the head via the admin gear) refetches
-// and never renders stale data.
+// a fresh mount for a *different* name always fetches for real.
 const inFlight = new Map();
+
+// A ciudadanos wall is fetched as "ciudadanos/<id>/" (the trailing slash is
+// what makes index.cgi list children) but ForoAdmin publishes the head's own
+// `INDICE`, which has none — compare with the slash stripped either way.
+const stripSlash = (value) => (value || "").replace(/\/$/, "");
 
 const fetchHeadShared = (name) => {
   if (inFlight.has(name)) {
@@ -60,6 +65,20 @@ const useHead = (name) => {
     return () => {
       cancelled = true;
     };
+  }, [name]);
+
+  // Editing the head via the admin gear doesn't change `name`, so the effect
+  // above never re-runs on its own — without this every consumer kept
+  // showing the pre-edit head until a reload.
+  useEffect(() => {
+    if (!name) {
+      return undefined;
+    }
+    return onHeadUpdate(({ name: updatedName, head }) => {
+      if (stripSlash(updatedName) === stripSlash(name)) {
+        setData(head);
+      }
+    });
   }, [name]);
 
   return { data, loading, error };

@@ -12,7 +12,6 @@ Gritos.com
 - No CI/deploy pipeline yet for the Vite build — legacy's webpack + CircleCI + versioned S3 path (`/dist/<version>/…`) is gone; the `deploy`/`bump-version`/`tag` npm scripts reference files that no longer exist in this branch.
 - Facebook login is a stub (logs the response only) — matches legacy's own `fBlogin`, so this is parity-with-a-stub rather than a regression. A real port is a separate decision.
 - Single JS bundle over 1 MB — no route-level code splitting yet.
-- Dead legacy Backbone/Marionette source (`src/js/app/main/`, `src/js/app/models/`, `router.js`) still sits in the tree, unused by the React app. Kept temporarily as reference while porting; safe to delete once it's no longer needed for parity-checking.
 - A small globe/language icon near the login area on deployed is not yet ported (purpose unclear — likely i18n).
 
 # Changelog

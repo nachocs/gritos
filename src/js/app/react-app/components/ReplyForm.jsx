@@ -24,6 +24,7 @@ const ReplyForm = ({ parent, onPosted }) => {
   const [imageAttrs, setImageAttrs] = useState({});
   const [showEmojis, setShowEmojis] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -43,11 +44,13 @@ const ReplyForm = ({ parent, onPosted }) => {
     }
     setError(null);
     setUploading(true);
+    setUploadProgress(0);
     try {
       const response = await uploadImages({
         files,
         uid: user.uid,
         indexStart: nextImageIndex(imageAttrs),
+        onProgress: setUploadProgress,
       });
       setImageAttrs((prev) => ({ ...prev, ...response }));
     } catch (err) {
@@ -55,6 +58,7 @@ const ReplyForm = ({ parent, onPosted }) => {
       console.error("Reply upload error:", err);
     } finally {
       setUploading(false);
+      setUploadProgress(0);
       event.target.value = "";
     }
   };
@@ -169,6 +173,16 @@ const ReplyForm = ({ parent, onPosted }) => {
             <div className="emojis-modal-place" style={{ display: "block" }}>
               <EmojisModal onSelect={handleEmojiSelect} />
             </div>
+          )}
+          {uploading && (
+            <span className="upload-status">
+              Subiendo... {uploadProgress}%
+              <progress
+                className="upload-progress"
+                value={uploadProgress}
+                max="100"
+              />
+            </span>
           )}
           {error && <div className="form-error">{error}</div>}
         </div>

@@ -2,7 +2,6 @@
   "name": "gritos",
   "version": "2.0.0",
   "description": "Grita sin cortarte un pelo",
-  "main": "js/app/app.js",
   "scripts": {
     "lint": "eslint .",
     "cleanup": "rm -rf dist",
@@ -32,8 +31,6 @@
     "@babel/core": "^7.29.0",
     "autolinker": "^4.1.5",
     "babel-polyfill": "^6.23.0",
-    "backbone": "^1.6.1",
-    "backbone-fetch-cache": "^2.0.1",
     "bootstrap": "^3.4.1",
     "core-js": "^3.49.0",
     "facebook-sdk-promise": "^1.2.1",
