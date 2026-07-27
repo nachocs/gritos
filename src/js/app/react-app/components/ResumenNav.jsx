@@ -86,6 +86,20 @@ const ResumenNav = () => {
         <Link to="/">TOP</Link>
       </h6>
       <div className="resumen-collection-view">
+        {[
+          { name: "comic", label: "Comic a Gritos" },
+          { name: "manga", label: "Manga a Gritos" },
+          { name: "cine", label: "Cine a Gritos" },
+          { name: "tv", label: "TV a Gritos" },
+          { name: "videojuegos", label: "Videojuegos a Gritos" },
+          { name: "libros", label: "Libros a Gritos" },
+          { name: "musica", label: "Chirridos!" },
+        ].map(({ name, label }) => (
+          <Link key={name} className="mdl-navigation__link" to={`/${name}`}>
+            {label}
+          </Link>
+        ))}
+        <hr className="resumen-collection__divider" />
         {loading && <span className="mdl-navigation__link">Cargando…</span>}
         {error && (
           <span className="mdl-navigation__link">Error al cargar el resumen.</span>
