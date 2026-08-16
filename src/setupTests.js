@@ -6,13 +6,6 @@ import { TextDecoder, TextEncoder } from "util";
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
-// Mock window.FB (Facebook SDK)
-global.FB = {
-  init: jest.fn(),
-  logout: jest.fn(),
-  login: jest.fn(),
-};
-
 // Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),

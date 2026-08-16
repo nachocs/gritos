@@ -86,21 +86,8 @@ const LoginStatus = () => {
   const handleLogout = () => {
     Cookies.remove("city");
     logout();
-    if (window.FB && window.FB.logout) {
-      window.FB.logout();
-    }
+    // Aqui iba tambien un window.FB.logout(), retirado junto con el SDK.
     setMenuOpen(false);
-  };
-
-  const handleFbLogin = () => {
-    if (window.FB && window.FB.login) {
-      window.FB.login(
-        (response) => {
-          console.log("fb login response", response);
-        },
-        { scope: "public_profile,email" },
-      );
-    }
   };
 
   const openSignUp = () => {
@@ -225,16 +212,9 @@ const LoginStatus = () => {
             <span>Regístrate / Sign Up</span>
           </button>
         </div>
-        <div
-          className="fb-login"
-          role="button"
-          tabIndex={0}
-          onClick={handleFbLogin}
-          onKeyDown={(event) => event.key === "Enter" && handleFbLogin()}
-        >
-          <i className="fa fa-facebook-official fa-2x" aria-hidden="true" />
-          <span>Facebook Log In/Sign Up</span>
-        </div>
+        {/* Aqui estaba el boton "Facebook Log In/Sign Up". Graph API v2.7,
+            de 2016: llevaba muchisimo sin funcionar. Ver la nota en
+            index.js. El alta ahora es solo la de arriba, la propia. */}
       </ul>
     </>
   );

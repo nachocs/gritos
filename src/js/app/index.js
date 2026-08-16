@@ -1,5 +1,4 @@
 import "core-js/stable";
-import loadFBSDK from "facebook-sdk-promise";
 import moment from "moment";
 // moment.js loads locales via a *dynamic* `require('./locale/' + name)`,
 // which only works under Node's real filesystem — static bundlers (Vite/
@@ -67,31 +66,22 @@ const renderApp = () => {
 };
 
 /**
- * Initialize external SDKs and render the React application.
+ * Render the React application.
  */
 const init = () => {
-  // Render first, always. This used to render immediately in development but
-  // `await loadFBSDK()` first in production — so the entire app hung behind a
-  // third-party script that content blockers routinely block outright. A
-  // blocked `connect.facebook.net` leaves that promise unsettled rather than
-  // rejected, so the `catch` never fires and production paints nothing at all.
-  // Legacy (app.js) renders synchronously and lets the SDK arrive whenever;
-  // nothing in the first paint needs it, and FB login is a stub either way.
+  // Aqui se cargaba el SDK de Facebook y se hacia FB.init() con la Graph API
+  // v2.7, de 2016: Meta la retiro hace anos, o sea que el boton de "Facebook
+  // Log In/Sign Up" llevaba muchisimo sin funcionar (el comentario anterior
+  // ya decia que era "a stub either way").
+  //
+  // No se reactiva porque Meta exige hoy vincular la app a un portfolio de
+  // negocio VERIFICADO, con documentacion de una sociedad real, y la SL ya
+  // no existe. Se retira tambien en dreamers.es, por lo mismo.
+  //
+  // Efecto colateral bueno: se va una peticion a connect.facebook.net que los
+  // bloqueadores de contenido interceptan de rutina. Ya no hay tercero
+  // ninguno en el arranque.
   renderApp();
-
-  loadFBSDK()
-    .then((FB) => {
-      FB.init({
-        appId: "472185159492660",
-        cookie: true,
-        xfbml: true,
-        version: "v2.7",
-        status: true,
-      });
-    })
-    .catch((err) => {
-      console.error("Failed to load Facebook SDK:", err);
-    });
 };
 
 init();

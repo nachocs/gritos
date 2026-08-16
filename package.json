@@ -33,7 +33,6 @@
     "babel-polyfill": "^6.23.0",
     "bootstrap": "^3.4.1",
     "core-js": "^3.49.0",
-    "facebook-sdk-promise": "^1.2.1",
     "font-awesome": "^4.7.0",
     "html-entities": "^2.6.0",
     "icomoon-free-npm": "0.0.0",
