@@ -127,6 +127,14 @@
     </noscript>
     <!-- Vite uses ESM modules directly -->
     <script type="module" src="/src/js/app/index.js"></script>
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- Aqui habia un <script> al material.min.js de code.getmdl.io. Google
+         cerro ese CDN y desde 2026 devuelve 403, asi que salia un error en la
+         consola en cada carga. No se recupera: el JS de MDL solo escanea el DOM
+         una vez en DOMContentLoaded, antes de que React monte, o sea que nunca
+         llegaba a tocar nada de la app (por eso MdlTextfield reimplementa el
+         is-focused/is-dirty a mano). Su unico uso vivo era pintar las cuatro
+         capas del spinner, y ahora las pinta Spinner.jsx. El CSS de MDL sigue
+         local, importado desde main.less. -->
+
   </body>
 </html>
