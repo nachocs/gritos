@@ -131,6 +131,14 @@ export const imageThumbs = (attrs = {}) =>
     .filter(([key]) => /^IMAGEN\d+_THUMB$/.test(key))
     .map(([key, src]) => ({ key, src }));
 
+// Some very old entries have an author `name` polluted with the raw HTML of
+// a legacy email-to-web import (e.g. `<a href="mailto:...">Name</a>`), left
+// over from before the site rendered posts itself. The backend already
+// exposes a clean `name2` for those; fall back to stripping tags when it's
+// missing.
+const stripHtmlTags = (value) =>
+  typeof value === "string" ? value.replace(/<[^>]*>/g, "") : value;
+
 export const normalizeMessage = (message) => {
   if (!message || typeof message !== "object") {
     return null;
@@ -141,6 +149,12 @@ export const normalizeMessage = (message) => {
   }
   if (normalized.INDICE && normalized.ID) {
     normalized.wId = `${normalized.INDICE}/${normalized.ID}`;
+  }
+  if (typeof normalized.name === "string" && normalized.name.includes("<")) {
+    normalized.name = (
+      (typeof normalized.name2 === "string" && normalized.name2.trim()) ||
+      decode(stripHtmlTags(normalized.name))
+    ).trim();
   }
   return normalized;
 };
