@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import endpoints from "../../util/endpoints";
 import { decodeBody, fetchJson } from "../utils/apiFetch";
+import { pushBaja } from "../utils/pushAvisos";
 
 export const UserContext = createContext({
   user: null,
@@ -77,11 +78,13 @@ export const UserProvider = ({ children }) => {
   );
 
   const logout = useCallback(() => {
+    // el push es de la persona, no de la sesion: se da de baja en ESTE dispositivo antes de salir (y se apunta quien lo tenia)
+    pushBaja(user?.uid, user?.ID);
     Cookies.remove("city");
     setUser(null);
     setError(null);
     setLoading(false);
-  }, []);
+  }, [user?.uid, user?.ID]);
 
   const updateUser = useCallback((attrs) => {
     setUser((prev) => ({ ...prev, ...attrs }));

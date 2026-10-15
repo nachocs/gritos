@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { NotificationsContext } from "../contexts/NotificationsContext";
 import { useUser } from "../hooks/useContexts";
 import { URL_AJUSTES, URL_TODAS, destinoDeAviso } from "../utils/avisosApi";
+import AvisosDispositivo from "./AvisosDispositivo";
 import NotificacionesList from "./NotificacionesList";
 
 const NotificacionesButton = () => {
@@ -80,6 +81,7 @@ const NotificacionesButton = () => {
           items={notifications}
           onItemClick={handleItemClick}
         />
+        {open && <AvisosDispositivo uid={user.uid} />}
         <div className="notificaciones-pie">
           <button type="button" className="notificaciones-todas" onClick={markAllAsRead}>
             Marcar todas como leídas

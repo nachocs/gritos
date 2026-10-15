@@ -1,7 +1,10 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import { autoActivar } from "../../utils/pushAvisos";
 import { NotificationsContext, NotificationsProvider } from "../NotificationsContext";
+
+jest.mock("../../utils/pushAvisos", () => ({ autoActivar: jest.fn(() => Promise.resolve(false)) }));
 
 // EventSource de mentira: guarda las instancias para poder "emitir" eventos del servidor
 class FakeEventSource {
@@ -68,6 +71,14 @@ describe("NotificationsProvider (bandeja de notificaciones)", () => {
     await waitFor(() => expect(screen.getByTestId("cargando").textContent).toBe("false"));
     expect(global.fetch).not.toHaveBeenCalled();
     expect(FakeEventSource.instancias).toHaveLength(0);
+  });
+
+  it("al entrar intenta reactivar los avisos del dispositivo de esta cuenta (y sin sesion no)", async () => {
+    autoActivar.mockClear();
+    montar({ ID: "17426" });
+    expect(autoActivar).not.toHaveBeenCalled();
+    montar();
+    await waitFor(() => expect(autoActivar).toHaveBeenCalledWith("a".repeat(48), "17426"));
   });
 
   it("carga la lista con la sesion como Bearer y abre el stream", async () => {

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { useUser } from "../hooks/useContexts";
 import { AVISOS, avisosFetch } from "../utils/avisosApi";
+import { autoActivar } from "../utils/pushAvisos";
 
 export const NotificationsContext = createContext({
   notifications: [],
@@ -138,6 +139,8 @@ export const NotificationsProvider = ({ children }) => {
 
     cargar();
     abrir();
+    // si esta misma cuenta tenia los avisos del dispositivo activados al salir, vuelven solos (sin pedir nada: el permiso ya esta concedido)
+    autoActivar(uid, user.ID);
     document.addEventListener("visibilitychange", visibilidad);
     return () => {
       vivo = false;

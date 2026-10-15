@@ -1,6 +1,9 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useUser } from "../../hooks/useContexts";
+import { pushBaja } from "../../utils/pushAvisos";
 import { UserProvider } from "../UserContext";
+
+jest.mock("../../utils/pushAvisos", () => ({ pushBaja: jest.fn(() => Promise.resolve()) }));
 
 describe("UserContext", () => {
   it("should provide user context", () => {
@@ -31,6 +34,20 @@ describe("UserContext", () => {
       result.current.logout();
     });
 
+    expect(result.current.user).toBeNull();
+  });
+
+  it("al salir da de baja el push de este dispositivo con la sesion y la cuenta que salen", () => {
+    const wrapper = ({ children }) => <UserProvider>{children}</UserProvider>;
+    const { result } = renderHook(() => useUser(), { wrapper });
+    act(() => {
+      result.current.updateUser({ ID: "17426", uid: "s".repeat(48) });
+    });
+    pushBaja.mockClear();
+    act(() => {
+      result.current.logout();
+    });
+    expect(pushBaja).toHaveBeenCalledWith("s".repeat(48), "17426");
     expect(result.current.user).toBeNull();
   });
 
