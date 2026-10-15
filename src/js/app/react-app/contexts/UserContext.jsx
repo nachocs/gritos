@@ -2,7 +2,6 @@ import Cookies from "js-cookie";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import endpoints from "../../util/endpoints";
 import { decodeBody, fetchJson } from "../utils/apiFetch";
-import Ws from "../../util/Ws";
 import { onSocketMessage } from "../utils/socketEvents";
 
 export const UserContext = createContext({
@@ -57,13 +56,6 @@ export const UserProvider = ({ children }) => {
       return () => {
         unsubscribe();
       };
-    }
-  }, [user?.INDICE, user?.ID]);
-
-  // Subscribe to WebSocket when user changes
-  useEffect(() => {
-    if (user?.INDICE && user?.ID) {
-      Ws.update(`${user.INDICE}/${user.ID}`);
     }
   }, [user?.INDICE, user?.ID]);
 

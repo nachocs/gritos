@@ -1,38 +1,55 @@
-import { useContext, useEffect } from "react";
-import { SocketContext } from "../contexts/SocketContext";
-import { onSocketMessage, onSocketUpdated } from "../utils/socketEvents";
+import { useEffect } from "react";
+import endpoints from "../../util/endpoints";
+import { fetchJson } from "../utils/apiFetch";
+import { escucharSala, parseRoom } from "../utils/salasEnVivo";
+
+const pedirMensaje = (indice, id) => fetchJson(`${endpoints.apiUrl}index.cgi?${indice}/${id}`);
 
 /**
- * Custom hook to subscribe to a socket room and listen for specific events.
- * @param {string} room - The room to subscribe to (e.g., 'collection:foroscomun').
- * @param {string} type - 'updated' or 'msg'.
- * @param {function} callback - Function to execute when an event is received.
+ * Mensajes nuevos en vivo en un foro, muro o hilo (antes por gritos-socket; ahora por las salas de la bandeja de notificaciones).
+ * @param {string} room - 'collection:<foro>' (la lista) o 'collection:<indice>/<id>' (las respuestas de un hilo).
+ * @param {string} type - solo 'updated' (mensajes nuevos). Cualquier otro no hace nada.
+ * @param {function} callback - recibe { room, entry } con el mensaje nuevo, pedido a la API (el servicio solo avisa de que existe).
+ * Si el servicio no contesta (429, sin EventSource...) no pasa nada: la pagina funciona como siempre, sin el en vivo.
  */
 const useSocket = (room, type, callback) => {
-  const ws = useContext(SocketContext);
-
   useEffect(() => {
-    if (!room || !callback) return;
-
-    // Extract room name without prefix if necessary for subscription
-    const rawRoom = room.replace(/^(collection|msg):/, "");
-
-    // Handle subscription
-    ws.subscribe(rawRoom);
-
-    // Set up the listener based on event type
-    let unsubscribe;
-    if (type === "updated") {
-      unsubscribe = onSocketUpdated(rawRoom, callback);
-    } else {
-      unsubscribe = onSocketMessage(rawRoom, callback);
+    if (!room || !callback || type !== "updated") {
+      return undefined;
     }
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-      ws.unsubscribe(rawRoom);
+    const destino = parseRoom(room);
+    if (!destino) {
+      return undefined;
+    }
+    let vivo = true;
+    const vistos = new Set();
+    const alEvento = (ev) => {
+      if (!ev || !ev.indice || !ev.entrada) {
+        return;
+      }
+      // un hilo solo quiere SUS respuestas; una lista solo quiere los gritos (las respuestas llegan a su sala pero son de los hilos)
+      if (destino.hilo ? ev.tipo !== "respuesta" || ev.indice !== destino.hilo : ev.tipo !== "grito") {
+        return;
+      }
+      const clave = `${ev.indice}/${ev.entrada}`;
+      if (vistos.has(clave)) {
+        return;
+      }
+      vistos.add(clave);
+      pedirMensaje(ev.indice, ev.entrada)
+        .then((entry) => {
+          if (vivo && entry && entry.ID) {
+            callback({ room, entry });
+          }
+        })
+        .catch(() => {});
     };
-  }, [room, type, callback, ws]);
+    const dejar = escucharSala(destino.sala, alEvento);
+    return () => {
+      vivo = false;
+      dejar();
+    };
+  }, [room, type, callback]);
 };
 
 export default useSocket;

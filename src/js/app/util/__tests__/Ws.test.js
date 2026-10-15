@@ -1,45 +1,52 @@
-// Ws abre el socket al importarse: se sustituye socket.io-client por uno de mentira que deja disparar 'connect'.
-const manejadores = {};
-const emitidos = [];
+// Ws crea el socket al importarse: se sustituye socket.io-client por uno de mentira.
+const creados = [];
 jest.mock("socket.io-client", () => ({
   __esModule: true,
-  default: jest.fn(() => ({
-    on: (evento, fn) => { manejadores[evento] = fn; },
-    emit: (...args) => { emitidos.push(args); },
-  })),
+  default: jest.fn((url, opciones) => {
+    const manejadores = {};
+    const socket = {
+      url, opciones, manejadores, active: false, emitidos: [], conectado: 0,
+      on: (evento, fn) => { manejadores[evento] = fn; },
+      emit: (...args) => { socket.emitidos.push(args); },
+      connect: () => { socket.conectado += 1; socket.active = true; },
+    };
+    creados.push(socket);
+    return socket;
+  }),
 }));
 jest.mock("../endpoints", () => ({ __esModule: true, default: { socket: "http://localhost" } }));
+jest.mock("../vent", () => ({ __esModule: true, default: { trigger: jest.fn() } }));
 
 import ws from "../Ws";
+import vent from "../vent";
 
-describe("Ws tras reconectar", () => {
-  beforeEach(() => { emitidos.length = 0; });
+describe("Ws (solo vistas previas de enlaces)", () => {
+  const socket = creados[0];
 
-  it("la primera conexion no repite lo que ya se emitio", () => {
-    ws.subscribe("gritos/foro/1");
-    ws.prepararNotificaciones("5726", "uid-de-sesion");
-    manejadores.connect();
-    expect(emitidos).toEqual([
-      ["subscribe", "gritos/foro/1"],
-      ["prepararNotificaciones", "5726", "uid-de-sesion"],
+  it("no abre el socket al cargar la pagina", () => {
+    expect(socket.opciones.autoConnect).toBe(false);
+    expect(socket.conectado).toBe(0);
+    expect(socket.emitidos).toEqual([]);
+  });
+
+  it("al pedir una vista previa conecta una sola vez y emite la peticion", () => {
+    ws.captureUrlRequest("5726", "https://example.org/a");
+    ws.captureUrlRequest("5726", "https://example.org/b");
+    expect(socket.conectado).toBe(1);
+    expect(socket.emitidos).toEqual([
+      ["capture_url_request", "5726", "https://example.org/a"],
+      ["capture_url_request", "5726", "https://example.org/b"],
     ]);
   });
 
-  it("al reconectar vuelve a entrar en las salas y a pedir los avisos con la sesion", () => {
-    ws.subscribe("ciudadanos/5726");
-    emitidos.length = 0;
-    manejadores.connect(); // segunda conexion = reconexion
-    expect(emitidos).toEqual(expect.arrayContaining([
-      ["subscribe", "gritos/foro/1"],
-      ["subscribe", "ciudadanos/5726"],
-      ["prepararNotificaciones", "5726", "uid-de-sesion"],
-    ]));
+  it("la respuesta se reparte por vent para quien la pidio", () => {
+    socket.manejadores.capture_url_reply({ user: "5726", reply: { title: "t" } });
+    expect(vent.trigger).toHaveBeenCalledWith("capture_url_reply_5726", { user: "5726", reply: { title: "t" } });
   });
 
-  it("una sala de la que se salio no se vuelve a pedir", () => {
-    ws.unsubscribe("gritos/foro/1");
-    emitidos.length = 0;
-    manejadores.connect();
-    expect(emitidos).not.toEqual(expect.arrayContaining([["subscribe", "gritos/foro/1"]]));
+  it("ya no ofrece salas ni avisos por el socket", () => {
+    for (const metodo of ["subscribe", "unsubscribe", "update", "prepararNotificaciones"]) {
+      expect(ws[metodo]).toBeUndefined();
+    }
   });
 });

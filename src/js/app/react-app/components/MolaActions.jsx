@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import Ws from "../../util/Ws";
 import { useUser } from "../hooks/useContexts";
 import { fetchMessage, saveMessage } from "../utils/foroApi";
 
@@ -73,8 +72,7 @@ const MolaActions = ({ message, onMessageChange }) => {
         [tipo]: newLog.length,
       };
       const saved = await saveMessage({ message: updated });
-      // Legacy msgModel's sync handler broadcasts the vote to the room.
-      Ws.update(`${message.INDICE}/${message.ID}`, tipo, user.ID);
+      // el aviso al autor lo escribe el servidor al aplicar el voto (index.cgi); ya no hay que avisar a nadie desde aqui
       onMessageChange(saved && saved.ID ? saved : updated);
     } catch (err) {
       console.error("mola action failed:", err);

@@ -7,10 +7,6 @@ jest.mock("../../../util/endpoints", () => ({
   apiUrl: "http://localhost/api/",
 }));
 
-jest.mock("../../../util/Ws", () => ({
-  update: jest.fn(),
-}));
-
 // Response-shaped mock: the api layer decodes via arrayBuffer() + the declared
 // charset (see utils/apiFetch.js), not response.json().
 const jsonResponse = (data, { ok = true, charset = "utf-8" } = {}) => ({

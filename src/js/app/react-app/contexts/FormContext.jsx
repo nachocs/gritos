@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useState } from "react";
 import endpoints from "../../util/endpoints";
 import { decodeBody } from "../utils/apiFetch";
-import Ws from "../../util/Ws";
 import { NotificationsContext } from "./NotificationsContext";
 
 export const FormContext = createContext({
@@ -72,8 +71,6 @@ export const FormProvider = ({ children }) => {
             }
 
             if (room && !room.match(/gritosdb/i) && room !== "ciudadanos") {
-              Ws.update(`collection:${room}`);
-
               const notificaciones = [];
               if (attrs.minigrito) {
                 notificaciones.push({
