@@ -38,7 +38,7 @@ export const NotificationsProvider = ({ children }) => {
 
     setLoading(true);
     notificacionesReadState.load(user.ID);
-    Ws.prepararNotificaciones(user.ID);
+    Ws.prepararNotificaciones(user.ID, user.uid);
 
     const unsubscribe = onNotificaciones(user.ID, (data) => {
       setLoading(false);
@@ -63,7 +63,7 @@ export const NotificationsProvider = ({ children }) => {
     });
 
     return unsubscribe;
-  }, [user?.ID]);
+  }, [user?.ID, user?.uid]);
 
   // Called by FormContext right after a successful post, so the poster's own
   // new entry doesn't immediately show back up as unread for them.
