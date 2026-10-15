@@ -1090,16 +1090,21 @@ div[contenteditable="true"]:empty:before {
     display: none;
     position: absolute;
     // width: 200px;
-    max-height: 300px;
-    overflow-y: auto;
     width: 300px;
     right: 0;
+    // solo la LISTA se desplaza; «Activar avisos» y el pie quedan siempre a la vista (con 20 avisos en la lista el boton quedaba debajo, fuera de la vista)
+    max-height: min(480px, 85vh);
     &.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
     }
     ul {
       background-color: white;
       width: initial;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      max-height: 300px;
       padding: 5px 10px;
       li {
         cursor: pointer;
@@ -1133,6 +1138,10 @@ div[contenteditable="true"]:empty:before {
           color: #555;
         }
       }
+    }
+    .avisos-dispositivo,
+    .notificaciones-pie {
+      flex: 0 0 auto;
     }
     .notificaciones-pie {
       display: flex;
