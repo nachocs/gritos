@@ -1,14 +1,42 @@
 import { decode } from "html-entities";
+import { avisosFetch } from "./avisosApi";
 
 /**
  * URL capture helpers, ported from legacy main/form/formView.js
  * (getCaptureUrls / isThisUrl) and util/displayCapturedUrl.html.
  *
- * The composer scans its plain text for links; each new capturable URL is sent
- * to the backend via Ws.captureUrlRequest, and the reply (title/image/
+ * The composer scans its plain text for links; each new capturable URL is
+ * asked of the notifications service (GET /avisos-api/preview, which replaced
+ * the gritos-socket capture_url_request), and the reply (title/image/
  * description) is rendered as a preview card appended inside the contenteditable
  * — exactly as the Backbone composer did.
  */
+
+/**
+ * Pide la vista previa de un enlace tal como sale de extractCaptureUrls (sin el
+ * protocolo): primero https y, si no hay nada, http. Devuelve { url, title,
+ * description, image, size } o null. Nunca lanza: una vista previa que no sale
+ * no puede estropear el mensaje que se esta escribiendo.
+ */
+export const pedirVistaPrevia = async ({ uid, url }) => {
+  if (!uid || !url) {
+    return null;
+  }
+  for (const esquema of ["https://", "http://"]) {
+    try {
+      const r = await avisosFetch(`preview?url=${encodeURIComponent(esquema + url)}`, { uid });
+      if (r.estado === 200 && r.datos && (r.datos.title || r.datos.image)) {
+        return r.datos;
+      }
+      if (r.estado === 429 || r.estado === 401) {
+        return null; // reintentar con http no arregla un limite ni una sesion caducada
+      }
+    } catch {
+      /* sin red: se prueba el otro esquema y luego se rinde */
+    }
+  }
+  return null;
+};
 
 const EMAIL_REGEXP =
   /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi;

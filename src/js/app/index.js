@@ -17,7 +17,6 @@ import { FormProvider } from "./react-app/contexts/FormContext";
 import { GlobalProvider } from "./react-app/contexts/GlobalContext";
 import { NotificationsProvider } from "./react-app/contexts/NotificationsContext";
 import { RegistrationProvider } from "./react-app/contexts/RegistrationContext";
-import { SocketProvider } from "./react-app/contexts/SocketContext";
 import { UserProvider } from "./react-app/contexts/UserContext";
 
 // Material Design Lite's *JS* is loaded from the CDN in index.html. Its CSS is
@@ -30,17 +29,15 @@ import "../../css/main.less";
 moment.locale("es");
 
 const AppProviders = ({ children }) => (
-  <SocketProvider>
-    <UserProvider>
-      <RegistrationProvider>
-        <GlobalProvider>
-          <NotificationsProvider>
-            <FormProvider>{children}</FormProvider>
-          </NotificationsProvider>
-        </GlobalProvider>
-      </RegistrationProvider>
-    </UserProvider>
-  </SocketProvider>
+  <UserProvider>
+    <RegistrationProvider>
+      <GlobalProvider>
+        <NotificationsProvider>
+          <FormProvider>{children}</FormProvider>
+        </NotificationsProvider>
+      </GlobalProvider>
+    </RegistrationProvider>
+  </UserProvider>
 );
 
 const renderApp = () => {

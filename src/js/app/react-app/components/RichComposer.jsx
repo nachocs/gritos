@@ -7,17 +7,17 @@ import {
   useRef,
   useState,
 } from "react";
-import Ws from "../../util/Ws";
 import {
   buildCapturedUrlCard,
   extractCaptureUrls,
+  pedirVistaPrevia,
 } from "../utils/captureUrl";
+import { useUser } from "../hooks/useContexts";
 import {
   insertHtmlAtRange,
   sanitizePastedText,
   saveSelection,
 } from "../utils/contentEditable";
-import { onCaptureUrlReply } from "../utils/socketEvents";
 import Wysiwyg from "./Wysiwyg";
 
 /**
@@ -45,6 +45,9 @@ const RichComposer = forwardRef(function RichComposer(
   },
   ref,
 ) {
+  const { user } = useUser();
+  const uid = user?.uid;
+  const mostrarTarjeta = useRef(() => {});
   const editorRef = useRef(null);
   const savedRange = useRef(null);
   const [toolbarStyle, setToolbarStyle] = useState(null);
@@ -81,9 +84,9 @@ const RichComposer = forwardRef(function RichComposer(
         return;
       }
       pendingUrls.current.add(url);
-      Ws.captureUrlRequest(userId, url);
+      pedirVistaPrevia({ uid, url }).then((reply) => reply && mostrarTarjeta.current(url, reply));
     });
-  }, [captureUrls, userId]);
+  }, [captureUrls, userId, uid]);
 
   const reportContent = useCallback(() => {
     if (editorRef.current) {
@@ -92,39 +95,26 @@ const RichComposer = forwardRef(function RichComposer(
     }
   }, [onContentChange, scanForUrls]);
 
-  // Append a preview card when the backend replies (legacy capture_url_reply).
-  useEffect(() => {
-    if (!captureUrls || !userId) {
-      return undefined;
+  // Append a preview card when the service replies (legacy capture_url_reply). `url` es el enlace tal como se escribio (la clave de
+  // pending/captured/removed); reply.url puede ser otro (tras redirecciones) y es el que lleva el enlace de la tarjeta.
+  mostrarTarjeta.current = (url, reply) => {
+    const el = editorRef.current;
+    if (!el) {
+      return;
     }
-    return onCaptureUrlReply(userId, (data) => {
-      const el = editorRef.current;
-      if (!el || !data?.url) {
-        return;
-      }
-      const dataurl = data.url.replace(/^https?:\/\//, "");
-      // Only render a card for a URL *this* composer asked about. The reply
-      // event is broadcast per-user, and a wall renders one composer per
-      // message (11 on a busy page), so without this every reply box sprouted
-      // a copy of a card for a link typed in the main composer. Legacy dodged
-      // it by registering its `capture_url_reply` listener lazily, inside the
-      // scan loop — a composer that never requested a URL never listened.
-      if (!pendingUrls.current.has(dataurl)) {
-        return;
-      }
-      pendingUrls.current.delete(dataurl);
-      if (capturedUrls.current[dataurl] || removedUrls.current[dataurl]) {
-        return;
-      }
-      capturedUrls.current[dataurl] = true;
-      const card = buildCapturedUrlCard({
-        ...(data.reply || {}),
-        id: dataurl,
-      });
-      el.appendChild(card);
-      reportContent();
-    });
-  }, [captureUrls, userId, reportContent]);
+    // Only render a card for a URL *this* composer asked about: a wall renders
+    // one composer per message, and each one only knows its own pending set.
+    if (!pendingUrls.current.has(url)) {
+      return;
+    }
+    pendingUrls.current.delete(url);
+    if (capturedUrls.current[url] || removedUrls.current[url]) {
+      return;
+    }
+    capturedUrls.current[url] = true;
+    el.appendChild(buildCapturedUrlCard({ ...reply, id: url }));
+    reportContent();
+  };
 
   // Dismiss a preview card (delegated, since the cards are raw DOM the editor
   // owns, not React-rendered children).
