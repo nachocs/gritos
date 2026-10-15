@@ -1,13 +1,11 @@
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { useUser } from "../hooks/useContexts";
 import { AVISOS, avisosFetch } from "../utils/avisosApi";
-import notificacionesReadState from "../utils/notificacionesReadState";
 
 export const NotificationsContext = createContext({
   notifications: [],
   unreadCount: 0,
   loading: true,
-  addNotification: () => {},
   markNotificationAsRead: () => {},
   markAllAsRead: () => {},
   clearNotifications: () => {},
@@ -152,11 +150,6 @@ export const NotificationsProvider = ({ children }) => {
     };
   }, [user?.ID, uid]);
 
-  // FormContext la llama tras publicar (marcadores de lectura del sistema antiguo, que sigue guardando la app): no afecta a la bandeja.
-  const addNotification = useCallback((notis) => {
-    notificacionesReadState.addNotificaciones(notis);
-  }, []);
-
   const marcar = useCallback((cuerpo) => {
     if (!uidRef.current) {
       return Promise.resolve();
@@ -195,7 +188,6 @@ export const NotificationsProvider = ({ children }) => {
     notifications,
     unreadCount,
     loading,
-    addNotification,
     markNotificationAsRead,
     markAllAsRead,
     clearNotifications,

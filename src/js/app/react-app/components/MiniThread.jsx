@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 import { fetchForumMessages, normalizeMessage } from "../utils/foroApi";
-import notificacionesReadState from "../utils/notificacionesReadState";
 import useSocket from "../hooks/useSocket";
 import MessageItem from "./MessageItem";
 import ReplyForm from "./ReplyForm";
@@ -35,13 +34,6 @@ const minEntry = (batch) => {
     .map((m) => Number(m.num) || Number(m.ID))
     .filter((n) => !Number.isNaN(n) && n > 0);
   return nums.length ? Math.min(...nums) : null;
-};
-
-const maxEntry = (batch) => {
-  const nums = batch
-    .map((m) => Number(m.num) || Number(m.ID))
-    .filter((n) => !Number.isNaN(n) && n > 0);
-  return nums.length ? Math.max(...nums) : null;
 };
 
 /**
@@ -86,10 +78,6 @@ const MiniThread = ({ message, forceLoad }) => {
           batch.length === 0 || deduped.length >= getTotalMinis(message),
         );
         setMinis(deduped);
-        const lastEntry = maxEntry(batch);
-        if (lastEntry !== null) {
-          notificacionesReadState.update("minis", room, lastEntry);
-        }
       })
       .catch((err) => {
         if (err.name !== "AbortError") {
@@ -109,9 +97,6 @@ const MiniThread = ({ message, forceLoad }) => {
       const mini = normalizeMessage(payload?.entry);
       if (mini) {
         setMinis((current) => dedupe([...current, mini]).sort(byNumAsc));
-        if (mini.ID) {
-          notificacionesReadState.update("minis", room, mini.ID);
-        }
       }
     },
     [room],
@@ -137,10 +122,6 @@ const MiniThread = ({ message, forceLoad }) => {
         const min = minEntry(batch);
         if (min !== null && (firstEntry === null || min < firstEntry)) {
           setFirstEntry(min);
-        }
-        const lastEntry = maxEntry(batch);
-        if (lastEntry !== null) {
-          notificacionesReadState.update("minis", room, lastEntry);
         }
       }
       const merged = dedupe([...minis, ...batch]).sort(byNumAsc);

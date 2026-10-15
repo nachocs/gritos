@@ -3,7 +3,6 @@ import mockup from "../../util/mockups";
 import { publishAviso } from "../utils/avisosEvents";
 import { fetchForumMessages, normalizeMessage } from "../utils/foroApi";
 import { onNewMessage } from "../utils/messageEvents";
-import notificacionesReadState from "../utils/notificacionesReadState";
 import useSocket from "./useSocket";
 
 const stripSlash = (value) => (value || "").replace(/\/$/, "");
@@ -24,13 +23,6 @@ const getFirstEntry = (messages) => {
     .map((message) => Number(message?.num))
     .filter((num) => !Number.isNaN(num));
   return nums.length ? Math.min(...nums) : null;
-};
-
-const getLastEntry = (messages) => {
-  const nums = messages
-    .map((message) => Number(message?.num))
-    .filter((num) => !Number.isNaN(num));
-  return nums.length ? Math.max(...nums) : null;
 };
 
 const useForumMessages = (foro) => {
@@ -70,10 +62,6 @@ const useForumMessages = (foro) => {
         setData(uniqueById(messages));
         firstEntryRef.current = getFirstEntry(messages);
         setNoMoreEntries(messages.length === 0);
-        const lastEntry = getLastEntry(messages);
-        if (lastEntry !== null) {
-          notificacionesReadState.update("foro", foro.replace(/\/$/, ""), lastEntry);
-        }
       })
       .catch((fetchError) => {
         if (fetchError.name !== "AbortError") {
@@ -102,9 +90,6 @@ const useForumMessages = (foro) => {
       if (message) {
         setData((current) => uniqueById([message, ...current]));
         publishAviso(payload);
-        if (foro && message.ID) {
-          notificacionesReadState.update("foro", foro.replace(/\/$/, ""), message.ID);
-        }
       }
     },
     [foro],
@@ -155,10 +140,6 @@ const useForumMessages = (foro) => {
         setNoMoreEntries(
           messages.length === 0 || firstEntryRef.current === null,
         );
-        const lastEntry = getLastEntry(messages);
-        if (lastEntry !== null) {
-          notificacionesReadState.update("foro", foro.replace(/\/$/, ""), lastEntry);
-        }
       })
       .catch((fetchError) => {
         setError(fetchError);

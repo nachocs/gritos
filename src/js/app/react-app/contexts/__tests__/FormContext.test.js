@@ -76,44 +76,7 @@ describe("FormContext", () => {
     expect(screen.getByTestId("status")).toHaveTextContent("done");
   });
 
-  it("calls addNotification with foro/msg/minis entries after posting a top-level grito", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve(jsonResponse({ status: "ok", mensaje: { ID: 42 } })),
-    );
-
-    renderWithNotifications({ foro: "foroscomun", comments: "hola" });
-    await act(async () => {
-      screen.getByTestId("submit-btn").click();
-    });
-
-    expect(screen.getByTestId("status")).toHaveTextContent("done");
-    expect(addNotification).toHaveBeenCalledWith([
-      { tipo: "foro", room: "foroscomun", last: 42 },
-      { tipo: "msg", room: "foroscomun/42", last: "0/0/0" },
-      { tipo: "minis", room: "foroscomun/42", last: "0" },
-    ]);
-  });
-
-  it("calls addNotification with minis/msg entries after posting a reply (minigrito)", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve(jsonResponse({ status: "ok", mensaje: { ID: 7 } })),
-    );
-
-    renderWithNotifications({
-      minigrito: { indice: "foroscomun", entrada: "42" },
-      comments: "reply",
-    });
-    await act(async () => {
-      screen.getByTestId("submit-btn").click();
-    });
-
-    expect(addNotification).toHaveBeenCalledWith([
-      { tipo: "minis", room: "foroscomun/42", last: 7 },
-      { tipo: "msg", room: "foroscomun/42/7", last: "0/0/0" },
-    ]);
-  });
-
-  it("does not notify when the post fails", async () => {
+  it("reports the error when the post fails", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve(jsonResponse({ status: "error" })),
     );
@@ -124,7 +87,6 @@ describe("FormContext", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(addNotification).not.toHaveBeenCalled();
     expect(screen.getByTestId("error")).toBeInTheDocument();
   });
 });

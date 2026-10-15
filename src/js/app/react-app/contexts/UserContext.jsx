@@ -2,7 +2,6 @@ import Cookies from "js-cookie";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import endpoints from "../../util/endpoints";
 import { decodeBody, fetchJson } from "../utils/apiFetch";
-import { onSocketMessage } from "../utils/socketEvents";
 
 export const UserContext = createContext({
   user: null,
@@ -41,23 +40,6 @@ export const UserProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
-
-  // Subscribe to WebSocket updates
-  useEffect(() => {
-    if (user?.INDICE && user?.ID) {
-      const room = `msg_${user.INDICE}/${user.ID}`;
-      const handleUpdate = (data) => {
-        if (data.entry) {
-          setUser((prev) => ({ ...prev, ...data.entry }));
-          console.log("updated user", room, data.entry);
-        }
-      };
-      const unsubscribe = onSocketMessage(`${user.INDICE}/${user.ID}`, handleUpdate);
-      return () => {
-        unsubscribe();
-      };
-    }
-  }, [user?.INDICE, user?.ID]);
 
   const loadUser = useCallback((uid) => {
     fetch(endpoints.apiUrl + "login.cgi", {

@@ -1,7 +1,6 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import endpoints from "../../util/endpoints";
 import { decodeBody } from "../utils/apiFetch";
-import { NotificationsContext } from "./NotificationsContext";
 
 export const FormContext = createContext({
   submitting: false,
@@ -19,7 +18,6 @@ const isPostOk = (data) =>
   data?.status === "ok" || data?.success === "ok" || Boolean(data?.mensaje);
 
 export const FormProvider = ({ children }) => {
-  const { addNotification } = useContext(NotificationsContext);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -62,47 +60,6 @@ export const FormProvider = ({ children }) => {
             setSubmitting(false);
             setIsDirty(false);
 
-            // Handle WebSocket updates for notifications
-            let room = null;
-            if (attrs.minigrito) {
-              room = `${attrs.minigrito.indice}/${attrs.minigrito.entrada}`;
-            } else if (attrs.foro) {
-              room = attrs.foro;
-            }
-
-            if (room && !room.match(/gritosdb/i) && room !== "ciudadanos") {
-              const notificaciones = [];
-              if (attrs.minigrito) {
-                notificaciones.push({
-                  tipo: "minis",
-                  room,
-                  last: data.mensaje?.ID,
-                });
-                notificaciones.push({
-                  tipo: "msg",
-                  room: `${room}/${data.mensaje?.ID}`,
-                  last: "0/0/0",
-                });
-              } else {
-                notificaciones.push({
-                  tipo: "foro",
-                  room,
-                  last: data.mensaje?.ID,
-                });
-                notificaciones.push({
-                  tipo: "msg",
-                  room: `${room}/${data.mensaje?.ID}`,
-                  last: "0/0/0",
-                });
-                notificaciones.push({
-                  tipo: "minis",
-                  room: `${room}/${data.mensaje?.ID}`,
-                  last: "0",
-                });
-              }
-              addNotification(notificaciones);
-            }
-
             resolve(data);
           } else {
             const err = new Error(
@@ -119,7 +76,7 @@ export const FormProvider = ({ children }) => {
           reject(err);
         });
     });
-  }, [addNotification]);
+  }, []);
 
   const clearStatus = useCallback(() => {
     setError(null);
