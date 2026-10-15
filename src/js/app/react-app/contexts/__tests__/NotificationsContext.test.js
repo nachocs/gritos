@@ -158,6 +158,22 @@ describe("NotificationsProvider (bandeja de notificaciones)", () => {
     expect(global.fetch.mock.calls.some(([u]) => u.endsWith("/contador"))).toBe(true);
   });
 
+  it("una app escondida suelta la conexion a los 5 s (para que el servicio pueda mandar el push) y la recupera al volver", async () => {
+    jest.useFakeTimers();
+    montar();
+    await act(async () => { await Promise.resolve(); });
+    await waitFor(() => expect(FakeEventSource.instancias).toHaveLength(1));
+    Object.defineProperty(document, "hidden", { configurable: true, value: true });
+    act(() => { document.dispatchEvent(new Event("visibilitychange")); });
+    await act(async () => { jest.advanceTimersByTime(4000); });
+    expect(FakeEventSource.instancias[0].cerrado).toBeUndefined();
+    await act(async () => { jest.advanceTimersByTime(1500); });
+    expect(FakeEventSource.instancias[0].cerrado).toBe(true);
+    Object.defineProperty(document, "hidden", { configurable: true, value: false });
+    act(() => { document.dispatchEvent(new Event("visibilitychange")); });
+    expect(FakeEventSource.instancias).toHaveLength(2);
+  });
+
   it("al desmontar cierra la conexion", async () => {
     const { unmount } = montar();
     await waitFor(() => expect(FakeEventSource.instancias).toHaveLength(1));

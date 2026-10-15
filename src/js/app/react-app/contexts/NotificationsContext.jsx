@@ -14,7 +14,7 @@ export const NotificationsContext = createContext({
 
 const LIMITE = 20;
 const SONDEO_MS = 60000;
-const ESCONDIDA_MS = 60000;
+const ESCONDIDA_MS = 5000; // una app escondida suelta la conexion enseguida: con ella abierta el servicio no manda el push (la campana ya lo ve), y en el movil la pagina puede congelarse con la conexion abierta
 
 // Las notificaciones vienen del servicio de la bandeja (el mismo de dreamers.es), por SSE con respaldo de sondeo: ya no las empuja gritos-socket
 // ni se calculan al conectar. El servidor las agrupa (una sin leer por foro y tipo): una nueva de la misma `clave` sustituye a la anterior.
