@@ -1,7 +1,6 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { useUser } from "../hooks/useContexts";
-import { onNotificaciones } from "../utils/socketEvents";
-import Ws from "../../util/Ws";
+import { AVISOS, avisosFetch } from "../utils/avisosApi";
 import notificacionesReadState from "../utils/notificacionesReadState";
 
 export const NotificationsContext = createContext({
@@ -10,96 +9,187 @@ export const NotificationsContext = createContext({
   loading: true,
   addNotification: () => {},
   markNotificationAsRead: () => {},
+  markAllAsRead: () => {},
   clearNotifications: () => {},
 });
 
-let notificationSeq = 0;
+const LIMITE = 20;
+const SONDEO_MS = 60000;
+const ESCONDIDA_MS = 60000;
 
+// Las notificaciones vienen del servicio de la bandeja (el mismo de dreamers.es), por SSE con respaldo de sondeo: ya no las empuja gritos-socket
+// ni se calculan al conectar. El servidor las agrupa (una sin leer por foro y tipo): una nueva de la misma `clave` sustituye a la anterior.
 export const NotificationsProvider = ({ children }) => {
   const { user } = useUser();
+  const uid = user?.uid;
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const uidRef = useRef(uid);
+  uidRef.current = uid;
 
-  // Notifications are pushed over the socket, not fetched via HTTP: legacy's
-  // `index.cgi?notificaciones/<ID>` is the *read-state* counter resource
-  // (last-seen markers per room), not a notification feed — fetching it here
-  // and treating the response as a list was wrong. The real feed comes from
-  // asking the server to start pushing (Ws.prepararNotificaciones) and
-  // listening for `notificaciones_<uid>` events, mirroring legacy
-  // NotificacionesCollection. Read-state persistence lives in
-  // utils/notificacionesReadState.js (PUT to that same resource).
   useEffect(() => {
-    if (!user?.ID) {
-      notificacionesReadState.clear();
+    if (!user?.ID || !uid) {
       setNotifications([]);
+      setUnreadCount(0);
       setLoading(false);
       return undefined;
     }
 
+    let vivo = true;
+    let fuente = null;
+    let sondeo = null;
+    let cierre = null;
+    let ultimoId = 0;
+    let contadorVisto = 0;
     setLoading(true);
-    notificacionesReadState.load(user.ID);
-    Ws.prepararNotificaciones(user.ID, user.uid);
 
-    const unsubscribe = onNotificaciones(user.ID, (data) => {
-      setLoading(false);
-      const incoming = Array.isArray(data) ? data : [data];
-      const relevant = incoming.filter(
-        (not) =>
-          not?.entry &&
-          (not.entry.ciudadano !== user.ID ||
-            (not.tipo === "msg" && not.subtipo)),
-      );
-      if (!relevant.length) {
+    const cargar = () =>
+      avisosFetch(`lista?limite=${LIMITE}`, { uid })
+        .then((r) => {
+          if (!vivo || r.estado !== 200) {
+            return;
+          }
+          setNotifications(r.datos.notificaciones || []);
+          contadorVisto = r.datos.sinLeer || 0;
+          setUnreadCount(contadorVisto);
+        })
+        .catch(() => {})
+        .finally(() => vivo && setLoading(false));
+
+    const sondear = () => {
+      if (sondeo) {
         return;
       }
-      setNotifications((prev) => [
-        ...relevant.map((not) => ({
-          ...not,
-          id: not.id ?? `noti-${Date.now()}-${notificationSeq++}`,
-          read: false,
-        })),
-        ...prev,
-      ]);
-    });
+      const tic = () =>
+        avisosFetch("contador", { uid })
+          .then((r) => {
+            if (!vivo) {
+              return;
+            }
+            if (r.estado === 200) {
+              const hay = r.datos.sinLeer > contadorVisto;
+              contadorVisto = r.datos.sinLeer;
+              setUnreadCount(contadorVisto);
+              if (hay) {
+                cargar();
+              }
+            } else if (r.estado === 401) {
+              clearInterval(sondeo);
+            }
+          })
+          .catch(() => {});
+      sondeo = setInterval(tic, SONDEO_MS);
+    };
 
-    return unsubscribe;
-  }, [user?.ID, user?.uid]);
+    const abrir = () => {
+      if (fuente || !window.EventSource) {
+        if (!window.EventSource) {
+          sondear();
+        }
+        return;
+      }
+      fuente = new EventSource(`${AVISOS}stream${ultimoId ? `?desde=${ultimoId}` : ""}`);
+      fuente.addEventListener("estado", (e) => {
+        try {
+          const d = JSON.parse(e.data);
+          if (typeof d.sinLeer === "number") {
+            setUnreadCount(d.sinLeer);
+          }
+        } catch {
+          /* un evento mal formado no tumba nada */
+        }
+      });
+      fuente.addEventListener("notif", (e) => {
+        try {
+          const nueva = JSON.parse(e.data);
+          if (e.lastEventId) {
+            ultimoId = Math.max(ultimoId, Number(e.lastEventId));
+          }
+          setNotifications((antes) => [nueva, ...antes.filter((x) => x.clave !== nueva.clave)].slice(0, LIMITE));
+        } catch {
+          /* idem */
+        }
+      });
+      // 401/429 cierran el EventSource para siempre; un corte de red lo reintenta el navegador solo
+      fuente.onerror = () => {
+        if (fuente && fuente.readyState === 2) {
+          fuente = null;
+          sondear();
+        }
+      };
+    };
 
-  // Called by FormContext right after a successful post, so the poster's own
-  // new entry doesn't immediately show back up as unread for them.
+    // una pestana escondida un minuto suelta la conexion (hay un maximo por usuario) y la recupera al volver
+    const visibilidad = () => {
+      if (document.hidden) {
+        cierre = setTimeout(() => {
+          if (fuente) {
+            fuente.close();
+            fuente = null;
+          }
+        }, ESCONDIDA_MS);
+      } else {
+        clearTimeout(cierre);
+        if (!fuente && !sondeo) {
+          abrir();
+          cargar();
+        }
+      }
+    };
+
+    cargar();
+    abrir();
+    document.addEventListener("visibilitychange", visibilidad);
+    return () => {
+      vivo = false;
+      document.removeEventListener("visibilitychange", visibilidad);
+      clearTimeout(cierre);
+      clearInterval(sondeo);
+      if (fuente) {
+        fuente.close();
+      }
+    };
+  }, [user?.ID, uid]);
+
+  // FormContext la llama tras publicar (marcadores de lectura del sistema antiguo, que sigue guardando la app): no afecta a la bandeja.
   const addNotification = useCallback((notis) => {
     notificacionesReadState.addNotificaciones(notis);
   }, []);
 
-  // Mirrors legacy notificacionesView.toggleNotificaciones(): only 'msg' and
-  // 'yo' notifications advance the persisted read-state watermark here
-  // ('foro'/'minis' are advanced elsewhere, via list-view/thread reads).
-  const markNotificationAsRead = useCallback((notification) => {
-    const notif =
-      typeof notification === "object"
-        ? notification
-        : notifications.find((n) => n.id === notification);
-    if (notif?.tipo === "msg" && notif.entry) {
-      const foro = `${notif.indice}/${notif.entry.ID}`;
-      notificacionesReadState.update(
-        "msg",
-        foro,
-        notif.entry[notif.subtipo],
-        notif.subtipo,
-      );
-    } else if (notif?.tipo === "yo" && notif.entry) {
-      notificacionesReadState.update("yo", notif.indice, notif.entry.ID);
+  const marcar = useCallback((cuerpo) => {
+    if (!uidRef.current) {
+      return Promise.resolve();
     }
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === notif?.id ? { ...n, read: true } : n)),
-    );
-  }, [notifications]);
+    return avisosFetch("leer", { uid: uidRef.current, metodo: "POST", cuerpo })
+      .then((r) => {
+        if (r.estado === 200 && typeof r.datos?.sinLeer === "number") {
+          setUnreadCount(r.datos.sinLeer);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const markNotificationAsRead = useCallback(
+    (notification) => {
+      const id = typeof notification === "object" ? notification?.id : notification;
+      if (!id) {
+        return Promise.resolve();
+      }
+      setNotifications((antes) => antes.map((n) => (n.id === id ? { ...n, leida: 1 } : n)));
+      return marcar({ ids: [id] });
+    },
+    [marcar],
+  );
+
+  const markAllAsRead = useCallback(() => {
+    setNotifications((antes) => antes.map((n) => ({ ...n, leida: 1 })));
+    return marcar({ todas: true });
+  }, [marcar]);
 
   const clearNotifications = useCallback(() => {
     setNotifications([]);
   }, []);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const value = {
     notifications,
@@ -107,12 +197,9 @@ export const NotificationsProvider = ({ children }) => {
     loading,
     addNotification,
     markNotificationAsRead,
+    markAllAsRead,
     clearNotifications,
   };
 
-  return (
-    <NotificationsContext.Provider value={value}>
-      {children}
-    </NotificationsContext.Provider>
-  );
+  return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
 };

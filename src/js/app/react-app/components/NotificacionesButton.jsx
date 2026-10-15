@@ -2,20 +2,12 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationsContext } from "../contexts/NotificationsContext";
 import { useUser } from "../hooks/useContexts";
+import { URL_AJUSTES, URL_TODAS, destinoDeAviso } from "../utils/avisosApi";
 import NotificacionesList from "./NotificacionesList";
-
-const buildRoute = (indice = "") => {
-  let route = indice.replace(/^gritos\//, "").replace(/^foros\//, "");
-  route = route.replace(/\/(\d+)\/(\d+)$/, "/$1");
-  if (!route.startsWith("/")) {
-    route = "/" + route;
-  }
-  return route;
-};
 
 const NotificacionesButton = () => {
   const { user } = useUser();
-  const { notifications, unreadCount, markNotificationAsRead } =
+  const { notifications, unreadCount, markNotificationAsRead, markAllAsRead } =
     useContext(NotificationsContext);
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -38,25 +30,21 @@ const NotificacionesButton = () => {
     };
   }, [open]);
 
-  const markRead = () => {
-    notifications.forEach((notif) => {
-      if (!notif.read) {
-        markNotificationAsRead(notif);
-      }
-    });
-  };
+  const togglePanel = () => setOpen(!open);
 
-  const togglePanel = () => {
-    if (!open) {
-      markRead();
-    }
-    setOpen(!open);
-  };
-
+  // un aviso de gritos.com navega dentro de la app; uno de dreamers.es (molas a una ficha, novedades...) abre dreamers.es
   const handleItemClick = (item) => {
-    const route = buildRoute(item.indice);
+    markNotificationAsRead(item);
     setOpen(false);
-    navigate(route);
+    const destino = destinoDeAviso(item.url);
+    if (!destino) {
+      return;
+    }
+    if (destino.interno) {
+      navigate(destino.ruta);
+    } else {
+      window.location.href = destino.ruta;
+    }
   };
 
   if (!user?.ID) {
@@ -92,6 +80,17 @@ const NotificacionesButton = () => {
           items={notifications}
           onItemClick={handleItemClick}
         />
+        <div className="notificaciones-pie">
+          <button type="button" className="notificaciones-todas" onClick={markAllAsRead}>
+            Marcar todas como leídas
+          </button>
+          <a href={URL_TODAS} target="_blank" rel="noopener noreferrer">
+            Ver todas
+          </a>
+          <a href={URL_AJUSTES} target="_blank" rel="noopener noreferrer">
+            Ajustes
+          </a>
+        </div>
       </div>
     </div>
   );

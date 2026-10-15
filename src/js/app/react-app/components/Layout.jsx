@@ -5,6 +5,7 @@ import { useUser } from "../hooks/useContexts";
 import useHead from "../hooks/useHead";
 import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
+import { claveForo } from "../utils/avisosApi";
 import AvisosBanner from "./AvisosBanner";
 import Drawer from "./Drawer";
 import ForoAdmin from "./ForoAdmin";
@@ -13,6 +14,7 @@ import FormShell from "./FormShell";
 import Header from "./Header";
 import ModalRoot from "./ModalRoot";
 import RightSidebar from "./RightSidebar";
+import SeguirForoButton from "./SeguirForoButton";
 import UserListPopup from "./UserListPopup";
 
 // Rendered as the element of a layout <Route> wrapping every other route (see
@@ -124,6 +126,11 @@ const Layout = () => {
             <div className={`content${isGallery ? " content-gallery" : ""}`}>
               <ForoDescription head={head} isWall={isWall} />
               <ForoAdmin head={head} />
+              <SeguirForoButton
+                clave={claveForo({ foro: foro ? currentForo : undefined, id })}
+                titulo={head?.Titulo}
+                esMuro={isWall}
+              />
               {!isGallery && (
                 <div className="form-view" ref={formSectionRef}>
                   <FormShell />

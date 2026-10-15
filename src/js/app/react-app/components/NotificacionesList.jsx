@@ -8,11 +8,11 @@ import NotificacionesItem from "./NotificacionesItem";
 const NotificacionesList = ({ items, onItemClick }) => (
   <ul className="notificaciones-list mdl-shadow--4dp">
     {items.length === 0 ? (
-      <li className="notificacion-empty">No tienes nuevas notificaciones</li>
+      <li className="notificacion-empty">Aquí verás cuándo contesten a tus gritos, comenten en tus foros o te den un mola</li>
     ) : (
       items.map((item) => (
         <NotificacionesItem
-          key={item.cid || item.id || `notif-${Math.random()}`}
+          key={item.id}
           item={item}
           onClick={() => onItemClick(item)}
         />
@@ -24,14 +24,9 @@ const NotificacionesList = ({ items, onItemClick }) => (
 NotificacionesList.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      cid: PropTypes.string,
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      tipo: PropTypes.string,
-      indice: PropTypes.string,
-      entry: PropTypes.object,
-      head: PropTypes.object,
-      parent: PropTypes.object,
-      subtipo: PropTypes.string,
+      id: PropTypes.number,
+      clave: PropTypes.string,
+      titulo: PropTypes.string,
     }),
   ).isRequired,
   onItemClick: PropTypes.func.isRequired,
