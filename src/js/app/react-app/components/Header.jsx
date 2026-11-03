@@ -29,12 +29,7 @@ const Header = ({ head, onMenuClick }) => {
   };
 
   const largeTitle = head?.Titulo || "gritos.com";
-  const smallTitle =
-    head?.INDICE === "ciudadanos"
-      ? head?.Titulo || "gritos.com"
-      : currentForo !== "foroscomun"
-        ? `#${currentForo}`
-        : "gritos.com";
+  const smallTitle = largeTitle;
 
   return (
     <header
