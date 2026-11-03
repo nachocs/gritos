@@ -1,0 +1,176 @@
+// Los gritos como bocadillos de comic (fase 3 del rediseño; todo bajo `.main.d26`).
+// Solo CSS: el grito publicado es `article.msg > .mdl-card` y eso es lo que se vuelve
+// bocadillo. El formulario de gritar (.form-shell) y el de responder (.mini-form) son
+// tambien .mdl-card, pero no hijos directos de article.msg: no se tocan.
+// El pico va en el article, no en la tarjeta, porque la tarjeta lleva overflow:hidden
+// (recorta las imagenes) y lo cortaria.
+.main.d26 .msg-list {
+  --av: 56px; // avatar
+  --av-hueco: 72px; // avatar + separacion: donde empieza el bocadillo
+
+  article.msg {
+    position: relative;
+    padding-left: var(--av-hueco);
+    margin-bottom: 22px;
+    --bub: var(--surface);
+
+    // pico: un triangulo de tinta y, encima, uno del color del bocadillo
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      z-index: 2;
+    }
+    &::before {
+      left: calc(var(--av-hueco) - 14px);
+      top: 18px;
+      border-width: 8px 14px 8px 0;
+      border-color: transparent var(--ink) transparent transparent;
+    }
+    &::after {
+      left: calc(var(--av-hueco) - 9px);
+      top: 21px;
+      border-width: 5px 10px 5px 0;
+      border-color: transparent var(--bub) transparent transparent;
+    }
+
+    > .emocion {
+      left: 0;
+      top: 0;
+      margin: 0;
+      width: var(--av);
+      height: var(--av);
+      border-radius: 4px;
+    }
+
+    > .mdl-card {
+      background: var(--bub);
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      box-shadow: 4px 4px 0 var(--ink);
+      min-height: 0;
+      > .mdl-card__title {
+        margin-left: 0;
+        padding-left: 16px;
+      }
+      // la linea con pico bajo el autor era medio bocadillo: ahora lo es entero
+      .rabito {
+        display: none;
+      }
+      > .mdl-card__supporting-text {
+        font-family:
+          "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+          Georgia, serif;
+        font-size: 1.0625rem;
+        line-height: 1.55;
+      }
+    }
+  }
+
+  // respuestas: bocadillos pequeños, sin sombra, sobre un fondo algo mas oscuro
+  .minimsgs {
+    article.msg {
+      --av: 40px;
+      --av-hueco: 52px;
+      --bub: var(--surface2);
+      margin: 12px 0 0;
+      &::before {
+        top: 12px;
+      }
+      &::after {
+        top: 15px;
+      }
+      > .mdl-card {
+        border-radius: 14px;
+        box-shadow: none;
+        > .mdl-card__supporting-text {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+  .mini-form {
+    margin-left: 52px;
+    margin-top: 10px;
+  }
+}
+
+// «¡Gritar!» con forma de estallido. El boton es el mismo (mismo submit, mismo texto
+// «Grita»): los signos los pone el CSS. La sombra va con filter en el contenedor porque
+// clip-path recortaria un box-shadow; .form-submit solo contiene el boton.
+// ⛔ Con filter, .form-submit (un bloque a todo lo ancho) pasa a pintarse encima de los
+// iconos de camara, emojis y encuesta, que van en position:absolute debajo, y se
+// quedaba sus clics. Por eso deja pasar los clics y solo el boton los recibe.
+.main.d26 .form-shell .form-submit {
+  filter: drop-shadow(3px 3px 0 var(--ink));
+  pointer-events: none;
+  .form-submit-button {
+    pointer-events: auto;
+  }
+}
+.main.d26 .form-shell .form-submit-button.mdl-button {
+  min-height: 56px;
+  height: auto;
+  padding: 0 30px;
+  border-radius: 0;
+  box-shadow: none;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  clip-path: polygon(
+    50% 0%,
+    60.7% 13.5%,
+    77% 7.9%,
+    78.7% 25.1%,
+    95.5% 29.2%,
+    87.6% 44.6%,
+    99.5% 57.1%,
+    84.6% 65.8%,
+    87.8% 82.7%,
+    70.5% 82%,
+    64.1% 98%,
+    50% 88%,
+    35.9% 98%,
+    29.5% 82%,
+    12.2% 82.7%,
+    15.4% 65.8%,
+    0.5% 57.1%,
+    12.4% 44.6%,
+    4.5% 29.2%,
+    21.3% 25.1%,
+    23% 7.9%,
+    39.3% 13.5%
+  );
+  &:not([disabled])::before {
+    content: "¡";
+  }
+  &:not([disabled])::after {
+    content: "!";
+  }
+}
+
+@media (max-width: 680px) {
+  .main.d26 .msg-list {
+    --av: 40px;
+    --av-hueco: 52px;
+    .minimsgs article.msg {
+      --av: 32px;
+      --av-hueco: 42px;
+    }
+    .mini-form {
+      margin-left: 42px;
+    }
+    article.msg > .mdl-card {
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    // en movil la lista va a todo lo ancho: sin margen, el bocadillo tocaba el borde
+    // y su sombra se cortaba
+    padding: 0 8px;
+  }
+  .main.d26 .form-shell .form-submit-button.mdl-button {
+    min-height: 50px;
+    padding: 0 22px;
+  }
+}
