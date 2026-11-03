@@ -1,0 +1,174 @@
+// Tema de gritos: misma familia que d26 (dreamers.es) y frikis.com, con identidad propia.
+// Papel verdoso, cabecera verde bosque con trama de vineta y filete lima, marcador lima.
+// Contraste AA medido en claro y oscuro (el minimo, --edge sobre --surface en oscuro, 5,1:1).
+// El modo oscuro sigue al sistema; el interruptor llegara con la cabecera nueva (fase 2).
+//
+// Este fichero va AL FINAL de main.less: sus reglas pisan las de MDL y las de main.less que
+// ponian colores a pelo. Las variables se usan tambien dentro de main.less (var(--...)).
+:root {
+  --paper: #f0f5ee;
+  --surface: #fff;
+  --surface2: #e3ece0;
+  --campo: #fafafa; // fondo de los campos de texto
+  --sel: #d8fdcf; // opcion elegida en una encuesta
+  --ink: #0f1a14;
+  --muted: #46564c;
+  --rule: #cfdccb;
+  --edge: #5f7366;
+  --link: #0a6a3f;
+  --mast: #0d3b26;
+  --on-mast: #eef6ea;
+  --hi: #c6f135;
+  --on-hi: #0f1a14;
+  --focus: #0a6a3f;
+  --c-red: #b3261e;
+  --font-ui:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+}
+.tema-oscuro() {
+  --paper: #0a110d;
+  --surface: #111b15;
+  --surface2: #18251d;
+  --campo: #18251d;
+  --sel: #24401f;
+  --ink: #e9f3ec;
+  --muted: #a6b8ac;
+  --rule: #24362b;
+  --edge: #7f988a;
+  --link: #8fe3b0;
+  --mast: #06140d;
+  --on-mast: #e9f3ec;
+  --focus: #8fe3b0;
+  --c-red: #ff8a80;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    .tema-oscuro();
+  }
+}
+:root[data-theme="dark"] {
+  .tema-oscuro();
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+::selection {
+  background: var(--hi);
+  color: var(--on-hi);
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+// cabecera: trama de puntos de vineta y filete lima (sombra interior: no cambia la altura)
+.main .mdl-layout__header:not(.ciudadano) {
+  background-image: radial-gradient(
+    rgba(198, 241, 53, 0.15) 1.2px,
+    transparent 1.7px
+  );
+  background-size: 9px 9px;
+}
+.main .mdl-layout__header {
+  box-shadow:
+    inset 0 -4px 0 var(--hi),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  // el alias (enlace) heredaba el marron de `.main a`: 2,3:1 sobre el verde
+  .login-view > a {
+    color: var(--on-mast);
+  }
+  // en el muro (rojo) el texto claro del tema daba 4,1:1; con blanco, 4,6:1
+  &.ciudadano .login-view > a,
+  &.ciudadano .login-view > span {
+    color: #fff;
+  }
+}
+
+// superficies y texto de MDL
+.mdl-layout__content {
+  background-color: var(--paper);
+}
+.mdl-card {
+  background: var(--surface);
+  color: var(--ink);
+}
+.mdl-layout__drawer {
+  background: var(--surface);
+  color: var(--ink);
+  border-right-color: var(--rule);
+  .mdl-navigation .mdl-navigation__link {
+    color: var(--muted); // MDL: rgb(117,117,117) sobre #fafafa, 4,4:1
+    &:hover {
+      background-color: var(--surface2);
+      color: var(--ink);
+    }
+  }
+}
+// autor y fecha de cada grito: MDL los pone en negro y rgba(0,0,0,.54), ilegibles en oscuro
+.mdl-card__title-text {
+  color: var(--ink);
+}
+.mdl-card__subtitle-text {
+  color: var(--muted);
+}
+.mdl-chip {
+  background-color: var(--surface2);
+  color: var(--ink);
+}
+.mdl-textfield__input {
+  color: var(--ink);
+  border-bottom-color: var(--edge);
+}
+.mdl-textfield__label {
+  color: var(--muted); // MDL: rgba(0,0,0,.26), 1,9:1
+  &::after {
+    background-color: var(--link);
+  }
+}
+.mdl-textfield--floating-label.is-focused .mdl-textfield__label,
+.mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
+  color: var(--link);
+}
+.mdl-button {
+  color: var(--ink);
+}
+// los botones de accion (GRITA, el «+») eran rojo MDL con blanco, 3,2:1: pasan al lima
+// (MDL duplica la clase para ganar: `.mdl-button--accent.mdl-button--accent.mdl-button--raised`)
+.mdl-button.mdl-button--accent.mdl-button--accent.mdl-button--raised,
+.mdl-button.mdl-button--accent.mdl-button--accent.mdl-button--fab,
+.mdl-button.mdl-button--colored.mdl-button--colored.mdl-button--fab {
+  background: var(--hi);
+  color: var(--on-hi);
+  &:hover,
+  &:focus:not(:active) {
+    background: var(--hi);
+  }
+}
+// desactivado: MDL usa negro al 26 % sobre negro al 12 %, invisible en oscuro
+.mdl-button.mdl-button--raised[disabled] {
+  background-color: var(--surface2);
+  color: var(--muted);
+}
+.mdl-badge[data-badge]::after {
+  background: var(--c-red);
+  color: #fff;
+}
+
+// los avatares (Mr. Dreamy) son dibujos de linea sobre transparente: en oscuro perdian
+// los trazos. En claro no cambia nada (la tarjeta ya es blanca).
+.msg .emocion {
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+// enlaces dentro del texto de un grito: marcador al pasar, como en d26
+.msg .mdl-card__supporting-text a:hover {
+  background: var(--hi);
+  color: var(--on-hi);
+}
