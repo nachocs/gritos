@@ -1,6 +1,7 @@
 import useDiseno, { _reiniciarDiseno } from "../useDiseno";
 
-// ?diseno=26 enciende el diseño nuevo y se queda guardado; ?diseno=0 lo apaga.
+// El diseño nuevo es el de todos; ?diseno=0 vuelve al de siempre y se queda
+// guardado; ?diseno=26 deshace esa eleccion.
 describe("useDiseno", () => {
   const visitar = (search) => {
     window.history.replaceState({}, "", `/comic${search}`);
@@ -10,18 +11,18 @@ describe("useDiseno", () => {
 
   beforeEach(() => window.localStorage.clear());
 
-  it("sin nada, el diseño de siempre", () => {
-    expect(visitar("")).toBe(false);
-  });
-
-  it("?diseno=26 lo enciende y se recuerda en la siguiente visita", () => {
-    expect(visitar("?diseno=26")).toBe(true);
+  it("sin nada, el diseño nuevo", () => {
     expect(visitar("")).toBe(true);
   });
 
-  it("?diseno=0 lo apaga", () => {
-    visitar("?diseno=26");
+  it("?diseno=0 vuelve al de siempre y se recuerda en la siguiente visita", () => {
     expect(visitar("?diseno=0")).toBe(false);
     expect(visitar("")).toBe(false);
+  });
+
+  it("?diseno=26 deshace la vuelta atras", () => {
+    visitar("?diseno=0");
+    expect(visitar("?diseno=26")).toBe(true);
+    expect(visitar("")).toBe(true);
   });
 });
