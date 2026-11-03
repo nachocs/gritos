@@ -1,3 +1,4 @@
+import { decode } from "html-entities";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import useJsonSearch from "../hooks/useJsonSearch";
@@ -23,10 +24,12 @@ const VotacionesThumbnail = ({ foro }) => {
   if (!poll.comments) {
     return null;
   }
-  const preview =
-    poll.comments.length > 50
-      ? `${poll.comments.substring(0, 50)}...`
-      : poll.comments;
+  // `comments` llega como HTML del motor (entidades y etiquetas): cortarlo en
+  // crudo mostraba «C&oacute;mic <div>Titulado:». Primero a texto, luego se corta.
+  const texto = decode(poll.comments.replace(/<[^>]*>/g, " "))
+    .replace(/\s+/g, " ")
+    .trim();
+  const preview = texto.length > 50 ? `${texto.substring(0, 50)}...` : texto;
 
   return (
     <div className="votaciones-thumbnail section-container right-block">

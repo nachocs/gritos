@@ -9,7 +9,14 @@ import { useState } from "react";
 // scans once on DOMContentLoaded, before React mounts). Without them the label
 // stays parked at its resting position on top of whatever the user types.
 // Reproducing the two classes in React is the whole of the behaviour.
-const MdlTextfield = ({ id, label, type, value, onChange, disabled }) => {
+const MdlTextfield = ({
+  id,
+  label,
+  type = "text",
+  value,
+  onChange,
+  disabled = false,
+}) => {
   const [focused, setFocused] = useState(false);
 
   return (
@@ -42,11 +49,6 @@ MdlTextfield.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-};
-
-MdlTextfield.defaultProps = {
-  type: "text",
-  disabled: false,
 };
 
 export default MdlTextfield;

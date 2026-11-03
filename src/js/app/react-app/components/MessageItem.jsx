@@ -86,7 +86,13 @@ const getTags = (message) => {
 const shareUrl = (message) =>
   `https://gritos.com/${(message.INDICE || "").replace(/^gritos\//, "")}/${message.ID}`;
 
-const MessageItem = ({ message, currentForo, head, showForm, forceThread }) => {
+const MessageItem = ({
+  message,
+  currentForo = "foroscomun",
+  head = null,
+  showForm = true,
+  forceThread = false,
+}) => {
   const { user } = useUser();
   // Card-local copy so votes/edits update in place (legacy re-rendered the
   // view off its own model); re-synced whenever the list refreshes the prop.
@@ -510,11 +516,5 @@ MessageItem.propTypes = {
   forceThread: PropTypes.bool,
 };
 
-MessageItem.defaultProps = {
-  currentForo: "foroscomun",
-  head: null,
-  showForm: true,
-  forceThread: false,
-};
 
 export default MessageItem;

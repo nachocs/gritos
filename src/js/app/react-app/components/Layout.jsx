@@ -73,6 +73,23 @@ const Layout = () => {
     : currentForo === "foroscomun"
       ? null
       : currentForo;
+  // El «+» solo baja hasta el compositor (o, sin sesion, abre el login). Mientras
+  // el compositor se ve en pantalla sobra, y en movil tapaba el campo de
+  // respuesta del primer hilo: se esconde. Solo se mira desde fuera, sin tocar
+  // FormShell.
+  const [composerVisible, setComposerVisible] = useState(false);
+  useEffect(() => {
+    const el = formSectionRef.current;
+    if (!user?.uid || !el || typeof IntersectionObserver === "undefined") {
+      setComposerVisible(false);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(([entry]) =>
+      setComposerVisible(entry.isIntersecting),
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [user?.uid, isGallery]);
   // Legacy mainView.newMsg(): scroll to the composer when logged in, otherwise
   // pop the header's login menu open so the visitor can sign in first.
   const scrollToForm = useCallback(() => {
@@ -139,11 +156,19 @@ const Layout = () => {
               <div className="msg-list">{!isGallery && <Outlet />}</div>
               {!isGallery && (
                 <button
-                  className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg"
+                  className={`mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored new-msg${
+                    composerVisible ? " new-msg-oculto" : ""
+                  }`}
                   type="button"
                   onClick={scrollToForm}
+                  aria-label={
+                    user?.uid ? "Escribir un grito" : "Entra para gritar"
+                  }
+                  title={user?.uid ? "Escribir un grito" : "Entra para gritar"}
                 >
-                  <i className="material-icons">add</i>
+                  <i className="material-icons" aria-hidden="true">
+                    add
+                  </i>
                 </button>
               )}
             </div>

@@ -6,7 +6,7 @@ import { decodeBody } from "../utils/apiFetch";
 import { useForm, useUser } from "../hooks/useContexts";
 import { closeModal } from "../utils/modalEvents";
 
-const DreamysModal = ({ uploadAvailable, formModel }) => {
+const DreamysModal = ({ uploadAvailable = false, formModel = null }) => {
   const { user, saveUser } = useUser();
   const { submitMessage } = useForm();
   const [personalDreamys, setPersonalDreamys] = useState([]);
@@ -201,9 +201,5 @@ DreamysModal.propTypes = {
   }),
 };
 
-DreamysModal.defaultProps = {
-  uploadAvailable: false,
-  formModel: null,
-};
 
 export default DreamysModal;

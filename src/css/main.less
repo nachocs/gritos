@@ -58,12 +58,31 @@ span[data-link] {
     }
   }
 }
+// Cabecera en el verde bosque de la identidad nueva de gritos: el lima de MDL
+// (rgb(139,195,74)) con el titulo en blanco daba 2,1:1 de contraste; este, 11,4:1.
+// El muro de un ciudadano sigue en rojo: `.main header.ciudadano` es mas especifico.
+@cabecera: #0d3b26;
+@sobre-cabecera: #eef6ea;
+@verde-texto: #0a6a3f; // verde legible sobre blanco (6,7:1), en lugar del lima de MDL
+.main .mdl-layout__header {
+  background-color: @cabecera;
+  color: @sobre-cabecera;
+  .mdl-layout__drawer-button,
+  .mdl-layout__header-row .mdl-navigation__link,
+  .login-menu-button {
+    color: @sobre-cabecera;
+  }
+  // los desplegables cuelgan de la cabecera y heredarian el texto claro
+  ul.login-menu,
+  .notificaciones-collection-view {
+    color: rgb(66, 66, 66);
+  }
+}
 div.titulo {
   font-family: newdreamers;
   // text-transform: lowercase;
   font-size: xx-large;
   font-weight: bold;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.32);
   color: white;
   width: 80%;
   text-align: center;
@@ -76,6 +95,29 @@ div.titulo {
   a {
     text-decoration: none;
     color: white;
+  }
+}
+// En movil el titulo a xx-large (32px) no cabia: «Videojuegos a Gritos» perdia la V
+// bajo el boton del menu (absoluto, 52px) y el final por la elipsis, y con sesion la
+// campana se le montaba encima. Ahora encoge con la pantalla y cede sitio a la campana.
+@media (max-width: 1024px) {
+  // la fila es hija de una columna flex: sin esto mide lo que el titulo entero
+  // (439px a 375) y la campana y la cuenta se salen por la derecha
+  .main .mdl-layout__header-row {
+    min-width: 0;
+  }
+  div.titulo {
+    font-size: clamp(1.125rem, 5vw, 1.75rem);
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+    padding-left: 0;
+    padding-right: 8px;
+  }
+}
+@media (max-width: 680px) {
+  div.titulo {
+    padding-left: 56px;
   }
 }
 .main {
@@ -116,6 +158,27 @@ div.titulo {
     z-index: 2;
     bottom: 20px;
     right: 20px;
+    transition:
+      opacity 0.2s,
+      transform 0.2s,
+      visibility 0.2s;
+    // con el compositor a la vista (Layout.jsx)
+    &.new-msg-oculto {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.6);
+    }
+  }
+}
+// en movil, mas pequeno y por encima de la barra del sistema: el de 56px tapaba el
+// campo de respuesta y los botones de mola
+@media (max-width: 680px) {
+  .content button.new-msg {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   }
 }
 .foro-description {
@@ -283,9 +346,19 @@ div.titulo {
         }
       }
     }
+    // antes `display: table`: en movil unas etiquetas largas («@Dremia#videojuegos»)
+    // mas los botones de mola no cabian, la pagina medía 439px a 375 y hasta la
+    // cabecera fija se maquetaba a ese ancho (por eso se cortaba el titulo)
     .foot {
-      display: table;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
       width: 100%;
+      .tags {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
       .mola-view {
         text-align: right;
         margin: 0px 10px;
@@ -319,13 +392,18 @@ div.titulo {
         }
       }
       .tags {
-        padding: 10px;
+        // 16px como el texto del grito (con 10px quedaban 6px a la izquierda)
+        padding: 10px 16px;
         text-decoration: none;
         display: table-cell;
         font-size: 10pt;
         color: rgb(119, 122, 153);
         a {
           text-decoration: none;
+        }
+        // salian pegadas: «#invisibles#avengers#comic»
+        a + a {
+          margin-left: 0.6em;
         }
       }
     }
@@ -1078,6 +1156,24 @@ div[contenteditable="true"]:empty:before {
     padding: 0;
   }
 }
+// MDL pone `opacity:.87` a todo `.mdl-navigation__link`, y la campana y el menu de
+// entrar cuelgan de uno: los paneles salian translucidos y la pagina se leia a traves.
+.mdl-navigation__link.notificaciones-view,
+.mdl-navigation__link.login-view {
+  opacity: 1;
+}
+// en movil el panel de 300px, anclado a la campana, se salia por la derecha
+@media (max-width: 680px) {
+  // `.main` para ganar a la regla base de mas abajo (width: 300px; right: 0)
+  .main .notificaciones-view .notificaciones-collection-view {
+    position: fixed;
+    top: 56px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  }
+}
 .notificaciones-view {
   .notis-icon {
     opacity: 0.5;
@@ -1094,6 +1190,9 @@ div[contenteditable="true"]:empty:before {
     right: 0;
     // solo la LISTA se desplaza; «Activar avisos» y el pie quedan siempre a la vista (con 20 avisos en la lista el boton quedaba debajo, fuera de la vista)
     max-height: min(480px, 85vh);
+    // sin fondo propio, entre la lista y «Activar avisos» quedaba una franja por
+    // la que se veia la pagina
+    background-color: white;
     &.active {
       display: flex;
       flex-direction: column;
@@ -1179,12 +1278,26 @@ div[contenteditable="true"]:empty:before {
     opacity: 0.8;
   }
 }
+.avisos-dispositivo .mdl-button--colored {
+  color: @verde-texto; // el lima de MDL sobre blanco daba 2,1:1
+}
 .seguir-foro {
   margin: 4px 0 0;
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  // antes era texto en mayusculas sin borde: no parecia un boton
+  .mdl-button {
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    text-transform: none;
+    font-weight: 700;
+    color: rgb(66, 66, 66);
+    &.seguir-foro-on {
+      color: @verde-texto;
+    }
+  }
   .seguir-foro-msg {
     font-size: 12px;
     opacity: 0.8;
@@ -1644,22 +1757,28 @@ h6.resumen-subheader {
     }
   }
 }
+// Por debajo de 1140px la barra era `position:absolute` y sus dos botones flotaban
+// encima de la descripcion del foro (y de la cabecera del muro). Ahora es una fila
+// normal encima del contenido: solo los rotulos «Galeria» y «Votaciones».
 @media (max-width: 1140px) {
-  .right-side {
-    position: absolute;
-    display: block;
-    right: 0;
-    z-index: 2;
-    // width: 50px;
-    // height: 30px;
-    overflow: hidden;
+  // `aside.` para ganar a las reglas generales de `.right-side` de mas abajo (margin: 20px)
+  aside.right-side {
+    position: static;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 800px;
+    margin: 12px auto 0;
+    padding: 0 8px;
     .right-block {
       max-height: 26px;
       overflow: hidden;
+      margin: 0;
     }
     .gallery-thumbnail,
     .votaciones-thumbnail {
       min-height: initial;
+      margin: 0;
     }
   }
 }
@@ -1762,3 +1881,16 @@ h6.resumen-subheader {
 }
 
 // Modal Root styles for React modals
+
+// Miga «← Foro» encima de un grito suelto (MessageDetail)
+.main .volver-foro {
+  margin: 0 0 8px;
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
+    font-weight: 700;
+    color: @verde-texto;
+  }
+}

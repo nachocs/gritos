@@ -32,7 +32,7 @@ describe("LoginStatus Component", () => {
   it("renders the logged-out affordance with the menu hidden", () => {
     const { container } = renderWithProviders();
 
-    expect(screen.getByText("Log In")).toBeInTheDocument();
+    expect(screen.getByText("Entrar", { selector: "span" })).toBeInTheDocument();
     expect(menu(container)).toHaveClass("hidden");
   });
 
@@ -70,7 +70,7 @@ describe("LoginStatus Component", () => {
     fireEvent.change(screen.getByLabelText(/Alias\/email/i), {
       target: { value: "testuser" },
     });
-    fireEvent.change(screen.getByLabelText(/Password/i), {
+    fireEvent.change(screen.getByLabelText(/Contraseña/i), {
       target: { value: "password123" },
     });
     fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
@@ -97,7 +97,7 @@ describe("LoginStatus Component", () => {
     const { container } = renderWithProviders();
     fireEvent.click(toggle(container));
 
-    fireEvent.click(screen.getByText(/Regístrate \/ Sign Up/i));
+    fireEvent.click(screen.getByText("Regístrate"));
 
     expect(
       screen.getByRole("heading", { name: /Regístrate/i }),

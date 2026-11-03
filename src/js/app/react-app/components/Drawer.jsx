@@ -6,7 +6,7 @@ import ResumenNav from "./ResumenNav";
 // The "privacidad / legal" link legacy pins at the bottom lives in ResumenNav,
 // matching legacy's split (mainView-t.html owns the title, resumenView-t.html
 // the nav and the link).
-const Drawer = ({ open, head }) => (
+const Drawer = ({ open = false, head = null }) => (
   <div className={`mdl-layout__drawer${open ? " is-visible" : ""}`}>
     {/* Legacy mainView-t.html renders `<%= obj.Titulo %>` here — the current
         head's title, not a constant. It was hard-coded to "Gritos.com", so the
@@ -23,11 +23,6 @@ Drawer.propTypes = {
   head: PropTypes.shape({
     Titulo: PropTypes.string,
   }),
-};
-
-Drawer.defaultProps = {
-  open: false,
-  head: null,
 };
 
 export default Drawer;

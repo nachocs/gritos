@@ -11,7 +11,7 @@ import { useState } from "react";
 // `open`/`onToggleOpen` are controlled by the parent because legacy makes the
 // tag list and the emoji picker mutually exclusive: toggleTags() calls
 // showEmojisIn(false) and showEmojis() calls toggleTagsIn(false).
-const TagsEditor = ({ tags, onChange, open, onToggleOpen }) => {
+const TagsEditor = ({ tags, onChange, open = false, onToggleOpen }) => {
   const [draft, setDraft] = useState("");
   const list = tags ? tags.split(",").filter(Boolean) : [];
 
@@ -93,10 +93,6 @@ TagsEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   open: PropTypes.bool,
   onToggleOpen: PropTypes.func.isRequired,
-};
-
-TagsEditor.defaultProps = {
-  open: false,
 };
 
 export default TagsEditor;

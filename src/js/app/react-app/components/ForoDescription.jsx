@@ -16,7 +16,7 @@ import PropTypes from "prop-types";
  *  - foro with a header image: text overlaid on the image.
  *  - foro without one: a plain card. Rendered only when there is intro text.
  */
-const ForoDescription = ({ head, isWall }) => {
+const ForoDescription = ({ head, isWall = false }) => {
   const introHtml = head?.comments || head?.INTRODUCCION || "";
   const backgroundImage = head?.IMAGEN0_URL
     ? { backgroundImage: `url('${head.IMAGEN0_URL}')` }
@@ -92,10 +92,6 @@ ForoDescription.propTypes = {
     Titulo: PropTypes.string,
   }),
   isWall: PropTypes.bool,
-};
-
-ForoDescription.defaultProps = {
-  isWall: false,
 };
 
 export default ForoDescription;

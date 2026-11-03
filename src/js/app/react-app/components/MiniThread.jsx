@@ -47,7 +47,7 @@ const minEntry = (batch) => {
  * more actually existed. New replies arrive over the `collection:<INDICE>/
  * <ID>` socket room.
  */
-const MiniThread = ({ message, forceLoad }) => {
+const MiniThread = ({ message, forceLoad = false }) => {
   const room = `${message.INDICE}/${message.ID}`;
   // Legacy only builds the thread when the list entry says it has minis
   // (`minimsgs` attribute) — except on the detail page, which always loads.
@@ -182,8 +182,5 @@ MiniThread.propTypes = {
   forceLoad: PropTypes.bool,
 };
 
-MiniThread.defaultProps = {
-  forceLoad: false,
-};
 
 export default MiniThread;

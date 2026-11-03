@@ -52,11 +52,12 @@ const NotificacionesButton = () => {
     return null;
   }
 
-  // Legacy notificacionesView-t.html renders the trigger as the 36px `public`
-  // material glyph carrying an MDL badge for the unread count — not a text
-  // label. Rendering the word "Notificaciones" was both wrong visually and
-  // wide enough to squeeze the foro title out of the mobile header. `.notis-icon`
-  // is styled opacity .5, going to 1 + pointer once `active`.
+  // Legacy notificacionesView-t.html renders the trigger as a 36px material
+  // glyph carrying an MDL badge for the unread count — not a text label.
+  // Rendering the word "Notificaciones" was both wrong visually and wide enough
+  // to squeeze the foro title out of the mobile header. Legacy's glyph was
+  // `public` (a globe), which nobody reads as "avisos": it is the bell now.
+  // `.notis-icon` is styled opacity .5, going to 1 + pointer once `active`.
   return (
     <div
       className="mdl-navigation__link notificaciones-view"
@@ -72,7 +73,7 @@ const NotificacionesButton = () => {
         onClick={togglePanel}
         onKeyDown={(e) => e.key === "Enter" && togglePanel()}
       >
-        public
+        notifications
       </div>
       <div
         className={`notificaciones-collection-view${open ? " active" : ""}`}

@@ -158,7 +158,7 @@ const LoginStatus = () => {
             >
               <i className="material-icons">exit_to_app</i>
             </button>
-            <span>Log Out</span>
+            <span>Salir</span>
           </li>
         </ul>
       </>
@@ -167,13 +167,16 @@ const LoginStatus = () => {
 
   return (
     <>
-      <span className="mdl-layout--large-screen-only">Log In</span>
+      <span className="mdl-layout--large-screen-only">Entrar</span>
       <button
         type="button"
         className="login-menu-button mdl-button mdl-js-button mdl-button--icon"
         onClick={toggleMenu}
+        aria-label="Menú de la cuenta"
       >
-        <i className="material-icons">power_settings_new</i>
+        <i className="material-icons" aria-hidden="true">
+          power_settings_new
+        </i>
       </button>
 
       <ul
@@ -188,7 +191,7 @@ const LoginStatus = () => {
           />
           <MdlTextfield
             id="loginPassword"
-            label="Password"
+            label="Contraseña"
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -198,7 +201,7 @@ const LoginStatus = () => {
             className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
             id="loginSubmit"
           >
-            entrar
+            Entrar
           </button>
         </form>
         <div className={`error-login${error ? " active" : ""}`}>{error}</div>
@@ -209,7 +212,7 @@ const LoginStatus = () => {
             onClick={openSignUp}
           >
             <i className="fa fa-sign-in fa-lg" aria-hidden="true" />
-            <span>Regístrate / Sign Up</span>
+            <span>Regístrate</span>
           </button>
         </div>
         {/* Aqui estaba el boton "Facebook Log In/Sign Up". Graph API v2.7,

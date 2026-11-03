@@ -5,7 +5,7 @@ import UserItem from "./UserItem";
  * Renders the list of users.
  * Migrated from legacy main/userList/userListView.js.
  */
-const UserList = ({ users, head }) => (
+const UserList = ({ users = [], head = "" }) => (
   <div className="user-list">
     {head && (
       <div className="user-list-head">
@@ -27,11 +27,6 @@ const UserList = ({ users, head }) => (
 UserList.propTypes = {
   users: PropTypes.array,
   head: PropTypes.string,
-};
-
-UserList.defaultProps = {
-  users: [],
-  head: "",
 };
 
 export default UserList;

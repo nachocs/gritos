@@ -23,7 +23,7 @@ const altFor = (unicode) => {
   return `&#x${unicode};`;
 };
 
-const Emoji = ({ unicode, shortname, className, ...rest }) => {
+const Emoji = ({ unicode, shortname = "", className = "", ...rest }) => {
   const src = `${EMOJIS_URL}${unicode}.svg`;
 
   return (
@@ -41,11 +41,6 @@ Emoji.propTypes = {
   unicode: PropTypes.string.isRequired,
   shortname: PropTypes.string,
   className: PropTypes.string,
-};
-
-Emoji.defaultProps = {
-  shortname: "",
-  className: "",
 };
 
 export default Emoji;

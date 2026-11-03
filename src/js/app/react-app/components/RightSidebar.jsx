@@ -11,7 +11,7 @@ import VotacionesThumbnail from "./VotacionesThumbnail";
 // and otherwise hides *just the thumbnail for the view you're already on* —
 // the gallery page keeps the Votaciones teaser, the votaciones page keeps the
 // Galería thumbnail. Previously the whole sidebar was hidden on /gallery.
-const RightSidebar = ({ foro, isGallery, isVotaciones }) => {
+const RightSidebar = ({ foro, isGallery = false, isVotaciones = false }) => {
   if (!foro) {
     return null;
   }
@@ -28,11 +28,6 @@ RightSidebar.propTypes = {
   foro: PropTypes.string,
   isGallery: PropTypes.bool,
   isVotaciones: PropTypes.bool,
-};
-
-RightSidebar.defaultProps = {
-  isGallery: false,
-  isVotaciones: false,
 };
 
 export default RightSidebar;
