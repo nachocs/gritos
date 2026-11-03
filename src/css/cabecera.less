@@ -1,0 +1,364 @@
+// Cabecera del diseño nuevo (Cabecera.jsx, ?diseno=26). Todo va bajo `.main.d26`: con
+// el diseño de siempre no se aplica nada de aqui.
+// Alturas: fila de 64px (56 en movil) + pestañas de 44 (no hay en la portada) + 4 de filete.
+.main.d26 {
+  --cab-fila: 64px;
+  --cab-pest: 0px;
+  --cab-h: calc(var(--cab-fila) + var(--cab-pest) + 4px);
+  &.d26--pestanas {
+    --cab-pest: 44px;
+  }
+  @media (max-width: 680px) {
+    --cab-fila: 56px;
+  }
+
+  .mdl-layout__content {
+    margin-top: var(--cab-h);
+  }
+}
+
+.cab26 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3; // como la de MDL: el cajon (5) y su velo (4) quedan por encima
+  background-color: var(--mast);
+  background-image: radial-gradient(
+    rgba(198, 241, 53, 0.15) 1.2px,
+    transparent 1.7px
+  );
+  background-size: 9px 9px;
+  border-bottom: 4px solid var(--hi);
+  color: var(--on-mast);
+  font-family: var(--font-ui);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  // el muro de un ciudadano conserva su rojo de siempre
+  &.cab26--muro {
+    background-color: rgb(195, 80, 74);
+    background-image: none;
+    --on-mast: #fff; // con el claro del tema daba 4,1:1 sobre el rojo
+    .cab26-foro small {
+      color: #fff;
+    }
+  }
+  a {
+    color: var(--on-mast);
+    text-decoration: none;
+  }
+}
+
+.cab26-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--cab-fila);
+  padding: 0 16px;
+}
+
+.cab26-ico {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid rgba(238, 246, 234, 0.4);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--on-mast);
+  cursor: pointer;
+  svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  &:hover {
+    background: var(--hi);
+    border-color: var(--hi);
+    color: var(--on-hi);
+  }
+  &:focus-visible {
+    outline: 3px solid var(--hi);
+    outline-offset: 2px;
+  }
+}
+
+.cab26 .cab26-marca {
+  flex: none;
+  font-family: newdreamers, var(--font-ui);
+  font-size: 2rem;
+  line-height: 1;
+  padding-bottom: 4px;
+  color: var(--on-mast);
+  b {
+    color: var(--hi);
+    font-weight: 400;
+  }
+  &:hover {
+    color: var(--on-mast);
+  }
+}
+
+.cab26-foro {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 1px solid rgba(238, 246, 234, 0.2);
+  line-height: 1.2;
+  small {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hi);
+  }
+  a {
+    font-size: 1.125rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.cab26-lema {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding-left: 14px;
+  border-left: 1px solid rgba(238, 246, 234, 0.2);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cab26-herr {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+// la campana (NotificacionesButton, el mismo componente que en Header)
+.cab26 .notificaciones-view {
+  position: relative;
+  padding: 0;
+  line-height: normal;
+  .notis-icon {
+    font-size: 24px !important; // el componente pone 36px en linea
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 0;
+    border: 2px solid rgba(238, 246, 234, 0.4);
+    border-radius: 4px;
+    color: var(--on-mast);
+    &:hover {
+      background: var(--hi);
+      border-color: var(--hi);
+      color: var(--on-hi);
+    }
+    &[data-badge]::after {
+      top: -8px;
+      right: -8px;
+    }
+  }
+  .notificaciones-collection-view {
+    top: calc(100% + 12px);
+    right: 0;
+    width: 360px;
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 18px 30px -14px rgba(0, 0, 0, 0.55);
+    color: var(--ink);
+  }
+}
+
+// la cuenta (LoginStatus, el mismo componente que en Header)
+.cab26 .cab26-cuenta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  > a {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+  }
+  > span {
+    font-weight: 700;
+  }
+  .dreamy {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+  .login-menu-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border: 2px solid rgba(238, 246, 234, 0.4);
+    border-radius: 4px;
+    color: var(--on-mast);
+    &:hover {
+      background: var(--hi);
+      border-color: var(--hi);
+      color: var(--on-hi);
+    }
+  }
+  ul.login-menu {
+    top: calc(100% + 12px);
+    right: 0;
+    margin: 0;
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    color: var(--ink);
+  }
+}
+
+// Gritos · Galería · Votaciones
+.cab26-pestanas {
+  display: flex;
+  gap: 2px;
+  height: 44px;
+  padding: 0 8px;
+  border-top: 1px solid rgba(238, 246, 234, 0.16);
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.cab26 .cab26-pestana {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  &:hover {
+    background: var(--hi);
+    color: var(--on-hi);
+  }
+  // el filete lima ya esta debajo: la activa va en lima y con fondo
+  &.on {
+    color: var(--hi);
+    background: rgba(238, 246, 234, 0.1);
+  }
+}
+.cab26--muro .cab26-pestana.on {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 3px;
+}
+
+// el interruptor de tema, dentro del cajon (en movil no cabe en la cabecera)
+.cajon-tema {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 40px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  .cab26-ico {
+    border-color: var(--edge);
+    color: var(--ink);
+  }
+}
+
+// En pantallas anchas la lista de foros queda fija a la izquierda, bajo la cabecera,
+// en el hueco que dejaba libre la columna de 800px: sin boton de menu ni velo.
+@media (min-width: 1360px) {
+  .main.d26 {
+    .cab26-menu {
+      display: none;
+    }
+    .mdl-layout__drawer {
+      top: var(--cab-h);
+      height: calc(100% - var(--cab-h));
+      transform: none;
+      visibility: visible;
+      box-shadow: none;
+      z-index: 2;
+      > .mdl-layout-title {
+        display: none;
+      }
+    }
+    .mdl-layout__obfuscator {
+      display: none;
+    }
+    // el contenido empieza despues de la lista: la columna de 800px queda centrada en
+    // el resto, y la galeria (a todo lo ancho) ya no se mete debajo
+    .mdl-layout__content {
+      padding-left: 240px;
+    }
+  }
+}
+
+@media (max-width: 680px) {
+  .cab26-fila {
+    gap: 8px;
+    padding: 0 8px;
+  }
+  .cab26 .cab26-marca {
+    font-size: 1.75rem;
+    span {
+      display: none; // solo la «g»
+    }
+  }
+  .cab26-foro {
+    padding-left: 10px;
+    a {
+      font-size: 1rem;
+    }
+  }
+  .cab26-lema {
+    display: none;
+  }
+  .cab26-herr {
+    gap: 6px;
+    > .cab26-tema {
+      display: none;
+    }
+  }
+  .cajon-tema {
+    display: flex;
+  }
+  .cab26 .cab26-cuenta {
+    > a .alias-principal {
+      display: none;
+    }
+    ul.login-menu {
+      position: fixed;
+      top: calc(var(--cab-h) + 4px);
+      left: 8px;
+      right: 8px;
+      width: auto;
+    }
+  }
+  .main.d26 .notificaciones-view .notificaciones-collection-view {
+    top: calc(var(--cab-h) + 4px);
+    width: auto;
+  }
+}

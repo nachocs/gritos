@@ -2,11 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import ScrollRootContext from "../contexts/ScrollRootContext";
 import { useUser } from "../hooks/useContexts";
+import useDiseno from "../hooks/useDiseno";
 import useHead from "../hooks/useHead";
 import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
 import { claveForo } from "../utils/avisosApi";
 import AvisosBanner from "./AvisosBanner";
+import Cabecera from "./Cabecera";
 import Drawer from "./Drawer";
 import ForoAdmin from "./ForoAdmin";
 import ForoDescription from "./ForoDescription";
@@ -15,6 +17,7 @@ import Header from "./Header";
 import ModalRoot from "./ModalRoot";
 import RightSidebar from "./RightSidebar";
 import SeguirForoButton from "./SeguirForoButton";
+import TemaToggle from "./TemaToggle";
 import UserListPopup from "./UserListPopup";
 
 // Rendered as the element of a layout <Route> wrapping every other route (see
@@ -30,6 +33,7 @@ const Layout = () => {
   const { foro, id } = useParams();
   const { pathname } = useLocation();
   const { user } = useUser();
+  const diseno26 = useDiseno();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Close the drawer whenever navigation happens (clicking a foro in the
@@ -111,7 +115,13 @@ const Layout = () => {
   // The previous `main-shell` class matched no CSS at all, so all of that
   // silently never applied.
   return (
-    <div className="main">
+    <div
+      className={`main${diseno26 ? " d26" : ""}${
+        diseno26 && !(currentForo === "foroscomun" && !isWall)
+          ? " d26--pestanas"
+          : ""
+      }`}
+    >
       <div className="modal-view">
         <ModalRoot />
       </div>
@@ -125,8 +135,28 @@ const Layout = () => {
           isSmallScreen ? " is-small-screen" : ""
         }`}
       >
-        <Header head={head} onMenuClick={() => setDrawerOpen(true)} />
-        <Drawer open={drawerOpen} head={head} />
+        {diseno26 ? (
+          <Cabecera
+            head={head}
+            currentForo={currentForo}
+            esMuro={isWall}
+            base={isWall ? `ciudadanos/${id}` : currentForo}
+            isGallery={isGallery}
+            isVotaciones={isVotaciones}
+            drawerOpen={drawerOpen}
+            onMenuClick={() => setDrawerOpen((abierto) => !abierto)}
+          />
+        ) : (
+          <Header head={head} onMenuClick={() => setDrawerOpen(true)} />
+        )}
+        <Drawer open={drawerOpen} head={head}>
+          {diseno26 && (
+            <div className="cajon-tema">
+              <TemaToggle />
+              <span>Tema claro u oscuro</span>
+            </div>
+          )}
+        </Drawer>
         <div
           className={`mdl-layout__obfuscator${drawerOpen ? " is-visible" : ""}`}
           onClick={() => setDrawerOpen(false)}
@@ -135,11 +165,14 @@ const Layout = () => {
 
         <ScrollRootContext.Provider value={mainRef}>
           <main className="mdl-layout__content" ref={mainRef}>
-            <RightSidebar
-              foro={sidebarForo}
-              isGallery={isGallery}
-              isVotaciones={isVotaciones}
-            />
+            {/* en el diseño nuevo, Galería y Votaciones son pestañas de la cabecera */}
+            {!diseno26 && (
+              <RightSidebar
+                foro={sidebarForo}
+                isGallery={isGallery}
+                isVotaciones={isVotaciones}
+              />
+            )}
             <div className={`content${isGallery ? " content-gallery" : ""}`}>
               <ForoDescription head={head} isWall={isWall} />
               <ForoAdmin head={head} />

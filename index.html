@@ -50,6 +50,16 @@
     <!-- Global <img onerror> fallback. Message bodies and the captured-URL
          card (util/displayCapturedUrl.html) call this inline, so it has to be
          a real global defined before any content renders. -->
+    <!-- Tema claro/oscuro elegido con el boton (TemaToggle.jsx): se pone antes de
+         pintar para que no parpadee. Sin nada guardado, manda el del sistema. -->
+    <script>
+      try {
+        var tema = localStorage.getItem("gritos-tema");
+        if (tema === "dark" || tema === "light") {
+          document.documentElement.setAttribute("data-theme", tema);
+        }
+      } catch (e) {}
+    </script>
     <script>
       window.imgError = function (img) {
         img.src = "/imagenes/vacio.gif";
