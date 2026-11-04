@@ -1,21 +1,16 @@
+// MDL va lo primero: como .css, su @import subia al principio del CSS y el resto lo pisaba
+@import "./mdl-base.less"; // lo que queda de MDL (ver el fichero)
 @import "./tipr.less";
-@import "../../node_modules/font-awesome/less/font-awesome.less";
+@import "./iconos.less"; // los iconos de Font Awesome que se usan (ver el fichero)
 @import "./bootstrap-base.less"; // lo que queda de Bootstrap 3 (ver el fichero)
-// @import 'oscuro.less';
 @import "font-awesome-animation.css";
-@import "googlefonts.less";
-@import "material.light_green-red.min.css";
+@import "./fuentes.less"; // Material Icons (local)
 @import "slick.css";
 @import "slick-theme.css";
 
 @font-face {
   font-family: "newdreamers";
-  src: url("../fonts/newdreamers.eot"); /* EOT file for IE */
-  src:
-    local("?"),
-    url("../fonts/newdreamers.woff") format("woff"),
-    /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-      url("../fonts/newdreamers.ttf") format("truetype"); /* TTF file for CSS3 browsers */
+  src: url("../fonts/newdreamers.woff") format("woff"); // la marca; eot/ttf ya no los pide nadie
 }
 @enlaces: var(--link);
 

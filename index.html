@@ -118,14 +118,9 @@
          Screen" label — it uses this, falling back to <title> otherwise. -->
     <meta name="apple-mobile-web-app-title" content="Gritos" />
 
-    <!-- Material Icons font. The MDL *stylesheet* is not loaded here: main.less
-         imports material.light_green-red.min.css locally, the same theme the
-         deployed build ships. The CDN <link> that used to sit here pulled
-         1.3.0 orange-indigo, so two MDL themes were loading at once. -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
+    <!-- Material Icons ya no se pide a Google Fonts: va servida con la app
+         (src/css/fuentes.less). El CSS de MDL tampoco va aqui: main.less importa
+         lo que queda de el (src/css/mdl-base.less). -->
   </head>
   <body>
     <div id="react-root"></div>
