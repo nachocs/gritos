@@ -7,6 +7,7 @@ import { buildEmojiHtml } from "../utils/emojiHtml";
 import { imageThumbs, nextImageIndex, uploadImages } from "../utils/foroApi";
 import { closeModal } from "../utils/modalEvents";
 import EmojisModal from "./EmojisModal";
+import MdlTextfield from "./MdlTextfield";
 import RichComposer from "./RichComposer";
 
 const getInitialComment = (msg) => {
@@ -192,18 +193,14 @@ const EditFormModal = ({ editForm, registerAction }) => {
       <form onSubmit={handleSubmit}>
         <div className="mdl-card mdl-shadow--4dp">
         {isHead && modelIsGritosdb && (
-          <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input
-              className="mdl-textfield__input"
-              type="text"
-              id="edit-form-title"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-            />
-            <label className="mdl-textfield__label" htmlFor="edit-form-title">
-              Título
-            </label>
-          </div>
+          // MdlTextfield pone is-focused/is-dirty desde React: sin ellos la
+          // etiqueta «Título» se quedaba encima del título ya relleno.
+          <MdlTextfield
+            id="edit-form-title"
+            label="Título"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+          />
         )}
         <RichComposer
           ref={composerRef}
