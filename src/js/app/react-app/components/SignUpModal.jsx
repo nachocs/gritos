@@ -164,7 +164,7 @@ const SignUpModal = () => {
 
       <MdlTextfield
         id="signupEmail"
-        label="email"
+        label="Email"
         value={email}
         onChange={handleEmail}
       />
@@ -172,7 +172,7 @@ const SignUpModal = () => {
 
       <MdlTextfield
         id="signupPassword"
-        label="Password"
+        label="Contraseña"
         type="password"
         value={password}
         onChange={handlePassword}

@@ -46,8 +46,8 @@ describe("SignUpModal", () => {
 
     expect(container.querySelector("form.sign-up-modal")).toBeInTheDocument();
     expect(screen.getByLabelText("Alias")).toBeInTheDocument();
-    expect(screen.getByLabelText("email")).toBeInTheDocument();
-    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(screen.getByLabelText("Contraseña")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /registrarse/i })).toBeDisabled();
   });
 
@@ -58,7 +58,7 @@ describe("SignUpModal", () => {
     await user.type(screen.getByLabelText("Alias"), "abc");
     expect(screen.getByText("Alias mu corto")).toBeInTheDocument();
 
-    await user.type(screen.getByLabelText("email"), "invalidemail");
+    await user.type(screen.getByLabelText("Email"), "invalidemail");
     expect(screen.getByText("email no vale")).toBeInTheDocument();
 
     // Neither triggered an availability call.
@@ -69,7 +69,7 @@ describe("SignUpModal", () => {
     const user = userEvent.setup();
     renderSignUpModal();
 
-    await user.type(screen.getByLabelText("Password"), "short");
+    await user.type(screen.getByLabelText("Contraseña"), "short");
 
     expect(
       screen.getByText("password de 8 characteres al menos, porfa"),
@@ -99,8 +99,8 @@ describe("SignUpModal", () => {
     renderSignUpModal();
 
     await user.type(screen.getByLabelText("Alias"), "testuser");
-    await user.type(screen.getByLabelText("email"), "test@example.com");
-    await user.type(screen.getByLabelText("Password"), "password123");
+    await user.type(screen.getByLabelText("Email"), "test@example.com");
+    await user.type(screen.getByLabelText("Contraseña"), "password123");
 
     await waitFor(() => {
       expect(
