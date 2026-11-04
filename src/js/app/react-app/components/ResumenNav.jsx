@@ -159,7 +159,7 @@ const ResumenNav = () => {
       )}
       <a
         className="resumen-collection__legal"
-        href="https://dreamers.es/web1/globalbar/copyright/p/web1/home.html"
+        href="https://dreamers.es/aviso-legal/"
         target="_blank"
         rel="noreferrer"
       >
