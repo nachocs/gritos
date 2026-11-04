@@ -234,6 +234,111 @@
   }
 }
 
+// el buscador de foros (BuscadorForos.jsx): en la cabecera, en un panel bajo la lupa
+.cab26-buscar {
+  position: relative;
+}
+.cab26-busqueda {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 5;
+  width: 380px;
+  padding: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+  box-shadow: 0 18px 30px -14px rgba(0, 0, 0, 0.55);
+}
+// la lupa solo en pantallas medianas: en movil el buscador va arriba del cajon (no
+// cabe otro boton sin cortar el titulo del foro) y desde 1360px en la lista fija
+@media (max-width: 680px) {
+  .cab26-buscar {
+    display: none;
+  }
+}
+@media (min-width: 1360px) {
+  .cab26-buscar {
+    display: none;
+  }
+}
+.main.d26 .buscador {
+  font-family: var(--font-ui);
+}
+.main.d26 .buscador-etiqueta {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.main.d26 .buscador-campo {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 2px solid var(--edge);
+  border-radius: 4px;
+  background: var(--campo);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  &:focus {
+    outline: none;
+    border-color: var(--link);
+  }
+}
+.main.d26 .buscador-lista {
+  list-style: none;
+  max-height: min(60vh, 420px);
+  margin: 8px 0 0;
+  padding: 0;
+  overflow-y: auto;
+}
+.main.d26 .buscador-resultado {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  b {
+    font-weight: 700;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  span {
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+  &.on {
+    background: var(--hi);
+    b,
+    span {
+      color: var(--on-hi);
+    }
+  }
+}
+.main.d26 .buscador-nada {
+  padding: 10px;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+// en el cajon (y en la lista fija), arriba, con el mismo margen que los enlaces
+.main.d26 .mdl-layout__drawer .buscador--cajon {
+  padding: 16px 24px 8px 40px;
+}
+
+// «privacidad / legal» iba fijo abajo del cajon y, con resultados del buscador
+// abiertos, caia encima de la lista: en el diseño nuevo va al final, en el flujo
+.main.d26 .mdl-layout__drawer .resumen-collection__legal {
+  position: static;
+  display: block;
+  margin: 16px 0 24px;
+  padding: 0 40px;
+  text-align: left;
+}
+
 // Gritos · Galería · Votaciones
 .cab26-pestanas {
   display: flex;

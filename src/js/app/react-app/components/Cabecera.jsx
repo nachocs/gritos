@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import BuscadorForos from "./BuscadorForos";
 import LoginStatus from "./LoginStatus";
 import NotificacionesButton from "./NotificacionesButton";
 import PestanasForo from "./PestanasForo";
@@ -22,6 +24,21 @@ const Cabecera = ({
   onMenuClick,
 }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  // el buscador de foros, en un panel bajo la lupa (solo en pantallas medianas: en
+  // movil va arriba del cajon y desde 1360px en la lista fija; ver cabecera.less)
+  const [buscando, setBuscando] = useState(false);
+  const panel = useRef(null);
+  useEffect(() => setBuscando(false), [pathname]);
+  useEffect(() => {
+    if (!buscando) return undefined;
+    const fuera = (e) => {
+      if (panel.current && !panel.current.contains(e.target))
+        setBuscando(false);
+    };
+    window.addEventListener("mousedown", fuera);
+    return () => window.removeEventListener("mousedown", fuera);
+  }, [buscando]);
   const esPortada = currentForo === "foroscomun" && !esMuro;
   // igual que Header: el titulo lleva al foro; en foroscomun, a "/"
   const rootPath = esPortada ? "/" : `/${esMuro ? base : currentForo}`;
@@ -67,6 +84,29 @@ const Cabecera = ({
           </div>
         )}
         <div className="cab26-herr">
+          <div className="cab26-buscar" ref={panel}>
+            <button
+              type="button"
+              className="cab26-ico"
+              onClick={() => setBuscando((b) => !b)}
+              aria-label="Buscar un foro"
+              aria-expanded={buscando}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+            </button>
+            {buscando && (
+              <div className="cab26-busqueda">
+                <BuscadorForos
+                  variante="cabecera"
+                  autoFocus
+                  onElegir={() => setBuscando(false)}
+                />
+              </div>
+            )}
+          </div>
           <NotificacionesButton />
           <div className="login-view cab26-cuenta">
             <LoginStatus />

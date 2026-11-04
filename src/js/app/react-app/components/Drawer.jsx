@@ -6,8 +6,14 @@ import ResumenNav from "./ResumenNav";
 // The "privacidad / legal" link legacy pins at the bottom lives in ResumenNav,
 // matching legacy's split (mainView-t.html owns the title, resumenView-t.html
 // the nav and the link).
-// `children`: lo que el diseño nuevo añade al final (el interruptor de tema en movil).
-const Drawer = ({ open = false, head = null, children = null }) => (
+// `arriba`: el buscador de foros, antes de la lista; `children`: lo que va al final
+// (el interruptor de tema en movil).
+const Drawer = ({
+  open = false,
+  head = null,
+  arriba = null,
+  children = null,
+}) => (
   <div className={`mdl-layout__drawer${open ? " is-visible" : ""}`}>
     {/* Legacy mainView-t.html renders `<%= obj.Titulo %>` here — the current
         head's title, not a constant. It was hard-coded to "Gritos.com", so the
@@ -15,6 +21,7 @@ const Drawer = ({ open = false, head = null, children = null }) => (
     <span className="mdl-layout-title newdreamers">
       {head?.Titulo || "gritos.com"}
     </span>
+    {arriba}
     <ResumenNav />
     {children}
   </div>
@@ -25,6 +32,7 @@ Drawer.propTypes = {
   head: PropTypes.shape({
     Titulo: PropTypes.string,
   }),
+  arriba: PropTypes.node,
   children: PropTypes.node,
 };
 

@@ -7,6 +7,7 @@ import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
 import { claveForo } from "../utils/avisosApi";
 import AvisosBanner from "./AvisosBanner";
+import BuscadorForos from "./BuscadorForos";
 import Cabecera from "./Cabecera";
 import Drawer from "./Drawer";
 import ForoAdmin from "./ForoAdmin";
@@ -130,7 +131,16 @@ const Layout = () => {
           drawerOpen={drawerOpen}
           onMenuClick={() => setDrawerOpen((abierto) => !abierto)}
         />
-        <Drawer open={drawerOpen} head={head}>
+        <Drawer
+          open={drawerOpen}
+          head={head}
+          arriba={
+            <BuscadorForos
+              variante="cajon"
+              onElegir={() => setDrawerOpen(false)}
+            />
+          }
+        >
           <div className="cajon-tema">
             <TemaToggle />
             <span>Tema claro u oscuro</span>
