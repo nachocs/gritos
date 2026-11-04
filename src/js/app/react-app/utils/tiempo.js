@@ -93,3 +93,13 @@ export const desdeUnix = (segundos, opciones) => {
   const n = Number(segundos);
   return Number.isFinite(n) && n > 0 ? desde(n * 1000, opciones) : null;
 };
+
+// segundos Unix -> «abril de 2016» (para «lleva callado desde…»)
+export const mesYAnioUnix = (segundos) => {
+  const n = Number(segundos);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return new Date(n * 1000).toLocaleDateString("es-ES", {
+    month: "long",
+    year: "numeric",
+  });
+};

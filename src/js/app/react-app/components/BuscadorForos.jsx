@@ -103,7 +103,7 @@ const BuscadorForos = ({ variante = "cajon", autoFocus = false, onElegir }) => {
 };
 
 BuscadorForos.propTypes = {
-  variante: PropTypes.oneOf(["cabecera", "cajon"]),
+  variante: PropTypes.oneOf(["cabecera", "cajon", "portada"]),
   autoFocus: PropTypes.bool,
   onElegir: PropTypes.func,
 };

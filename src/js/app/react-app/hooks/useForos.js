@@ -1,7 +1,7 @@
-import { decode } from "html-entities";
 import { useEffect, useState } from "react";
 import endpoints from "../../util/endpoints";
 import { fetchJson } from "../utils/apiFetch";
+import tituloForo from "../utils/tituloForo";
 
 // La lista de foros (foros.cgi: [{ name, titulo }]) para el buscador. Se pide una vez
 // por visita, la primera vez que alguien abre el buscador, y se guarda aqui: la abren
@@ -24,7 +24,7 @@ const pedirForos = () => {
         (Array.isArray(datos) ? datos : [])
           .filter((f) => f && /^\w+$/.test(f.name || ""))
           .map((f) => {
-            const titulo = decode(f.titulo || "").trim() || f.name;
+            const titulo = tituloForo(f.titulo, f.name);
             return {
               name: f.name,
               titulo,

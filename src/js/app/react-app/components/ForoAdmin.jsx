@@ -29,38 +29,41 @@ const canAdminForo = (head, user) => {
   );
 };
 
+// Legacy openForoAdmin(): edit the foro/wall head via the edit modal. Exported
+// so the wall profile (FichaMuro) can offer it as a visible «Edita tu muro».
+export const abrirEdicionForo = (head) =>
+  openModal({
+    model: {
+      show: true,
+      header: head?.INDICE === "ciudadanos" ? "EDITA TU MURO" : "EDITAR FORO",
+    },
+    editForm: {
+      msg: head,
+      isHead: true,
+      onSaved: (updated) => {
+        // A wall's head always answers INDICE:"ciudadanos" (the citizen it
+        // belongs to is `ID`) — canAdminForo() above already relies on the
+        // same split. useHead() consumers fetch it as "ciudadanos/<id>",
+        // so that's the name to republish under, not the bare INDICE.
+        const name =
+          updated?.INDICE === "ciudadanos"
+            ? `ciudadanos/${updated.ID}`
+            : updated?.INDICE;
+        if (name) {
+          publishHeadUpdate(name, updated);
+        }
+      },
+    },
+  });
+
 const ForoAdmin = ({ head }) => {
   const { user } = useUser();
 
-  if (!canAdminForo(head, user)) {
+  // en un muro, «Edita tu muro» va visible en la ficha del ciudadano (FichaMuro)
+  if (!canAdminForo(head, user) || head?.INDICE === "ciudadanos") {
     return null;
   }
-
-  // Legacy openForoAdmin(): edit the foro/wall head via the edit modal.
-  const openForoAdmin = () =>
-    openModal({
-      model: {
-        show: true,
-        header: head?.INDICE === "ciudadanos" ? "EDITA TU MURO" : "EDITAR FORO",
-      },
-      editForm: {
-        msg: head,
-        isHead: true,
-        onSaved: (updated) => {
-          // A wall's head always answers INDICE:"ciudadanos" (the citizen it
-          // belongs to is `ID`) — canAdminForo() above already relies on the
-          // same split. useHead() consumers fetch it as "ciudadanos/<id>",
-          // so that's the name to republish under, not the bare INDICE.
-          const name =
-            updated?.INDICE === "ciudadanos"
-              ? `ciudadanos/${updated.ID}`
-              : updated?.INDICE;
-          if (name) {
-            publishHeadUpdate(name, updated);
-          }
-        },
-      },
-    });
+  const openForoAdmin = () => abrirEdicionForo(head);
 
   return (
     <div

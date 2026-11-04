@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import tituloForo from "../utils/tituloForo";
 import BuscadorForos from "./BuscadorForos";
 import LoginStatus from "./LoginStatus";
 import NotificacionesButton from "./NotificacionesButton";
@@ -42,7 +43,12 @@ const Cabecera = ({
   const esPortada = currentForo === "foroscomun" && !esMuro;
   // igual que Header: el titulo lleva al foro; en foroscomun, a "/"
   const rootPath = esPortada ? "/" : `/${esMuro ? base : currentForo}`;
-  const titulo = head?.Titulo || (esPortada ? "" : currentForo);
+  // en un muro, el alias tal cual; en un foro, sin el «gritos.com» de los temas sin nombre
+  const titulo = esPortada
+    ? ""
+    : esMuro
+      ? head?.Titulo || ""
+      : tituloForo(head?.Titulo, currentForo);
 
   const irAPortada = (event) => {
     event.preventDefault();

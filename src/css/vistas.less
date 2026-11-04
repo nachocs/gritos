@@ -274,3 +274,234 @@
   padding-top: 12px;
   border-top: 1px solid var(--rule);
 }
+
+// ===== ficha del ciudadano en su muro (FichaMuro.jsx) =====
+.main.d26 .ficha-muro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 24px;
+  margin: 16px 0;
+  padding: 16px 20px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--ink);
+  font-family: var(--font-ui);
+  p {
+    margin: 0;
+  }
+}
+.main.d26 .ficha-muro-kicker {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.main.d26 .ficha-muro-alias {
+  margin: 2px 0 6px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.main.d26 .ficha-muro-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  > span + span::before {
+    content: "·";
+    margin-right: 12px;
+  }
+}
+.main.d26 .ficha-muro-nivel {
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--hi);
+  color: var(--on-hi);
+  font-weight: 700;
+}
+.main.d26 .ficha-muro-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px !important;
+}
+.main.d26 .ficha-muro-boton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    background: var(--hi);
+    color: var(--on-hi);
+  }
+  &--principal {
+    background: var(--ink);
+    color: var(--paper);
+  }
+}
+.main.d26 .ficha-muro-imagenes {
+  ul {
+    display: grid;
+    grid-template-columns: repeat(3, 64px);
+    gap: 6px;
+    margin: 8px 0 6px;
+    padding: 0;
+    list-style: none;
+  }
+  img {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--surface2);
+  }
+}
+.main.d26 .ficha-muro-mas {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--link);
+}
+@media (max-width: 680px) {
+  .main.d26 .ficha-muro {
+    grid-template-columns: minmax(0, 1fr);
+    margin: 12px 8px;
+    padding: 14px;
+  }
+  .main.d26 .ficha-muro-imagenes ul {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .main.d26 .ficha-muro-imagenes img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+}
+
+// ===== en un muro: lo del dueño y lo de las visitas (MessageItem: msg--dueno / msg--visita) =====
+.main.d26 .msg-list article.msg.msg--dueno {
+  &::before {
+    border-right-color: var(--link);
+  }
+  > .mdl-card {
+    border-color: var(--link);
+    box-shadow: 4px 4px 0 var(--link);
+  }
+}
+.main.d26 .msg-etiqueta {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.main.d26 .msg--dueno .msg-etiqueta {
+  background: var(--hi);
+  color: var(--on-hi);
+}
+
+// ===== avisos: foro callado, conversacion antigua, foro o muro vacio =====
+.main.d26 .foro-dormido,
+.main.d26 .hilo-antiguo,
+.main.d26 .foro-vacio {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border: 2px dashed var(--edge);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+.main.d26 .foro-vacio {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+@media (max-width: 680px) {
+  .main.d26 .foro-dormido,
+  .main.d26 .hilo-antiguo,
+  .main.d26 .foro-vacio {
+    margin: 0 8px 16px;
+  }
+}
+
+// ===== portada: buscador, foros con movimiento y los de siempre (Portada.jsx) =====
+.main.d26 .portada {
+  display: grid;
+  gap: 18px;
+  margin: 16px 0 8px;
+  font-family: var(--font-ui);
+}
+.main.d26 .buscador--portada {
+  padding: 16px;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.main.d26 .portada-titulo {
+  margin: 0 0 8px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  &--lista {
+    margin: 8px 0 0;
+  }
+}
+.main.d26 .portada-foros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 2px solid var(--edge);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    &:hover {
+      background: var(--hi);
+      border-color: var(--ink);
+      color: var(--on-hi);
+    }
+  }
+}
+@media (max-width: 680px) {
+  .main.d26 .portada {
+    margin: 12px 8px 8px;
+  }
+}
+// desde 1360px el buscador ya esta arriba de la lista fija de foros: en la portada no se repite
+@media (min-width: 1360px) {
+  .main.d26 .buscador--portada {
+    display: none;
+  }
+}

@@ -121,6 +121,10 @@ const MessageItem = ({
   const messageLink = `/${routeForo}/${id}`;
   const displayName = msg.name || msg.ciudadano || "Anónimo";
   const authorLink = msg.ciudadano ? `/ciudadanos/${msg.ciudadano}` : null;
+  // En un muro (INDICE «ciudadanos/<id>», solo el grito, no sus respuestas): lo que
+  // escribe el dueño va «en su muro» y lo de las visitas, «le gritó». Solo se pinta.
+  const muroDe = /^ciudadanos\/(\d+)$/.exec(msg.INDICE || "")?.[1];
+  const esDelDueno = Boolean(muroDe) && String(msg.ciudadano) === muroDe;
   const content = formatComments(msg.comments || msg.COMMENTS || "");
   const date = formatMessageTime(msg.FECHA || msg.date || msg.fecha || null);
   const emotionUrl = (msg.emocion || "").replace("http://dreamers.com", "");
@@ -214,7 +218,9 @@ const MessageItem = ({
   };
 
   return (
-    <article className="msg">
+    <article
+      className={`msg${muroDe ? (esDelDueno ? " msg--dueno" : " msg--visita") : ""}`}
+    >
       {emotionUrl && (
         <div
           className="emocion"
@@ -361,6 +367,11 @@ const MessageItem = ({
               <Link to={authorLink}>{displayName}</Link>
             ) : (
               displayName
+            )}
+            {muroDe && (
+              <span className="msg-etiqueta">
+                {esDelDueno ? "en su muro" : "le gritó"}
+              </span>
             )}
           </div>
           {date && <div className="mdl-card__subtitle-text">{date}</div>}

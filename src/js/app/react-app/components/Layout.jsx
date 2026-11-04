@@ -1,3 +1,4 @@
+import { decode } from "html-entities";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import ScrollRootContext from "../contexts/ScrollRootContext";
@@ -5,11 +6,13 @@ import { useUser } from "../hooks/useContexts";
 import useHead from "../hooks/useHead";
 import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
+import tituloForo from "../utils/tituloForo";
 import { claveForo } from "../utils/avisosApi";
 import AvisosBanner from "./AvisosBanner";
 import BuscadorForos from "./BuscadorForos";
 import Cabecera from "./Cabecera";
 import Drawer from "./Drawer";
+import FichaMuro from "./FichaMuro";
 import ForoAdmin from "./ForoAdmin";
 import ForoDescription from "./ForoDescription";
 import FormShell from "./FormShell";
@@ -68,6 +71,22 @@ const Layout = () => {
   // Crimson"), not the slug — same head the page itself loads, deduped by
   // useHead so this doesn't add a second head.cgi request.
   const { data: head } = useHead(isWall ? `ciudadanos/${id}/` : currentForo);
+  // El titulo de la pestaña: antes todas decian «Gritos.com». Ahora el foro o el muro
+  // (y la seccion si es galeria o votaciones); los titulos llegan con entidades HTML.
+  useEffect(() => {
+    const titulo = isWall
+      ? decode(head?.Titulo || "").trim()
+      : tituloForo(head?.Titulo, currentForo);
+    const seccion = isGallery
+      ? "Galería · "
+      : isVotaciones
+        ? "Votaciones · "
+        : "";
+    document.title =
+      esPortada || !titulo
+        ? "gritos.com · Grita sin cortarte un pelo"
+        : `${seccion}${titulo} · gritos.com`;
+  }, [head?.Titulo, esPortada, isGallery, isVotaciones, isWall, currentForo]);
   // El «+» solo baja hasta el compositor (o, sin sesion, abre el login). Mientras
   // el compositor se ve en pantalla sobra, y en movil tapaba el campo de
   // respuesta del primer hilo: se esconde. Solo se mira desde fuera, sin tocar
@@ -156,6 +175,7 @@ const Layout = () => {
           <main className="mdl-layout__content" ref={mainRef}>
             <div className={`content${isGallery ? " content-gallery" : ""}`}>
               <ForoDescription head={head} isWall={isWall} />
+              {isWall && <FichaMuro head={head} id={id} />}
               <ForoAdmin head={head} />
               <SeguirForoButton
                 clave={claveForo({ foro: foro ? currentForo : undefined, id })}
