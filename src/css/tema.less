@@ -65,31 +65,6 @@ body {
   outline-offset: 2px;
 }
 
-// cabecera: trama de puntos de vineta y filete lima (sombra interior: no cambia la altura)
-.main .mdl-layout__header:not(.ciudadano) {
-  background-image: radial-gradient(
-    rgba(198, 241, 53, 0.15) 1.2px,
-    transparent 1.7px
-  );
-  background-size: 9px 9px;
-}
-.main .mdl-layout__header {
-  box-shadow:
-    inset 0 -4px 0 var(--hi),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  // el alias (enlace) heredaba el marron de `.main a`: 2,3:1 sobre el verde
-  .login-view > a {
-    color: var(--on-mast);
-  }
-  // en el muro (rojo) el texto claro del tema daba 4,1:1; con blanco, 4,6:1
-  &.ciudadano .login-view > a,
-  &.ciudadano .login-view > span {
-    color: #fff;
-  }
-}
-
 // superficies y texto de MDL
 .mdl-layout__content {
   background-color: var(--paper);

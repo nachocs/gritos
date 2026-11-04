@@ -40,88 +40,9 @@ a {
 span[data-link] {
   cursor: pointer;
 }
-.main {
-  header {
-    &.ciudadano {
-      background-color: rgb(195, 80, 74);
-      .alias-principal,
-      .desplegable {
-        color: white;
-      }
-    }
-  }
-}
-@media (max-width: 680px) {
-  .main {
-    .mdl-layout__header-row {
-      padding: 0;
-    }
-  }
-}
-// Cabecera en el verde bosque de la identidad nueva de gritos: el lima de MDL
-// (rgb(139,195,74)) con el titulo en blanco daba 2,1:1 de contraste; este, 11,4:1.
-// El muro de un ciudadano sigue en rojo: `.main header.ciudadano` es mas especifico.
-@cabecera: var(--mast);
-@sobre-cabecera: var(--on-mast);
 @verde-texto: var(
   --link
 ); // verde legible sobre blanco (6,7:1), en lugar del lima de MDL
-.main .mdl-layout__header {
-  background-color: @cabecera;
-  color: @sobre-cabecera;
-  .mdl-layout__drawer-button,
-  .mdl-layout__header-row .mdl-navigation__link,
-  .login-menu-button {
-    color: @sobre-cabecera;
-  }
-  // los desplegables cuelgan de la cabecera y heredarian el texto claro
-  ul.login-menu,
-  .notificaciones-collection-view {
-    color: var(--ink);
-  }
-}
-div.titulo {
-  font-family: newdreamers;
-  // text-transform: lowercase;
-  font-size: xx-large;
-  font-weight: bold;
-  color: white;
-  width: 80%;
-  text-align: center;
-  padding-left: 40px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  flex: 10 0px;
-  line-height: 1.5;
-  a {
-    text-decoration: none;
-    color: white;
-  }
-}
-// En movil el titulo a xx-large (32px) no cabia: «Videojuegos a Gritos» perdia la V
-// bajo el boton del menu (absoluto, 52px) y el final por la elipsis, y con sesion la
-// campana se le montaba encima. Ahora encoge con la pantalla y cede sitio a la campana.
-@media (max-width: 1024px) {
-  // la fila es hija de una columna flex: sin esto mide lo que el titulo entero
-  // (439px a 375) y la campana y la cuenta se salen por la derecha
-  .main .mdl-layout__header-row {
-    min-width: 0;
-  }
-  div.titulo {
-    font-size: clamp(1.125rem, 5vw, 1.75rem);
-    width: auto;
-    min-width: 0;
-    flex: 1 1 0;
-    padding-left: 0;
-    padding-right: 8px;
-  }
-}
-@media (max-width: 680px) {
-  div.titulo {
-    padding-left: 56px;
-  }
-}
 .main {
   a {
     color: var(--muted);
@@ -634,57 +555,6 @@ iframe {
   background: white;
   right: 1px;
 }
-.logomask {
-  display: inline-block;
-  img {
-    position: relative;
-    cursor: pointer;
-    display: block;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    margin: 0px auto;
-    background: "";
-    -webkit-filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    background-position: -110px 0;
-    &:hover,
-    &:focus {
-      background-position: 10px 0;
-      transition: all 1s;
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      pointer-events: none;
-      top: 0;
-      left: 0;
-      right: 0px;
-      bottom: 0;
-      background: radial-gradient(
-          0 0,
-          circle farthest-side,
-          rgba(255, 255, 255, 0) 80%,
-          rgba(255, 255, 255, 0.8) 98%,
-          rgba(255, 255, 255, 0) 100%
-        )
-        no-repeat;
-      background: radial-gradient(
-          circle farthest-side at 0 0,
-          rgba(255, 255, 255, 0) 80%,
-          rgba(255, 255, 255, 0.8) 98%,
-          rgba(255, 255, 255, 0) 100%
-        )
-        no-repeat;
-      background-position: inherit;
-      -webkit-mask: url("../img/logo50x50.gif") center;
-      mask: url("#logomask-firefox");
-      width: 100px;
-      height: 100px;
-    }
-  }
-}
 .spinner-main {
   position: fixed;
   z-index: 1000;
@@ -1153,11 +1023,6 @@ div[contenteditable="true"]:empty:before {
     margin: 0 -16px;
   }
 }
-.mdl-layout__header-row .mdl-navigation__link {
-  &.notificaciones-view {
-    padding: 0;
-  }
-}
 // MDL pone `opacity:.87` a todo `.mdl-navigation__link`, y la campana y el menu de
 // entrar cuelgan de uno: los paneles salian translucidos y la pagina se leia a traves.
 .mdl-navigation__link.notificaciones-view,
@@ -1480,9 +1345,6 @@ h6.resumen-subheader {
 .is-small-screen .mdl-layout__content {
   margin-top: 56px;
 }
-.mdl-layout__header {
-  position: fixed;
-}
 .mdl-layout__obfuscator {
   position: fixed;
 }
@@ -1759,81 +1621,7 @@ h6.resumen-subheader {
     }
   }
 }
-// Por debajo de 1140px la barra era `position:absolute` y sus dos botones flotaban
-// encima de la descripcion del foro (y de la cabecera del muro). Ahora es una fila
-// normal encima del contenido: solo los rotulos «Galeria» y «Votaciones».
-@media (max-width: 1140px) {
-  // `aside.` para ganar a las reglas generales de `.right-side` de mas abajo (margin: 20px)
-  aside.right-side {
-    position: static;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    max-width: 800px;
-    margin: 12px auto 0;
-    padding: 0 8px;
-    .right-block {
-      max-height: 26px;
-      overflow: hidden;
-      margin: 0;
-    }
-    .gallery-thumbnail,
-    .votaciones-thumbnail {
-      min-height: initial;
-      margin: 0;
-    }
-  }
-}
-@media (min-width: 1140px) {
-  .right-side {
-    position: relative;
-    float: right;
-    display: block;
-    .right-block {
-      min-height: 100px;
-    }
-    // .gallery-thumbnail, .votaciones-thumbnail{
-    //   // min-height: 100px;
-    // }
-  }
-}
 
-.right-side {
-  .right-block {
-    background: var(--surface);
-    box-shadow: 0px 0px 8px -3px black;
-    margin-top: 10px;
-  }
-  margin: 20px;
-  &.inactive {
-    display: none;
-  }
-  .right-side-head {
-    font-family: newdreamers, sans-serif;
-    font-weight: bold;
-    text-align: center;
-    font-size: 0.9rem;
-    padding: 5px;
-    span {
-      cursor: pointer;
-    }
-  }
-  .gallery-thumbnail,
-  .votaciones-thumbnail {
-    width: 100px;
-    margin: 10px;
-    text-align: center;
-    img {
-      cursor: pointer;
-    }
-    .gotogallery,
-    .gotovotaciones {
-      max-width: 100px;
-      max-height: 100px;
-      cursor: pointer;
-    }
-  }
-}
 // [data-userlist]{
 // cursor: zoom-in;
 // }

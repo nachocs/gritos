@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import ScrollRootContext from "../contexts/ScrollRootContext";
 import { useUser } from "../hooks/useContexts";
-import useDiseno from "../hooks/useDiseno";
 import useHead from "../hooks/useHead";
 import { openLoginMenu } from "../utils/loginMenuEvents";
 import normalizeForo from "../utils/normalizeForo";
@@ -13,9 +12,7 @@ import Drawer from "./Drawer";
 import ForoAdmin from "./ForoAdmin";
 import ForoDescription from "./ForoDescription";
 import FormShell from "./FormShell";
-import Header from "./Header";
 import ModalRoot from "./ModalRoot";
-import RightSidebar from "./RightSidebar";
 import SeguirForoButton from "./SeguirForoButton";
 import TemaToggle from "./TemaToggle";
 import UserListPopup from "./UserListPopup";
@@ -24,7 +21,7 @@ import UserListPopup from "./UserListPopup";
 // App.jsx), so useParams() here resolves against whichever child route
 // matched. Previously this component took `children` and was rendered
 // *above* <Routes> in App.jsx, which put it outside any matched route —
-// useParams() there always returned {}, so Header/FormShell/RightSidebar
+// useParams() there always returned {}, so Cabecera/FormShell
 // (everything reading the current foro) silently behaved as if every page
 // were foroscomun.
 const Layout = () => {
@@ -33,7 +30,6 @@ const Layout = () => {
   const { foro, id } = useParams();
   const { pathname } = useLocation();
   const { user } = useUser();
-  const diseno26 = useDiseno();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Close the drawer whenever navigation happens (clicking a foro in the
@@ -64,19 +60,13 @@ const Layout = () => {
   const isGallery = /\/gallery\/?$/.test(pathname);
   const isVotaciones = /\/votaciones\/?$/.test(pathname);
   const currentForo = normalizeForo(foro);
-  // Legacy hides the sidebar entirely on foroscomun (the default/root forum)
-  // but shows it on topic foros and on ciudadanos walls (/ciudadanos/:id,
-  // which matches with only an :id param).
+  // A ciudadanos wall (/ciudadanos/:id) matches with only an :id param.
   const isWall = !foro && Boolean(id);
+  const esPortada = currentForo === "foroscomun" && !isWall;
   // The deployed header title bar shows the foro head's `Titulo` (e.g. "king
   // Crimson"), not the slug — same head the page itself loads, deduped by
   // useHead so this doesn't add a second head.cgi request.
   const { data: head } = useHead(isWall ? `ciudadanos/${id}/` : currentForo);
-  const sidebarForo = isWall
-    ? `ciudadanos/${id}`
-    : currentForo === "foroscomun"
-      ? null
-      : currentForo;
   // El «+» solo baja hasta el compositor (o, sin sesion, abre el login). Mientras
   // el compositor se ve en pantalla sobra, y en movil tapaba el campo de
   // respuesta del primer hilo: se esconde. Solo se mira desde fuera, sin tocar
@@ -115,13 +105,8 @@ const Layout = () => {
   // The previous `main-shell` class matched no CSS at all, so all of that
   // silently never applied.
   return (
-    <div
-      className={`main${diseno26 ? " d26" : ""}${
-        diseno26 && !(currentForo === "foroscomun" && !isWall)
-          ? " d26--pestanas"
-          : ""
-      }`}
-    >
+    // `d26`: los estilos del rediseño (cabecera.less, bocadillos.less, vistas.less)
+    <div className={`main d26${esPortada ? "" : " d26--pestanas"}`}>
       <div className="modal-view">
         <ModalRoot />
       </div>
@@ -135,27 +120,21 @@ const Layout = () => {
           isSmallScreen ? " is-small-screen" : ""
         }`}
       >
-        {diseno26 ? (
-          <Cabecera
-            head={head}
-            currentForo={currentForo}
-            esMuro={isWall}
-            base={isWall ? `ciudadanos/${id}` : currentForo}
-            isGallery={isGallery}
-            isVotaciones={isVotaciones}
-            drawerOpen={drawerOpen}
-            onMenuClick={() => setDrawerOpen((abierto) => !abierto)}
-          />
-        ) : (
-          <Header head={head} onMenuClick={() => setDrawerOpen(true)} />
-        )}
+        <Cabecera
+          head={head}
+          currentForo={currentForo}
+          esMuro={isWall}
+          base={isWall ? `ciudadanos/${id}` : currentForo}
+          isGallery={isGallery}
+          isVotaciones={isVotaciones}
+          drawerOpen={drawerOpen}
+          onMenuClick={() => setDrawerOpen((abierto) => !abierto)}
+        />
         <Drawer open={drawerOpen} head={head}>
-          {diseno26 && (
-            <div className="cajon-tema">
-              <TemaToggle />
-              <span>Tema claro u oscuro</span>
-            </div>
-          )}
+          <div className="cajon-tema">
+            <TemaToggle />
+            <span>Tema claro u oscuro</span>
+          </div>
         </Drawer>
         <div
           className={`mdl-layout__obfuscator${drawerOpen ? " is-visible" : ""}`}
@@ -165,14 +144,6 @@ const Layout = () => {
 
         <ScrollRootContext.Provider value={mainRef}>
           <main className="mdl-layout__content" ref={mainRef}>
-            {/* en el diseño nuevo, Galería y Votaciones son pestañas de la cabecera */}
-            {!diseno26 && (
-              <RightSidebar
-                foro={sidebarForo}
-                isGallery={isGallery}
-                isVotaciones={isVotaciones}
-              />
-            )}
             <div className={`content${isGallery ? " content-gallery" : ""}`}>
               <ForoDescription head={head} isWall={isWall} />
               <ForoAdmin head={head} />

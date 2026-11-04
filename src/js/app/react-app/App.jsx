@@ -18,7 +18,7 @@ const App = () => {
   return (
     <Routes>
       {/* Layout is a layout route (renders <Outlet/>) so its descendants —
-          Header, FormShell, RightSidebar — see the matched :foro param via
+          Cabecera, FormShell, PestanasForo — see the matched :foro param via
           useParams(). It must not wrap <Routes> as children: that would put
           it outside any matched route and useParams() would always be {}. */}
       <Route element={<Layout />}>

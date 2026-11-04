@@ -5,8 +5,8 @@ import NotificacionesButton from "./NotificacionesButton";
 import PestanasForo from "./PestanasForo";
 import TemaToggle from "./TemaToggle";
 
-// Cabecera del diseño nuevo, la de todos desde el 3-nov-2026. La de antes es Header.jsx,
-// que sigue con `?diseno=0` (useDiseno) hasta que se retire; Layout elige.
+// La cabecera de gritos desde el rediseño de nov-2026 (sustituyo a Header.jsx y a las
+// miniaturas de RightSidebar, retiradas en la fase 5).
 // Misma familia que d26 (dreamers.es) con la identidad de gritos: verde bosque con
 // trama de vineta, filete lima, la marca en Melody3 con la «g» en lima. La campana y
 // la cuenta son los mismos componentes que en Header (misma logica y mismas clases,
