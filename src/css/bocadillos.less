@@ -98,56 +98,62 @@
   }
 }
 
-// «¡Gritar!» con forma de estallido. El boton es el mismo (mismo submit, mismo texto
-// «Grita»): los signos los pone el CSS. La sombra va con filter en el contenedor porque
-// clip-path recortaria un box-shadow; .form-submit solo contiene el boton.
-// ⛔ Con filter, .form-submit (un bloque a todo lo ancho) pasa a pintarse encima de los
-// iconos de camara, emojis y encuesta, que van en position:absolute debajo, y se
-// quedaba sus clics. Por eso deja pasar los clics y solo el boton los recibe.
+// «¡Grita!» habla el mismo idioma que los gritos: bloque lima con el borde de tinta y la
+// sombra dura de los bocadillos, ladeado como quien levanta la voz. Al pasar por encima
+// se levanta y al pulsarlo se hunde en su sombra. El boton es el mismo (mismo submit,
+// mismo texto «Grita»): los signos los pone el CSS.
+// (Hasta el 4-nov era un estallido con clip-path; no pegaba con los bocadillos.)
+// ⛔ Nada de filter/transform/opacity en .form-submit: es un bloque a todo lo ancho y
+// pasaria a pintarse encima de los iconos de camara, emojis y encuesta (position:absolute
+// debajo) quedandose sus clics. El transform va en el BOTON, y el contenedor sigue
+// dejando pasar los clics por si acaso.
 .main.d26 .form-shell .form-submit {
-  filter: drop-shadow(3px 3px 0 var(--ink));
   pointer-events: none;
   .form-submit-button {
     pointer-events: auto;
   }
 }
 .main.d26 .form-shell .form-submit-button.mdl-button {
-  min-height: 56px;
+  min-height: 48px;
   height: auto;
-  padding: 0 30px;
-  border-radius: 0;
-  box-shadow: none;
+  padding: 0 24px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--ink);
+  font-size: 17px;
   font-weight: 900;
-  letter-spacing: 0.04em;
-  clip-path: polygon(
-    50% 0%,
-    60.7% 13.5%,
-    77% 7.9%,
-    78.7% 25.1%,
-    95.5% 29.2%,
-    87.6% 44.6%,
-    99.5% 57.1%,
-    84.6% 65.8%,
-    87.8% 82.7%,
-    70.5% 82%,
-    64.1% 98%,
-    50% 88%,
-    35.9% 98%,
-    29.5% 82%,
-    12.2% 82.7%,
-    15.4% 65.8%,
-    0.5% 57.1%,
-    12.4% 44.6%,
-    4.5% 29.2%,
-    21.3% 25.1%,
-    23% 7.9%,
-    39.3% 13.5%
-  );
+  letter-spacing: 0.06em;
+  transform: rotate(-3deg);
+  transition:
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out;
   &:not([disabled])::before {
     content: "¡";
   }
   &:not([disabled])::after {
     content: "!";
+  }
+  &:not([disabled]):hover {
+    transform: rotate(-3deg) translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  // MDL pone su propia sombra al pulsar: esta gana por especificidad
+  &:not([disabled]):active {
+    transform: rotate(-3deg) translate(4px, 4px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  &:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 4px;
+  }
+  // enviando / subiendo imagen: recto y sin sombra, que se note que no responde
+  &[disabled] {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--rule);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 
@@ -170,8 +176,8 @@
     padding: 0 8px;
   }
   .main.d26 .form-shell .form-submit-button.mdl-button {
-    min-height: 50px;
-    padding: 0 22px;
+    min-height: 46px;
+    padding: 0 20px;
   }
 }
 
