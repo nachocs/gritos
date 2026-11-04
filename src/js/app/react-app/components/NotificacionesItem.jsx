@@ -1,12 +1,12 @@
-import moment from "moment";
 import PropTypes from "prop-types";
 import defaultDreamy from "../../../../img/dreamy4.gif";
+import { desdeUnix } from "../utils/tiempo";
 
 // Una notificacion de la bandeja (la misma de dreamers.es): el servidor ya trae el titulo ("Ana ha respondido a tu grito en king Crimson") y un
 // extracto del mensaje; aqui solo se pinta. Todo entra como texto (nada de HTML).
 const NotificacionesItem = ({ item, onClick }) => {
   const { titulo, texto, de_alias: deAlias, veces, actualizada, leida } = item;
-  const cuando = actualizada ? moment.unix(Number(actualizada)).fromNow() : "";
+  const cuando = desdeUnix(actualizada) || "";
   const activar = (e) => {
     if (e.key === "Enter") {
       onClick();

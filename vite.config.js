@@ -77,17 +77,6 @@ export default defineConfig({
     alias: [
       // Allows resolving imports starting with '../../' etc more easily if needed
       { find: "@", replacement: path.resolve(__dirname, "./src") },
-      // Bare `moment` resolves to dist/moment.js (English-only, no locales),
-      // while `moment/locale/<x>` resolves relatively to the root moment.js
-      // — two separate module instances, so registering a locale never
-      // reaches the one the app actually uses. Force the bare specifier
-      // onto the same file `moment/locale/<x>` already resolves to; the
-      // `$` anchors this to an exact match so `moment/locale/es` etc. are
-      // left alone (they resolve fine on their own).
-      {
-        find: /^moment$/,
-        replacement: path.resolve(__dirname, "node_modules/moment/moment.js"),
-      },
     ],
     extensions: [".mjs", ".js", ".mts", ".ts", ".jsx", ".tsx", ".json"],
   },

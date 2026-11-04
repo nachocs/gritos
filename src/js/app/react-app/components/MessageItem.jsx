@@ -1,4 +1,3 @@
-import moment from "moment";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,6 +10,7 @@ import {
   saveMessage,
 } from "../utils/foroApi";
 import formatComments from "../utils/formatComments";
+import { desde, desdeUnix } from "../utils/tiempo";
 import { openModal } from "../utils/modalEvents";
 import Carrusel from "./Carrusel";
 import EncuestaBlock, { parseEncuesta } from "./EncuestaBlock";
@@ -47,10 +47,12 @@ const formatMessageTime = (value) => {
   }
   const unixValue = Number(value);
   if (!Number.isNaN(unixValue) && unixValue > 0) {
-    return moment.unix(unixValue).fromNow(true);
+    return desdeUnix(unixValue, { sinSufijo: true });
   }
-  const parsed = moment(value);
-  return parsed.isValid() ? parsed.fromNow(true) : null;
+  // texto con fecha (FECHA siempre viene en segundos; esto es por si acaso): lo que
+  // Date no entiende -como «Domingo, 13 de Junio de 2010»- tampoco lo entendia moment
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? null : desde(parsed, { sinSufijo: true });
 };
 
 // Port of legacy msgView serializer's tagsShown: `publicados` is a

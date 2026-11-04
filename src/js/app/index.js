@@ -1,13 +1,4 @@
 import "core-js/stable";
-import moment from "moment";
-// moment.js loads locales via a *dynamic* `require('./locale/' + name)`,
-// which only works under Node's real filesystem — static bundlers (Vite/
-// esbuild/webpack) can't follow it, so the 'es' locale must be imported
-// explicitly here. The `moment` alias in vite.config.js additionally makes
-// sure this and the bare `import moment from "moment"` above resolve to the
-// exact same module instance, otherwise the locale registers on a copy
-// nothing else uses.
-import "moment/locale/es";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "regenerator-runtime/runtime";
@@ -19,14 +10,11 @@ import { NotificationsProvider } from "./react-app/contexts/NotificationsContext
 import { RegistrationProvider } from "./react-app/contexts/RegistrationContext";
 import { UserProvider } from "./react-app/contexts/UserContext";
 
-// Material Design Lite's *JS* is loaded from the CDN in index.html. Its CSS is
-// not: main.less imports material.light_green-red.min.css locally, the theme
-// the deployed build ships.
+// De Material Design Lite solo queda CSS: las reglas que se usan, en
+// src/css/mdl-base.less (main.less). Su JS no se carga.
 
 // Application styles (was a separate webpack CSS entry; Vite bundles via the JS entry)
 import "../../css/main.less";
-
-moment.locale("es");
 
 const AppProviders = ({ children }) => (
   <UserProvider>
