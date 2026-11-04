@@ -5,8 +5,6 @@
 @import "./bootstrap-base.less"; // lo que queda de Bootstrap 3 (ver el fichero)
 @import "font-awesome-animation.css";
 @import "./fuentes.less"; // Material Icons (local)
-@import "slick.css";
-@import "slick-theme.css";
 
 @font-face {
   font-family: "newdreamers";
@@ -994,10 +992,6 @@ div[contenteditable="true"]:empty:before {
 }
 .images-place {
   margin: 0 20px 10px;
-  .slick-prev:before,
-  .slick-next:before {
-    color: initial;
-  }
 }
 // Upload progress feedback — a genuine addition beyond legacy, which had
 // none at all (its $.ajax upload call has no progress or error handling).
@@ -1660,9 +1654,6 @@ h6.resumen-subheader {
       }
     }
   }
-}
-.slick-list {
-  min-height: 300px;
 }
 
 // Modal Root styles for React modals

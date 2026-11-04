@@ -1,9 +1,7 @@
-import $ from "jquery";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "slick-carousel/slick/slick.js";
 import { shareTo } from "../../util/socialShare";
 import { useUser } from "../hooks/useContexts";
 import {
@@ -14,6 +12,7 @@ import {
 } from "../utils/foroApi";
 import formatComments from "../utils/formatComments";
 import { openModal } from "../utils/modalEvents";
+import Carrusel from "./Carrusel";
 import EncuestaBlock, { parseEncuesta } from "./EncuestaBlock";
 import MiniThread from "./MiniThread";
 import MolaActions from "./MolaActions";
@@ -101,7 +100,6 @@ const MessageItem = ({
   const [shareOpen, setShareOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [zoomSrc, setZoomSrc] = useState(null);
-  const carouselRef = useRef(null);
 
   useEffect(() => {
     setMsg(message);
@@ -109,56 +107,6 @@ const MessageItem = ({
 
   const images = getImages(msg);
   const isCarousel = images.length > 1;
-  const imageKey = images.map((image) => image.src).join("|");
-
-  // Legacy baseMsgView.js initializes slick on `.images-place` once it has
-  // 2+ images: up to 3 slides, dots + arrows, adaptiveHeight so the row
-  // matches whichever slide is current, collapsing to 2/1 slides on
-  // narrower breakpoints.
-  useEffect(() => {
-    if (!isCarousel || !carouselRef.current) {
-      return undefined;
-    }
-    const $el = $(carouselRef.current);
-    const slidesToShow = images.length < 3 ? images.length : 3;
-    const timer = setTimeout(() => {
-      $el.slick({
-        dots: true,
-        infinite: true,
-        speed: 300,
-        slidesToShow,
-        slidesToScroll: slidesToShow,
-        arrows: true,
-        adaptiveHeight: true,
-        responsive: [
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow,
-              slidesToScroll: slidesToShow,
-              infinite: true,
-              dots: true,
-            },
-          },
-          {
-            breakpoint: 600,
-            settings: { slidesToShow: 2, slidesToScroll: 2 },
-          },
-          {
-            breakpoint: 480,
-            settings: { slidesToShow: 1, slidesToScroll: 1 },
-          },
-        ],
-      });
-    }, 200);
-    return () => {
-      clearTimeout(timer);
-      if ($el.hasClass("slick-initialized")) {
-        $el.slick("unslick");
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCarousel, imageKey]);
 
   if (deleted) {
     return null;
@@ -181,7 +129,9 @@ const MessageItem = ({
   const headUserids = head?.Userid ? head.Userid.split(/\|/) : [];
   const isOwner = user?.ID && user.ID === msg.ciudadano;
   const canDelete =
-    isOwner || Number(user?.nivel) > 7 || (user?.ID && headUserids.includes(user.ID));
+    isOwner ||
+    Number(user?.nivel) > 7 ||
+    (user?.ID && headUserids.includes(user.ID));
   const canManagePoll = encuesta && canDelete;
 
   const handleContentClick = (event) => {
@@ -298,7 +248,11 @@ const MessageItem = ({
                         aria-hidden="true"
                         onClick={(e) => {
                           e.stopPropagation();
-                          shareTo("facebook", shareUrl(msg), head?.Titulo || "");
+                          shareTo(
+                            "facebook",
+                            shareUrl(msg),
+                            head?.Titulo || "",
+                          );
                         }}
                       />
                     </li>
@@ -371,7 +325,11 @@ const MessageItem = ({
                       <span
                         className="js-parar-encuesta fa-stack fa-lg"
                         title={`${encuesta.cerrado ? "abrir" : "cerrar"} votacion`}
-                        style={{ width: "1em", height: "1em", lineHeight: "1em" }}
+                        style={{
+                          width: "1em",
+                          height: "1em",
+                          lineHeight: "1em",
+                        }}
                         onClick={(e) => {
                           e.stopPropagation();
                           pararVotacion();
@@ -406,31 +364,12 @@ const MessageItem = ({
           {date && <div className="mdl-card__subtitle-text">{date}</div>}
           {showForm && <div className="rabito" />}
         </div>
-        <div
-          className="mdl-card__supporting-text"
-          onClick={handleContentClick}
-        >
-          {images.length > 0 && (
-            <div
-              className="images-place"
-              ref={isCarousel ? carouselRef : undefined}
-            >
+        <div className="mdl-card__supporting-text" onClick={handleContentClick}>
+          {/* 2 o mas imagenes: carrusel (antes slick + jQuery); una: como siempre */}
+          {isCarousel && <Carrusel images={images} />}
+          {images.length === 1 && (
+            <div className="images-place">
               {images.map((image, index) => {
-                if (isCarousel) {
-                  // Legacy displayImage2: full-width, zoomable when tall.
-                  const zoomable = (image.height || 0) > 364;
-                  return (
-                    <div key={index}>
-                      <img
-                        title={zoomable ? "click para zoom" : ""}
-                        className={zoomable ? "img-hover" : ""}
-                        alt="imagen"
-                        src={image.src}
-                        width="100%"
-                      />
-                    </div>
-                  );
-                }
                 const isVertical =
                   image.width && image.height
                     ? image.width < image.height
@@ -515,6 +454,5 @@ MessageItem.propTypes = {
   showForm: PropTypes.bool,
   forceThread: PropTypes.bool,
 };
-
 
 export default MessageItem;
