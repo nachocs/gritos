@@ -16,6 +16,7 @@ import FichaMuro from "./FichaMuro";
 import ForoAdmin from "./ForoAdmin";
 import ForoDescription from "./ForoDescription";
 import FormShell from "./FormShell";
+import InvitaGritar from "./InvitaGritar";
 import ModalRoot from "./ModalRoot";
 import SeguirForoButton from "./SeguirForoButton";
 import TemaToggle from "./TemaToggle";
@@ -94,7 +95,8 @@ const Layout = () => {
   const [composerVisible, setComposerVisible] = useState(false);
   useEffect(() => {
     const el = formSectionRef.current;
-    if (!user?.uid || !el || typeof IntersectionObserver === "undefined") {
+    // sin sesion tambien: ahi esta la invitacion a entrar (InvitaGritar)
+    if (!el || typeof IntersectionObserver === "undefined") {
       setComposerVisible(false);
       return undefined;
     }
@@ -185,6 +187,9 @@ const Layout = () => {
               {!isGallery && (
                 <div className="form-view" ref={formSectionRef}>
                   <FormShell />
+                  {/* sin sesion FormShell no pinta nada: la invitacion ocupa su
+                      sitio (y, por ir aqui dentro, tambien esconde el «+») */}
+                  <InvitaGritar />
                 </div>
               )}
               <div className="msg-list">{!isGallery && <Outlet />}</div>

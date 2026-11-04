@@ -73,7 +73,8 @@ describe("LoginStatus Component", () => {
     fireEvent.change(screen.getByLabelText(/Contraseña/i), {
       target: { value: "password123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
+    // la cabecera tambien dice «Entrar»: el de enviar es #loginSubmit
+    fireEvent.click(container.querySelector("#loginSubmit"));
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -86,7 +87,8 @@ describe("LoginStatus Component", () => {
 
     const { container } = renderWithProviders();
     fireEvent.click(toggle(container));
-    fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
+    // la cabecera tambien dice «Entrar»: el de enviar es #loginSubmit
+    fireEvent.click(container.querySelector("#loginSubmit"));
 
     // Legacy bails out with a console.log and shows no error.
     expect(global.fetch).not.toHaveBeenCalled();

@@ -224,6 +224,26 @@
       color: var(--on-hi);
     }
   }
+  // sin sesion: «Entrar» con su palabra y en lima, lo unico de color en la cabecera
+  // (antes era un icono de encendido que no se entendia; en movil, solo eso)
+  .login-menu-button--entrar {
+    width: auto;
+    padding: 0 16px;
+    background: var(--hi);
+    border-color: var(--hi);
+    color: var(--on-hi);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    &:hover,
+    &:focus-visible,
+    &[aria-expanded="true"] {
+      background: var(--on-mast);
+      border-color: var(--on-mast);
+      color: var(--on-hi); // oscuro en los dos temas
+    }
+  }
   ul.login-menu {
     top: calc(100% + 12px);
     right: 0;

@@ -157,7 +157,97 @@
   }
 }
 
+// Sin sesion, en el sitio del compositor (InvitaGritar.jsx): un bocadillo que invita a
+// entrar. «Entrar» lleva el mismo boton que «¡Grita!»; «Regístrate», en segundo plano.
+.main.d26 .invita-gritar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin: 0 0 28px;
+  padding: 18px 22px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.main.d26 .invita-gritar__texto {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  strong {
+    display: block;
+    font-size: 20px;
+    font-weight: 900;
+  }
+  span {
+    color: var(--muted);
+  }
+}
+.main.d26 .invita-gritar__botones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.main.d26 .invita-gritar__entrar,
+.main.d26 .invita-gritar__registro {
+  min-height: 46px;
+  padding: 0 22px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.main.d26 .invita-gritar__entrar {
+  background: var(--hi);
+  color: var(--on-hi);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: rotate(-3deg);
+  transition:
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out;
+  &:hover {
+    transform: rotate(-3deg) translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  &:active {
+    transform: rotate(-3deg) translate(4px, 4px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+.main.d26 .invita-gritar__registro {
+  background: transparent;
+  color: var(--ink);
+  &:hover {
+    background: var(--surface2);
+  }
+}
+.main.d26 .invita-gritar__entrar:focus-visible,
+.main.d26 .invita-gritar__registro:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
 @media (max-width: 680px) {
+  .main.d26 .invita-gritar {
+    margin: 0 8px 24px;
+    padding: 16px;
+  }
+  .main.d26 .invita-gritar__botones {
+    width: 100%;
+    > button {
+      flex: 1;
+    }
+  }
   .main.d26 .msg-list {
     --av: 40px;
     --av-hueco: 52px;

@@ -44,6 +44,11 @@ const LoginStatus = () => {
     }
   }, [loggedIn]);
 
+  // al abrir el acceso, directo al alias: quien pulsa «Entrar» quiere escribir
+  useEffect(() => {
+    if (menuOpen && !loggedIn) document.getElementById("loginAlias")?.focus();
+  }, [menuOpen, loggedIn]);
+
   const toggleMenu = () => setMenuOpen((current) => !current);
 
   const loginCall = async (data) => {
@@ -167,16 +172,15 @@ const LoginStatus = () => {
 
   return (
     <>
-      <span className="mdl-layout--large-screen-only">Entrar</span>
+      {/* 2026-11-04: era un icono de «encendido» (y en movil, solo eso): no se
+          entendia que era para entrar. Ahora un boton con su palabra, en lima. */}
       <button
         type="button"
-        className="login-menu-button mdl-button mdl-js-button mdl-button--icon"
+        className="login-menu-button login-menu-button--entrar mdl-button mdl-js-button"
         onClick={toggleMenu}
-        aria-label="Menú de la cuenta"
+        aria-expanded={menuOpen}
       >
-        <i className="material-icons" aria-hidden="true">
-          power_settings_new
-        </i>
+        <span>Entrar</span>
       </button>
 
       <ul
