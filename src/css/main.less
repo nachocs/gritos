@@ -1475,6 +1475,7 @@ h6.resumen-subheader {
 }
 .valid-alias-load,
 .valid-email-load,
+.valid-turnstile-load,
 .valid-submit-load {
   color: green;
   border: 1px dashed green;
@@ -1493,6 +1494,17 @@ h6.resumen-subheader {
 .sign-up-modal {
   button {
     margin: 20px 0;
+  }
+  // Turnstile (2026-11-21): en modo interaction-only no ocupa nada salvo que pida un clic
+  .signup-turnstile {
+    margin: 10px 0 0 34px;
+  }
+  // tras pedir el alta: «revisa tu correo» en vez del formulario
+  &.sign-up-pendiente {
+    max-width: 420px;
+    p {
+      margin: 0 0 12px;
+    }
   }
 }
 .loader {

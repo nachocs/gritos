@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import endpoints from "../../util/endpoints";
-import { useRegistration, useUser } from "../hooks/useContexts";
+import { useRegistration } from "../hooks/useContexts";
 import { decodeBody } from "../utils/apiFetch";
 import { closeModal } from "../utils/modalEvents";
 import MdlTextfield from "./MdlTextfield";
+import TurnstileWidget from "./TurnstileWidget";
 
 // Legacy signUp.js's regexp, verbatim.
 const EMAIL_REGEXP =
@@ -19,6 +20,13 @@ const EMAIL_REGEXP =
  * looked nothing like deployed. Legacy validates on every keystroke, checks
  * alias/email availability against check.cgi, and keeps the submit button
  * disabled until all three fields are valid.
+ *
+ * 2026-11-21: signing up no longer creates the account. registro.cgi stores a
+ * pending sign-up and emails a confirmation link; the account exists only once
+ * the link is pressed, so instead of logging in the modal says "check your
+ * email". The form carries a Turnstile token, and the email is checked for
+ * format only: asking check.cgi whether an email is registered told anyone who
+ * has an account (the server no longer answers that question).
  */
 const SignUpModal = () => {
   const [alias, setAlias] = useState("");
@@ -32,9 +40,12 @@ const SignUpModal = () => {
     password: {},
   });
   const [submitError, setSubmitError] = useState("");
+  const [token, setToken] = useState("");
+  const [turnstileFailed, setTurnstileFailed] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
+  const [pendingEmail, setPendingEmail] = useState("");
 
   const { registering, register, clearError } = useRegistration();
-  const { login } = useUser();
 
   // Legacy unsubscribes the previous check.cgi observable before firing a new
   // one, so only the latest keystroke's answer is ever applied.
@@ -92,7 +103,7 @@ const SignUpModal = () => {
     if (value && (value.length < 4 || !EMAIL_REGEXP.test(value))) {
       setField("email", { error: "email no vale" });
     } else if (value) {
-      checkValue("email", value);
+      setField("email", { valid: true });
     } else {
       setField("email", {});
     }
@@ -114,6 +125,7 @@ const SignUpModal = () => {
 
   const formValid =
     fields.alias.valid && fields.email.valid && fields.password.valid;
+  const waitingForTurnstile = formValid && !token && !turnstileFailed;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -121,13 +133,12 @@ const SignUpModal = () => {
     setSubmitError("");
 
     try {
-      const result = await register(alias, email, password);
-      if (result.user && result.uid) {
-        login(result.uid);
-      }
-      closeModal();
+      const result = await register(alias, email, password, token);
+      setPendingEmail(result.email || email);
     } catch (err) {
       setSubmitError(`error! ${err.message}`);
+      // a Turnstile token is single use: ask for a fresh one
+      setResetKey((k) => k + 1);
     }
   };
 
@@ -152,6 +163,29 @@ const SignUpModal = () => {
     </>
   );
 
+  if (pendingEmail) {
+    return (
+      <div className="sign-up-modal sign-up-pendiente" role="status">
+        <p>
+          <strong>¡Casi está!</strong>
+        </p>
+        <p>
+          Te hemos mandado un correo a <strong>{pendingEmail}</strong>. Pulsa
+          el enlace que lleva para activar tu cuenta: vale 7 días. Hasta
+          entonces la cuenta no existe y no podrás entrar con ella.
+        </p>
+        <p>Si no te llega en unos minutos, mira en la carpeta de spam.</p>
+        <button
+          type="button"
+          className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+          onClick={() => closeModal()}
+        >
+          vale
+        </button>
+      </div>
+    );
+  }
+
   return (
     <form className="sign-up-modal" onSubmit={handleSubmit} noValidate>
       <MdlTextfield
@@ -168,7 +202,7 @@ const SignUpModal = () => {
         value={email}
         onChange={handleEmail}
       />
-      {markers("email", "Email no registrado! Yuhuu!")}
+      {markers("email", "Email con buena pinta!")}
 
       <MdlTextfield
         id="signupPassword"
@@ -179,11 +213,25 @@ const SignUpModal = () => {
       />
       {markers("password", "Password válida!")}
 
+      <TurnstileWidget
+        onToken={setToken}
+        onError={() => setTurnstileFailed(true)}
+        resetKey={resetKey}
+      />
+      <div className={`error-form error-turnstile${turnstileFailed ? " active" : ""}`}>
+        {turnstileFailed
+          ? "No se ha podido cargar la comprobación anti-robots. ¿Tienes un bloqueador que corta challenges.cloudflare.com?"
+          : ""}
+      </div>
+      <div className={`valid-turnstile-load${waitingForTurnstile ? " active" : ""}`}>
+        Comprobando que no eres un robot…
+      </div>
+
       <button
         type="submit"
         className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
         id="signupSubmit"
-        disabled={!formValid || registering}
+        disabled={!formValid || !token || registering}
       >
         registrarse
       </button>
